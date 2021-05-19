@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using Inventory_API.Services;
+using Property_inventory.Services;
 
 namespace Property_inventory.Models
 {

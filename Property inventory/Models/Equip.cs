@@ -1,7 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.ComponentModel;
-using Microsoft.EntityFrameworkCore;
 
 namespace Property_inventory.Models
 {
@@ -20,6 +18,6 @@ namespace Property_inventory.Models
         public List<History> History { get; set; }
         public string Note { get; set; }
         public int Count { get; set; }
-        [DefaultValue(false)] public bool IsDeleted { get; set; }
+        public bool IsDeleted { get; set; }
     }
 }
