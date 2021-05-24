@@ -2,6 +2,8 @@
 using System.Text.RegularExpressions;
 using System.Windows;
 using System.Windows.Input;
+using MaterialDesignThemes.Wpf;
+using Property_inventory.Services.View;
 
 namespace Property_inventory.Views.Map
 {
@@ -13,6 +15,7 @@ namespace Property_inventory.Views.Map
         public CreateMap()
         {
             InitializeComponent();
+            ThemeAssist.SetTheme(this, Properties.Settings.Default.Theme == false ? BaseTheme.Light : BaseTheme.Dark);
         }
 
         private void TbMapName_PreviewKeyDown(object sender, System.Windows.Input.KeyEventArgs e)

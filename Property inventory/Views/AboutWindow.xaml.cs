@@ -2,6 +2,7 @@
 using System;
 using System.Reflection;
 using System.Windows;
+using Property_inventory.Services.View;
 
 namespace Property_inventory.Views
 {
@@ -13,7 +14,8 @@ namespace Property_inventory.Views
         public AboutWindow()
         {
             InitializeComponent();
-            ThemeAssist.SetTheme(this, Properties.Settings.Default.Theme);
+
+            ThemeAssist.SetTheme(this, Properties.Settings.Default.Theme == false ? BaseTheme.Light : BaseTheme.Dark);
             this.Title = String.Format("О программе {0}", AssemblyTitle);
             this.labelCopyright.Content = AssemblyCopyright;
             this.labelVersion.Content = String.Format("Версия {0}", AssemblyVersion);

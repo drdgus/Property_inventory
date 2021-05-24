@@ -5,6 +5,7 @@
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:viewModels="clr-namespace:Property_inventory.ViewModels"
     Title="Настройки"
     Width="420"
     Height="598"
@@ -16,6 +17,9 @@
     TextOptions.TextFormattingMode="Ideal"
     TextOptions.TextRenderingMode="Auto"
     mc:Ignorable="d">
+    <Window.DataContext>
+        <viewModels:SettingsVM/>
+    </Window.DataContext>
     <Grid>
         <StackPanel Margin="10">
             <GroupBox
@@ -27,27 +31,32 @@
                     <Grid>
                         <materialDesign:PackIcon VerticalAlignment="Center" Kind="Person" />
                         <TextBox
+                            Style="{StaticResource MaterialDesignFloatingHintTextBox}"
                             Margin="18,10,0,0"
                             Padding="3,0,0,0"
                             HorizontalAlignment="Stretch"
                             materialDesign:HintAssist.Hint="Адрес сервера"
-                            Text="" />
+                            Text="{Binding ServerAddress}" />
                     </Grid>
                     <Grid Margin="0,4,0,0">
                         <materialDesign:PackIcon VerticalAlignment="Center" Kind="Person" />
                         <TextBox
+                            Style="{StaticResource MaterialDesignFloatingHintTextBox}"
                             MinWidth="150"
                             Margin="18,10,0,0"
                             Padding="3,0,0,0"
                             materialDesign:HintAssist.Hint="Логин"
-                            Text="" />
+                            Text="{Binding Login}" />
                     </Grid>
                     <Grid Margin="0,14,0,0">
                         <materialDesign:PackIcon VerticalAlignment="Center" Kind="Key" />
                         <PasswordBox
+                            TextInput="PasswordBox_OnTextInput"
+                            Style="{StaticResource MaterialDesignFloatingHintPasswordBox}"
                             MinWidth="150"
                             Margin="18,0,0,0"
                             Padding="3,0,0,0"
+                            Name="PasswordBox"
                             materialDesign:HintAssist.Hint="Пароль" />
                     </Grid>
                 </StackPanel>
@@ -70,14 +79,16 @@
                         VerticalAlignment="Center"
                         materialDesign:HintAssist.Hint="ОКУД"
                         Style="{StaticResource MaterialDesignFloatingHintTextBox}"
-                        Text="" />
+                        Text="{Binding OKUD}" />
                     <TextBox
                         Margin="18,10,0,0"
                         VerticalAlignment="Center"
                         materialDesign:HintAssist.Hint="ОКПО"
+                        Text="{Binding OKPO}"
                         Style="{StaticResource MaterialDesignFloatingHintTextBox}" />
                     <TextBox
                         Margin="18,10,0,0"
+                        Text="{Binding Location}"
                         VerticalAlignment="Center"
                         materialDesign:HintAssist.Hint="Город"
                         Style="{StaticResource MaterialDesignFloatingHintTextBox}" />
@@ -88,6 +99,7 @@
                 <ToggleButton
                     Name="ToggleButton"
                     Checked="ToggleSwitch_Checked"
+                    IsChecked="{Binding IsDarkTheme}"
                     Style="{StaticResource MaterialDesignSwitchToggleButton}"
                     ToolTip="Default ToggleButton Style"
                     Unchecked="ToggleSwitch_Unchecked" />
@@ -95,6 +107,8 @@
             <Button
                 Margin="0,10,0,0"
                 Content="Сохранить"
+                Click="Close"
+                Command="{Binding SaveSettingsCommand}"
                 Style="{StaticResource MaterialDesignRaisedAccentButton}"
                 ToolTip="Resource name: MaterialDesignRaisedAccentButton" />
         </StackPanel>

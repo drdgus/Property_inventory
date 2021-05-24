@@ -3,9 +3,12 @@ using LiveCharts.Wpf;
 using Property_inventory.Models;
 using System;
 using System.Collections.Generic;
+using System.Data.Entity;
 using System.Globalization;
 using System.Linq;
 using System.Windows.Media;
+using Property_inventory.DAL;
+using Property_inventory.Entities;
 
 namespace Property_inventory.ViewModels
 {
@@ -23,54 +26,65 @@ namespace Property_inventory.ViewModels
         public ChartVM()
         {
             YFormatter = value => value.ToString("C");
+            var Equips = InvDbContext.GetInstance().Equips.AsNoTracking().Include(e => e.Type).Include(e => e.Type.Category).ToList();
 
-            TotalSum = 38630200m;
-            ChartTypes = new List<ChartTypes>
+
+            TotalSum = Equips.Sum(e => e.BasePrice * e.Count);
+            ChartTypes = new List<ChartTypes>();
+
+            var groups = Equips.GroupBy(e => e.Type.Name).ToList();
+            foreach (var group in groups)
             {
-                new ChartTypes
+                ChartTypes.Add(new ChartTypes
                 {
-                    Sum = 2314004,
-                    Type = "МФУ",
-                    Count = 150
-                }
-            };
+                    Sum = group.Sum(i => i.BasePrice * i.Count),
+                    Type = new Entities.Type
+                    {
+                        Id = 0,
+                        Category = group.First().Type.Category,
+                        Name = group.First().Type.Name
+                    },
+                    Count = group.Count()
+                });
+            }
 
-            var vals = new ChartValues<decimal>();
+
+            var currentBalance = new ChartValues<decimal>();
             var rnd = new Random();
             for (int i = 0; i < 11; i++)
             {
-                vals.Add(rnd.Next(36000000, 38000000));
+                currentBalance.Add(rnd.Next(120000, 150000));
             }
 
-            vals.Add(TotalSum);
+            currentBalance.Add(TotalSum);
 
             CurrentBalanceCollection = new SeriesCollection
             {
                 new LineSeries
                 {
                     Title = "На балансе",
-                    Values = vals
+                    Values = currentBalance
                 }
             };
 
-            vals = new ChartValues<decimal>();
-            vals.Add(0);
-            vals.Add(0);
-            vals.Add(rnd.Next(50000, 500000));
-            vals.Add(0);
+            var procurement = new ChartValues<decimal>();
+            procurement.Add(0);
+            procurement.Add(0);
+            procurement.Add(rnd.Next(5000, 12000));
+            procurement.Add(0);
             for (int i = 0; i < 7; i++)
             {
-                vals.Add(0);
+                procurement.Add(0);
             }
 
-            vals.Add(rnd.Next(50000, 500000));
+            procurement.Add(TotalSum - currentBalance[10]);
 
             ProcurementCollection = new SeriesCollection
             {
                 new LineSeries
                 {
                     Title = "Закупки",
-                    Values = vals,
+                    Values = procurement,
                     Fill = Brushes.LightPink,
                     Stroke = Brushes.IndianRed
                 }

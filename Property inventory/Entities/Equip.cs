@@ -3,12 +3,12 @@ using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
+using System.Runtime.CompilerServices;
 
 namespace Property_inventory.Entities
 {
-    public class Equip : IDataErrorInfo
+    public class Equip : IDataErrorInfo, INotifyPropertyChanged
     {
-        private IDataErrorInfo _dataErrorInfoImplementation;
         public int Id { get; set; }
         public DateTime RegistrationDate { get; set; }
         public string Name { get; set; }
@@ -16,7 +16,17 @@ namespace Property_inventory.Entities
         public Org Org { get; set; }
         public int RoomId { get; set; }
         public Room Room { get; set; }
-        public Type Type { get; set; }
+
+        public Type Type
+        {
+            get => _type;
+            set
+            {
+                _type = value;
+                OnPropertyChanged();
+            }
+        }
+
         public Status Status { get; set; }
         public Accountability Accountability { get; set; }
         public List<History> History { get; set; }
@@ -39,7 +49,17 @@ namespace Property_inventory.Entities
         /// В процентах
         /// </summary>
         public int DepreciationRate { get; set; }
-        public DepreciationGroups DepreciationGroup { get; set; }
+
+        public DepreciationGroups DepreciationGroup
+        {
+            get => _depreciationGroup;
+            set
+            {
+                _depreciationGroup = value;
+                OnPropertyChanged();
+            }
+        }
+
         public string BaseInvNum { get; set; }
         /// <summary>
         /// В процентах
@@ -58,8 +78,16 @@ namespace Property_inventory.Entities
         }
 
         Dictionary<string, string> _errors;
+        private Type _type;
+        private DepreciationGroups _depreciationGroup;
         public string this[string columnName] => _errors.ContainsKey(columnName) ? _errors[columnName] : null;
         public string Error { get; }
         public bool IsValid => _errors.Values.All(x => x == null);
+        public event PropertyChangedEventHandler PropertyChanged;
+
+        protected virtual void OnPropertyChanged([CallerMemberName] string propertyName = null)
+        {
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+        }
     }
 }

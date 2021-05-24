@@ -15,6 +15,8 @@ using Property_inventory.DAL;
 using Property_inventory.Properties;
 using Property_inventory.Services;
 using Property_inventory.ViewModels.Dialogs;
+using Property_inventory.Views;
+using Property_inventory.Views.Acts;
 using Type = Property_inventory.Entities.Type;
 
 namespace Property_inventory.ViewModels
@@ -29,6 +31,9 @@ namespace Property_inventory.ViewModels
         private bool _deleteDialogIsOpen;
         private string _messageDialogContent;
         private string _newName;
+        private string _equipDialogOperationContent;
+        private int _selectedTypeIndex;
+        private int _selectedDeprGroupIndex;
 
         public bool InfoDialogIsOpen
         {
@@ -71,6 +76,8 @@ namespace Property_inventory.ViewModels
                     .AsNoTracking()
                     .Include(i => i.Type)
                     .Include(i => i.Status)
+                    .Include(e => e.MOL)
+                    .Include(e => e.Type.Category)
                     .Where(i => i.RoomId == _selectedNode.RoomId && i.IsDeleted == false)
                     .ToList()
                     .ForEach(i => CurrentRoomEquip.Add(i));
@@ -144,6 +151,33 @@ namespace Property_inventory.ViewModels
                 OnPropertyChanged();
             }
         }
+        public string EquipDialogOperationContent
+        {
+            get => _equipDialogOperationContent;
+            set
+            {
+                _equipDialogOperationContent = value;
+                OnPropertyChanged();
+            }
+        }
+        public int SelectedTypeIndex
+        {
+            get => EquipTypes.IndexOf(EquipTypes.Single(t => t.Id == SelectedEquip.Type.Id));
+            set
+            {
+                _selectedTypeIndex = value;
+                OnPropertyChanged();
+            }
+        }
+        public int SelectedDeprGroupIndex
+        {
+            get => (int)SelectedEquip.DepreciationGroup;
+            set
+            {
+                _selectedDeprGroupIndex = value;
+                OnPropertyChanged();
+            }
+        }
 
 
         public ObservableCollection<Equip> CurrentRoomEquip { get; set; }
@@ -152,12 +186,24 @@ namespace Property_inventory.ViewModels
         public ObservableCollection<MOL> EquipMOLs { get; set; }
         public string InvSymbol { get; set; }
 
+        private List<Room> Rooms { get; set; }
+        private List<Equip> EquipList { get; set; }
         public string SearchText
         {
             get => _searchText;
             set
             {
                 _searchText = value;
+                Nodes[0].Nodes.Clear();
+                Rooms.Where(i => i.Name.Contains(value)).ToList().ForEach(i => Nodes[0].Nodes.Add(new Node
+                {
+                    Name = i.Name,
+                    IsExpanded = false,
+                    RoomId = i.Id,
+                    Nodes = new ObservableCollection<Node>()
+                }));
+                SelectedEquip = null;
+                OnPropertyChanged();
             }
         }
 
@@ -171,6 +217,8 @@ namespace Property_inventory.ViewModels
             EquipTypes = new ObservableCollection<Type>(DbContext.Types.AsNoTracking().ToList());
             DepreciationGroups = new ObservableCollection<string>(Enum.GetNames(typeof(Equip.DepreciationGroups)));
             EquipMOLs = new ObservableCollection<MOL>(DbContext.MOLs.AsNoTracking().ToList());
+            Rooms = DbContext.Rooms.AsNoTracking().Where(r => r.IsDeleted == false).ToList();
+            EquipList = DbContext.Equips.AsNoTracking().Where(r => r.IsDeleted == false).ToList();
         }
 
         
@@ -188,9 +236,24 @@ namespace Property_inventory.ViewModels
         {
             get
             {
-                return new RelayCommand(o =>
+                return new RelayCommand(async o =>
                 {
-                    //Dialog
+                    var view = new CreateRoomUC()
+                    {
+                        DataContext = this
+                    };
+
+                    var result = await DialogHost.Show(view, "RootDialog", ClosingEventHandler);
+                    if ((bool)result)
+                    {
+                        DbContext.Rooms.Add(new Room
+                            {
+                                Name = NewName,
+                                IsDeleted = false
+                            });
+                     
+                        DbContext.SaveChanges();
+                    }
                 });
             }
         }
@@ -227,6 +290,35 @@ namespace Property_inventory.ViewModels
                 return new RelayCommand(o =>
                 {
                     //Dialog
+                    throw new NotImplementedException();
+                });
+            }
+        }
+
+        public ICommand OpenDicTypesCommand
+        {
+            get
+            {
+                return new RelayCommand(o =>
+                {
+                    //Dialog
+                    new DictionaryTypesWindow().ShowDialog();
+                    EquipTypes.Clear();
+                    DbContext.Types.AsNoTracking().ToList().ForEach(i => EquipTypes.Add(i));
+                });
+            }
+        }
+
+        public ICommand OpenDicMOLsCommand
+        {
+            get
+            {
+                return new RelayCommand(o =>
+                {
+                    //Dialog
+                    new DictionaryMOLsWindow().ShowDialog();
+                    EquipMOLs.Clear();
+                    DbContext.MOLs.AsNoTracking().ToList().ForEach(i => EquipMOLs.Add(i));
                 });
             }
         }
@@ -271,9 +363,19 @@ namespace Property_inventory.ViewModels
         {
             get
             {
-                return new RelayCommand(o =>
+                return new RelayCommand(async o =>
                 {
-                    
+                    var create = new EquipEditDialog()
+                    {
+                        DataContext = this
+                    };
+
+                    var result = await DialogHost.Show(create, "RootDialog", ClosingEventHandler);
+                    if(result is null || !(bool)result) return;
+
+                    var equip = DbContext.Equips.Single(e => e.Id == SelectedEquip.Id);
+                    equip = SelectedEquip;
+                    DbContext.SaveChanges();
                 });
             }
         }
@@ -281,9 +383,51 @@ namespace Property_inventory.ViewModels
         {
             get
             {
+                return new RelayCommand(async o =>
+                {
+                    var view = new DeleteDialog
+                    {
+                        DataContext = this
+                    };
+                    MessageDialogContent = "Удалить выбранное имущество?";
+
+                    var result = await DialogHost.Show(view, "RootDialog", ClosingEventHandler);
+                    if ((bool)result)
+                    {
+                        DbContext.Equips.Remove(SelectedEquip);
+                        CurrentRoomEquip.Remove(SelectedEquip);
+                        DbContext.SaveChanges();
+                    }
+                });
+            }
+        }
+        public ICommand HandoverCommand
+        {
+            get
+            {
                 return new RelayCommand(o =>
                 {
-                    
+                    new ActOfHandoverWindow().ShowDialog();
+                });
+            }
+        }
+        public ICommand AllEquipActCommand
+        {
+            get
+            {
+                return new RelayCommand(o =>
+                {
+                    new AllEquipAct().ShowDialog();
+                });
+            }
+        }
+        public ICommand HandoverMOLCommand
+        {
+            get
+            {
+                return new RelayCommand(o =>
+                {
+                    new ActOfHandoverToPersonWindow().ShowDialog();
                 });
             }
         }
@@ -293,7 +437,7 @@ namespace Property_inventory.ViewModels
             {
                 return new RelayCommand(o =>
                 {
-                    
+                    new InvCardWindow().ShowDialog();
                 });
             }
         }
@@ -303,7 +447,7 @@ namespace Property_inventory.ViewModels
             {
                 return new RelayCommand(o =>
                 {
-                    
+                    new ActOfRelocateWindow().ShowDialog();
                 });
             }
         }
@@ -313,7 +457,7 @@ namespace Property_inventory.ViewModels
             {
                 return new RelayCommand(o =>
                 {
-                    
+                    new WriteOffWindow().ShowDialog();
                 });
             }
         }
@@ -326,15 +470,23 @@ namespace Property_inventory.ViewModels
                 {
                     if (SelectedNode == null || SelectedNode.RoomId <= 0)
                     {
-                        var view = new InfoDialog()
+                        var info = new InfoDialog()
                         {
                             DataContext = this
                         };
                         MessageDialogContent = "Выберите помещение.";
 
-                        await DialogHost.Show(view, "RootDialog", ClosingEventHandler);
+                        await DialogHost.Show(info, "RootDialog", ClosingEventHandler);
                         return;
                     }
+
+                    var create = new EquipDialog()
+                    {
+                        DataContext = this
+                    };
+
+                    var result = await DialogHost.Show(create, "RootDialog", ClosingEventHandler);
+                    if(result is null || !(bool)result) return;
 
                     NewEquip.RoomId = SelectedNode.RoomId;
                     DbContext.Equips.Add(NewEquip);

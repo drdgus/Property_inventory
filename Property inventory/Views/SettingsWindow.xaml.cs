@@ -1,5 +1,7 @@
 ﻿using MaterialDesignThemes.Wpf;
 using System.Windows;
+using System.Windows.Input;
+using Property_inventory.Services.View;
 
 namespace Property_inventory.Views
 {
@@ -8,19 +10,18 @@ namespace Property_inventory.Views
     /// </summary>
     public partial class SettingsWindow : Window
     {
-        public event delegateTheme Event;
 
         public SettingsWindow()
         {
             InitializeComponent();
             Theme();
-            Event += Theme;
+            GLOBAL.Event += Theme;
         }
 
         private void Theme()
         {
-            ThemeAssist.SetTheme(this, Properties.Settings.Default.Theme);
-            if (Properties.Settings.Default.Theme == BaseTheme.Dark)
+            ThemeAssist.SetTheme(this, Properties.Settings.Default.Theme == false ? BaseTheme.Light : BaseTheme.Dark);
+            if (Properties.Settings.Default.Theme)
             {
                 ToggleButton.IsChecked = true;
                 //ToggleButton.Foreground = new SolidColorBrush(Colors.White);
@@ -35,16 +36,29 @@ namespace Property_inventory.Views
         private void ToggleSwitch_Checked(object sender, RoutedEventArgs e)
         {
 
-            Properties.Settings.Default.Theme = BaseTheme.Dark;
+            Properties.Settings.Default.Theme = true;
             Properties.Settings.Default.Save();
-            Event?.Invoke();
+            GLOBAL.UpdateTheme();
         }
 
         private void ToggleSwitch_Unchecked(object sender, RoutedEventArgs e)
         {
-            Properties.Settings.Default.Theme = BaseTheme.Light;
+            Properties.Settings.Default.Theme = false;
             Properties.Settings.Default.Save();
-            Event?.Invoke();
+            GLOBAL.UpdateTheme();
+        }
+
+        private void Close(object sender, RoutedEventArgs e)
+        {
+            Close();
+        }
+
+        private void PasswordBox_OnTextInput(object sender, TextCompositionEventArgs e)
+        {
+            if (this.DataContext != null)
+            {
+                PasswordBox.Password = ((dynamic)this.DataContext).Password;
+            }
         }
     }
 }

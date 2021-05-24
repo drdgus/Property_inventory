@@ -11,15 +11,14 @@
     xmlns:services="clr-namespace:Property_inventory.Services"
     xmlns:view="clr-namespace:Property_inventory.Services.View"
     xmlns:viewModels="clr-namespace:Property_inventory.ViewModels"
+    Name="Window"
     Title="Инвентаризация имущества"
     Width="1280"
-    Name="Window"
     Height="700"
     MinWidth="1280"
     MinHeight="700"
     Background="{DynamicResource MaterialDesignPaper}"
     FontFamily="{DynamicResource MaterialDesignFont}"
-    SizeChanged="MainWindow_OnSizeChanged"
     TextElement.FontSize="13"
     TextElement.FontWeight="Regular"
     TextElement.Foreground="{DynamicResource MaterialDesignBody}"
@@ -36,8 +35,16 @@
         <ContextMenu x:Key="ContextMenuTreeView">
             <MenuItem Command="{Binding CreateRoomCommand}" Header="Добавить помещение" />
         </ContextMenu>
+        <ContextMenu x:Key="ContextMenuTreeViewItem">
+            <MenuItem Click="EditRoom" Header="Изменить" />
+            <MenuItem Click="PrintQRCodes" Header="Печать QR-кодов" />
+            <MenuItem Click="DeleteRoom" Header="Удалить" />
+        </ContextMenu>
     </Window.Resources>
-    <materialDesign:DialogHost Identifier="RootDialog">
+    <materialDesign:DialogHost
+        CloseOnClickAway="True"
+        DialogTheme="Inherit"
+        Identifier="RootDialog">
         <Grid>
             <materialDesign:DialogHost
                 CloseOnClickAway="True"
@@ -51,178 +58,6 @@
                             Command="{x:Static materialDesign:DialogHost.CloseDialogCommand}"
                             Content="ОК"
                             FontSize="16" />
-                    </StackPanel>
-                </materialDesign:DialogHost.DialogContent>
-            </materialDesign:DialogHost>
-
-            <materialDesign:DialogHost
-                Name="CreateEquipDialogHost"
-                CloseOnClickAway="True"
-                DialogTheme="Inherit">
-                <materialDesign:DialogHost.DialogContent>
-                    <StackPanel>
-                        <ScrollViewer
-                            Name="DailogContent"
-                            Margin="20,20,10,20"
-                            VerticalScrollBarVisibility="Auto">
-                            <Grid Margin="0,0,10,0">
-                                <Grid.RowDefinitions>
-                                    <RowDefinition />
-                                    <RowDefinition />
-                                    <RowDefinition />
-                                    <RowDefinition />
-                                    <RowDefinition />
-                                    <RowDefinition />
-                                    <RowDefinition />
-                                    <RowDefinition />
-                                    <RowDefinition />
-                                </Grid.RowDefinitions>
-                                <Grid.ColumnDefinitions>
-                                    <ColumnDefinition Width="*" />
-                                    <ColumnDefinition Width="*" />
-                                </Grid.ColumnDefinitions>
-                                <TextBlock
-                                    Grid.ColumnSpan="2"
-                                    Margin="0,0,0,4"
-                                    FontWeight="Bold"
-                                    Text="{Binding SelectedNode.Name}" />
-
-                                <TextBox
-                                    Grid.Row="1"
-                                    materialDesign:HintAssist.Hint="Наименование"
-                                    materialDesign:ValidationAssist.HorizontalAlignment="Right"
-                                    FontSize="16"
-                                    Style="{StaticResource MaterialDesignFloatingHintTextBox}"
-                                    Text="{Binding NewEquip.Name}" />
-
-                                <WrapPanel
-                                    Grid.Row="1"
-                                    Grid.Column="1"
-                                    Margin="20,0,0,0">
-                                    <TextBox
-                                        materialDesign:HintAssist.Hint="Инвентарный номер"
-                                        FontSize="16"
-                                        IsEnabled="{Binding Path=IsChecked, ElementName=EnabledTextBox}"
-                                        Style="{StaticResource MaterialDesignFloatingHintTextBox}"
-                                        Text="{Binding NewEquip.InvNum, Converter={StaticResource InvConverter}}" />
-                                    <CheckBox x:Name="EnabledTextBox" Content="Инв. номер" />
-                                </WrapPanel>
-
-                                <ComboBox
-                                    Grid.Row="2"
-                                    VerticalAlignment="Bottom"
-                                    materialDesign:HintAssist.Hint="Тип"
-                                    materialDesign:HintAssist.HintOpacity=".26"
-                                    DisplayMemberPath="Name"
-                                    FontSize="16"
-                                    IsEditable="True"
-                                    ItemsSource="{Binding EquipTypes}"
-                                    SelectedItem="{Binding NewEquip.Type}" />
-                                <TextBox
-                                    Grid.Row="2"
-                                    Grid.Column="1"
-                                    Margin="20,0,0,0"
-                                    materialDesign:HintAssist.Hint="Количество"
-                                    FontSize="16"
-                                    PreviewKeyDown="UIElement_OnPreviewKeyDown"
-                                    PreviewTextInput="UIElement_OnPreviewTextInput"
-                                    Style="{StaticResource MaterialDesignFloatingHintTextBox}"
-                                    Text="{Binding NewEquip.Count, UpdateSourceTrigger=PropertyChanged}" />
-
-                                <ComboBox
-                                    Grid.Row="3"
-                                    VerticalAlignment="Bottom"
-                                    materialDesign:HintAssist.Hint="МОЛ"
-                                    materialDesign:HintAssist.HintOpacity=".26"
-                                    DisplayMemberPath="FullName"
-                                    FontSize="16"
-                                    IsEditable="True"
-                                    ItemsSource="{Binding EquipMOLs}"
-                                    SelectedItem="{Binding NewEquip.MOL}" />
-                                <TextBox
-                                    Grid.Row="3"
-                                    Grid.Column="1"
-                                    Margin="20,0,0,0"
-                                    materialDesign:HintAssist.Hint="Заметка"
-                                    FontSize="16"
-                                    Style="{StaticResource MaterialDesignFloatingHintTextBox}"
-                                    Text="{Binding NewEquip.Note}" />
-
-                                <GroupBox
-                                    Grid.Row="4"
-                                    Grid.ColumnSpan="2"
-                                    Margin="0,16,0,-10"
-                                    materialDesign:ShadowAssist.ShadowDepth="Depth3"
-                                    BorderThickness="0"
-                                    Header="Базовые характеристики"
-                                    Style="{DynamicResource MaterialDesignGroupBox}" />
-
-                                <DatePicker
-                                    Grid.Row="5"
-                                    HorizontalAlignment="Stretch"
-                                    materialDesign:HintAssist.Hint="Дата изготовления"
-                                    FontSize="16"
-                                    SelectedDate="{Binding NewEquip.ReleaseDate}"
-                                    Style="{StaticResource MaterialDesignFloatingHintDatePicker}" />
-                                <TextBox
-                                    Grid.Row="5"
-                                    Grid.Column="1"
-                                    Margin="20,0,0,0"
-                                    VerticalAlignment="Center"
-                                    materialDesign:HintAssist.Hint="Заводской инв. номер"
-                                    FontSize="16"
-                                    Style="{StaticResource MaterialDesignFloatingHintTextBox}"
-                                    Text="{Binding NewEquip.BaseInvNum}" />
-
-                                <ComboBox
-                                    Grid.Row="6"
-                                    VerticalAlignment="Bottom"
-                                    materialDesign:HintAssist.Hint="Амортизационная группа"
-                                    materialDesign:HintAssist.HintOpacity=".26"
-                                    FontSize="16"
-                                    IsEditable="True"
-                                    ItemsSource="{Binding DepreciationGroups}"
-                                    SelectedItem="{Binding NewEquip.DepreciationGroup}" />
-                                <TextBox
-                                    Grid.Row="6"
-                                    Grid.Column="1"
-                                    Margin="20,0,0,0"
-                                    materialDesign:HintAssist.Hint="Амортизационные начисления, %"
-                                    FontSize="16"
-                                    PreviewKeyDown="UIElement_OnPreviewKeyDown"
-                                    PreviewTextInput="UIElement_OnPreviewTextInput"
-                                    Style="{StaticResource MaterialDesignFloatingHintTextBox}"
-                                    Text="{Binding NewEquip.DepreciationRate, UpdateSourceTrigger=PropertyChanged}" />
-
-                                <TextBox
-                                    Grid.Row="7"
-                                    Grid.ColumnSpan="2"
-                                    Margin="0,0,0,10"
-                                    VerticalAlignment="Center"
-                                    materialDesign:HintAssist.Hint="Первоначальная стоимость"
-                                    FontSize="16"
-                                    PreviewKeyDown="Price_OnPreviewKeyDown"
-                                    PreviewTextInput="Price_OnPreviewTextInput"
-                                    Style="{StaticResource MaterialDesignFloatingHintTextBox}"
-                                    Text="{Binding NewEquip.BasePrice, UpdateSourceTrigger=PropertyChanged}" />
-
-                                <Button
-                                    Grid.Row="8"
-                                    Click="ClearCreateEquipBtn"
-                                    Command="{x:Static materialDesign:DialogHost.CloseDialogCommand}"
-                                    Content="Отменить" />
-                                <Button
-                                    Grid.Row="8"
-                                    Grid.Column="1"
-                                    Margin="10,0,0,0"
-                                    Click="CreateEquipBtn"
-                                    Command="{x:Static materialDesign:DialogHost.CloseDialogCommand}"
-                                    Content="Добавить"
-                                    IsDefault="True"
-                                    Style="{StaticResource MaterialDesignRaisedAccentButton}" />
-
-                            </Grid>
-                        </ScrollViewer>
                     </StackPanel>
                 </materialDesign:DialogHost.DialogContent>
             </materialDesign:DialogHost>
@@ -243,21 +78,18 @@
                     Text="{Binding SearchText, UpdateSourceTrigger=PropertyChanged}" />
                 <TreeView
                     Grid.Row="2"
-                    ContextMenu="{StaticResource ContextMenuTreeView}"
                     ItemsSource="{Binding Nodes, Converter={StaticResource SortingConverter}, ConverterParameter=Name}"
                     VirtualizingStackPanel.VirtualizationMode="Recycling">
                     <e:Interaction.Behaviors>
                         <view:BindableSelectedItemBehavior SelectedItem="{Binding SelectedNode, Mode=TwoWay}" />
                     </e:Interaction.Behaviors>
                     <TreeView.Resources>
-                        <ContextMenu x:Key="ContextMenuTreeViewItem" DataContext="{Binding Source={StaticResource Window}}">
-                            <MenuItem Command="{Binding EditRoomCommand}" Header="Изменить" />
-                            <MenuItem Command="{Binding PrintQRCodesCommand}" Header="Печать QR-кодов" />
-                            <MenuItem Click="OpenDeleteRoomDialog" Header="Удалить" />
-                        </ContextMenu>
                         <Style BasedOn="{StaticResource {x:Type TreeViewItem}}" TargetType="TreeViewItem">
                             <Setter Property="IsExpanded" Value="{Binding IsExpanded, Mode=TwoWay}" />
                             <Setter Property="ContextMenu" Value="{StaticResource ContextMenuTreeViewItem}" />
+                        </Style>
+                        <Style BasedOn="{StaticResource {x:Type TreeView}}" TargetType="TreeView">
+                            <Setter Property="ContextMenu" Value="{StaticResource ContextMenuTreeView}" />
                         </Style>
                     </TreeView.Resources>
                     <TreeView.ItemTemplate>
@@ -278,21 +110,12 @@
                     <DataGrid.Resources>
                         <ContextMenu x:Key="ContextMenuForDatagridItem">
                             <MenuItem Command="{Binding OpenEquipHistoryCommand}" Header="История" />
-                            <MenuItem Command="{Binding EditEquipCommand}" Header="Изменить" />
+                            <MenuItem Click="EditEquip" Header="Изменить" />
                             <MenuItem Command="{Binding DeleteEquipCommand}" Header="Удалить" />
                             <Separator />
-                            <MenuItem
-                                Click="mi_InvCard"
-                                Command="{Binding OpenInvCardWinCommand}"
-                                Header="Инвентарная карточка" />
-                            <MenuItem
-                                Click="mi_Relocate"
-                                Command="{Binding OpenRelocateWinCommand}"
-                                Header="Переместить" />
-                            <MenuItem
-                                Click="mi_WriteOff"
-                                Command="{Binding OpenWriteOffWinCommand}"
-                                Header="Списать" />
+                            <MenuItem Command="{Binding OpenInvCardWinCommand}" Header="Инвентарная карточка" />
+                            <MenuItem Command="{Binding OpenRelocateWinCommand}" Header="Переместить" />
+                            <MenuItem Command="{Binding OpenWriteOffWinCommand}" Header="Списать" />
                         </ContextMenu>
                     </DataGrid.Resources>
                     <DataGrid.RowStyle>
@@ -326,7 +149,7 @@
                         </DataGridTextColumn>
                         <DataGridTextColumn
                             Width="Auto"
-                            Binding="{Binding Category.Name}"
+                            Binding="{Binding Type.Category.Name}"
                             Header="Категория" />
                         <DataGridTextColumn
                             Width="Auto"
@@ -338,12 +161,16 @@
                             Header="Количество" />
                         <DataGridTextColumn
                             Width="Auto"
-                            Binding="{Binding BasePrice}"
+                            Binding="{Binding BasePrice, StringFormat=C, ConverterCulture=ru-RU}"
                             Header="Первоначальная стоимость" />
                         <DataGridTextColumn
                             Width="Auto"
-                            Binding="{Binding MOL}"
+                            Binding="{Binding MOL.ShortFullName}"
                             Header="МОЛ" />
+                        <DataGridTextColumn
+                            Width="120"
+                            Binding="{Binding DepreciationGroup}"
+                            Header="Аморт. группа" />
                     </DataGrid.Columns>
                 </DataGrid>
                 <Menu
@@ -360,42 +187,39 @@
                     <MenuItem Height="20" Header="Справочники">
                         <MenuItem
                             Height="25"
-                            Click="MiTypes_Click"
+                            Command="{Binding OpenDicTypesCommand}"
                             Header="Типы" />
                         <MenuItem
                             Height="25"
-                            Click="MiStatuses_Click"
-                            Header="Статусы" />
-                        <MenuItem
-                            Height="25"
-                            Click="MiAccountability_Click"
-                            Header="Подотчеты" />
+                            Command="{Binding OpenDicMOLsCommand}"
+                            Header="Материально ответственные лица" />
                         <Separator />
-                        <MenuItem
-                            Height="25"
-                            Click="MiHisttory_Click"
-                            Header="История" />
+                        <MenuItem Height="25" Header="История" />
                     </MenuItem>
-                    <MenuItem Height="20" Header="Отчеты">
+                    <MenuItem Height="20" Header="Акты">
                         <MenuItem
                             Height="25"
-                            Click="mi_Handover"
+                            Command="{Binding AllEquipActCommand}"
+                            Header="Инвентаризационная опись ОС" />
+                        <MenuItem
+                            Height="25"
+                            Command="{Binding HandoverCommand}"
                             Header="Акт приема-передачи" />
                         <MenuItem
                             Height="25"
-                            Click="mi_HandoverMOL"
+                            Command="{Binding HandoverMOLCommand}"
                             Header="Акт приема-передачи МОЛ" />
                         <MenuItem
                             Height="25"
-                            Click="mi_InvCard"
+                            Command="{Binding OpenInvCardWinCommand}"
                             Header="Инвентарная карта имущества" />
                         <MenuItem
                             Height="25"
-                            Click="mi_Relocate"
+                            Command="{Binding OpenRelocateWinCommand}"
                             Header="Акт перемещения" />
                         <MenuItem
                             Height="25"
-                            Click="mi_WriteOff"
+                            Command="{Binding OpenWriteOffWinCommand}"
                             Header="Акт списания" />
                     </MenuItem>
                     <MenuItem
@@ -420,7 +244,7 @@
                         Style="{StaticResource MaterialDesignIconButton}">
                         <materialDesign:PackIcon Kind="ChartAreaspline" />
                     </Button>
-                    <Button Command="{x:Static materialDesign:DialogHost.OpenDialogCommand}" Style="{StaticResource MaterialDesignIconForegroundButton}">
+                    <Button Command="{Binding CreateEquipCommand}" Style="{StaticResource MaterialDesignIconForegroundButton}">
                         <materialDesign:PackIcon Kind="Plus" />
                     </Button>
                 </WrapPanel>

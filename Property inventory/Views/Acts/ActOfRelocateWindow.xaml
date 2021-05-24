@@ -5,6 +5,7 @@
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:viewModels="clr-namespace:Property_inventory.ViewModels"
     Title="Акт перемещения"
     Width="382.016"
     Height="389.526"
@@ -16,6 +17,9 @@
     TextOptions.TextFormattingMode="Ideal"
     TextOptions.TextRenderingMode="Auto"
     mc:Ignorable="d">
+    <Window.DataContext>
+        <viewModels:ActVM/>
+    </Window.DataContext>
     <Grid>
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="*" />
@@ -36,6 +40,10 @@
             Margin="30,0">
             <ComboBox
                 Margin="0,10,0,0"
+                SelectedItem="{Binding SelectedEquip}"
+                SelectedIndex="{Binding SelectedEquipIndex}"
+                ItemsSource="{Binding EquipList}"
+                DisplayMemberPath="Name"
                 materialDesign:HintAssist.Hint="Имущество"
                 materialDesign:HintAssist.HintOpacity=".26"
                 IsEditable="True" />

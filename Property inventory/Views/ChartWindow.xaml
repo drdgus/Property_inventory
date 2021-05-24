@@ -7,12 +7,18 @@
     xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:tools="clr-namespace:Property_inventory.Services.Tools"
-    xmlns:userControls="clr-namespace:Property_inventory.Views.UserControls"
     xmlns:viewModels="clr-namespace:Property_inventory.ViewModels"
     xmlns:wpf="clr-namespace:LiveCharts.Wpf;assembly=LiveCharts.Wpf"
     Title="Статистика по имуществу"
     Width="1280"
     Height="720"
+    Background="{DynamicResource MaterialDesignPaper}"
+    FontFamily="{DynamicResource MaterialDesignFont}"
+    TextElement.FontSize="13"
+    TextElement.FontWeight="Regular"
+    TextElement.Foreground="{DynamicResource MaterialDesignBody}"
+    TextOptions.TextFormattingMode="Ideal"
+    TextOptions.TextRenderingMode="Auto"
     mc:Ignorable="d">
     <Window.DataContext>
         <viewModels:ChartVM />
@@ -39,7 +45,7 @@
         </materialDesign:Card>
         <Grid Grid.Row="1" Margin="10">
             <Grid.ColumnDefinitions>
-                <ColumnDefinition Width=".4*" />
+                <ColumnDefinition Width=".6*" />
                 <ColumnDefinition />
             </Grid.ColumnDefinitions>
             <Grid.RowDefinitions>
@@ -57,16 +63,20 @@
                     <DataGrid.Columns>
                         <DataGridTextColumn
                             Width="*"
-                            Binding="{Binding Sum, StringFormat=C, ConverterCulture=ru-RU}"
-                            Header="Сумма" />
+                            Binding="{Binding Type.Category.Name}"
+                            Header="Категория" />
                         <DataGridTextColumn
                             Width="*"
-                            Binding="{Binding Type}"
+                            Binding="{Binding Type.Name}"
                             Header="Тип" />
                         <DataGridTextColumn
                             Width="*"
                             Binding="{Binding Count}"
                             Header="Количество" />
+                        <DataGridTextColumn
+                            Width="*"
+                            Binding="{Binding Sum, StringFormat=C, ConverterCulture=ru-RU}"
+                            Header="Сумма" />
                     </DataGrid.Columns>
                 </DataGrid>
             </materialDesign:Card>
