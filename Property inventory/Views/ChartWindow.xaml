@@ -1,0 +1,101 @@
+﻿<Window
+    x:Class="Property_inventory.Views.ChartWindow"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:i="http://schemas.microsoft.com/expression/2010/interactivity"
+    xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:tools="clr-namespace:Property_inventory.Services.Tools"
+    xmlns:userControls="clr-namespace:Property_inventory.Views.UserControls"
+    xmlns:viewModels="clr-namespace:Property_inventory.ViewModels"
+    xmlns:wpf="clr-namespace:LiveCharts.Wpf;assembly=LiveCharts.Wpf"
+    Title="Статистика по имуществу"
+    Width="1280"
+    Height="720"
+    mc:Ignorable="d">
+    <Window.DataContext>
+        <viewModels:ChartVM />
+    </Window.DataContext>
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition />
+        </Grid.RowDefinitions>
+        <materialDesign:Card Padding="12" materialDesign:ShadowAssist.ShadowDepth="Depth1">
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="auto" />
+                    <ColumnDefinition />
+                </Grid.ColumnDefinitions>
+                <TextBox
+                    materialDesign:HintAssist.Hint="Текущая стоимость имущества"
+                    FontSize="16"
+                    FontWeight="DemiBold"
+                    IsReadOnly="True"
+                    Style="{StaticResource MaterialDesignFloatingHintTextBox}"
+                    Text="{Binding TotalSum, StringFormat=C, ConverterCulture=ru-RU}" />
+            </Grid>
+        </materialDesign:Card>
+        <Grid Grid.Row="1" Margin="10">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width=".4*" />
+                <ColumnDefinition />
+            </Grid.ColumnDefinitions>
+            <Grid.RowDefinitions>
+                <RowDefinition Height=".3*" />
+                <RowDefinition />
+                <RowDefinition />
+            </Grid.RowDefinitions>
+
+            <materialDesign:Card
+                Grid.Row="1"
+                Grid.RowSpan="2"
+                VerticalAlignment="Stretch"
+                materialDesign:ShadowAssist.ShadowDepth="Depth2">
+                <DataGrid AutoGenerateColumns="False" ItemsSource="{Binding ChartTypes}">
+                    <DataGrid.Columns>
+                        <DataGridTextColumn
+                            Width="*"
+                            Binding="{Binding Sum, StringFormat=C, ConverterCulture=ru-RU}"
+                            Header="Сумма" />
+                        <DataGridTextColumn
+                            Width="*"
+                            Binding="{Binding Type}"
+                            Header="Тип" />
+                        <DataGridTextColumn
+                            Width="*"
+                            Binding="{Binding Count}"
+                            Header="Количество" />
+                    </DataGrid.Columns>
+                </DataGrid>
+            </materialDesign:Card>
+            <wpf:CartesianChart
+                Grid.Row="1"
+                Grid.Column="1"
+                Margin="20,0,0,0"
+                LegendLocation="Right"
+                Series="{Binding CurrentBalanceCollection}">
+                <wpf:CartesianChart.AxisY>
+                    <wpf:Axis Title="Сумма, руб." LabelFormatter="{Binding YFormatter}" />
+                </wpf:CartesianChart.AxisY>
+                <wpf:CartesianChart.AxisX>
+                    <wpf:Axis Title="Месяц" Labels="{Binding Labels}" />
+                </wpf:CartesianChart.AxisX>
+            </wpf:CartesianChart>
+            <wpf:CartesianChart
+                Grid.Row="2"
+                Grid.Column="1"
+                Margin="20,0,0,0"
+                LegendLocation="Right"
+                Series="{Binding ProcurementCollection}">
+                <wpf:CartesianChart.AxisY>
+                    <wpf:Axis Title="Сумма, руб." LabelFormatter="{Binding YFormatter}" />
+                </wpf:CartesianChart.AxisY>
+                <wpf:CartesianChart.AxisX>
+                    <wpf:Axis Title="Месяц" Labels="{Binding Labels}" />
+                </wpf:CartesianChart.AxisX>
+            </wpf:CartesianChart>
+        </Grid>
+    </Grid>
+</Window>

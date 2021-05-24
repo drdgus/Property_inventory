@@ -1,0 +1,102 @@
+﻿<Window
+    x:Class="Property_inventory.Views.SettingsWindow"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    Title="Настройки"
+    Width="420"
+    Height="598"
+    Background="{DynamicResource MaterialDesignPaper}"
+    FontFamily="{DynamicResource MaterialDesignFont}"
+    TextElement.FontSize="13"
+    TextElement.FontWeight="Regular"
+    TextElement.Foreground="{DynamicResource MaterialDesignBody}"
+    TextOptions.TextFormattingMode="Ideal"
+    TextOptions.TextRenderingMode="Auto"
+    mc:Ignorable="d">
+    <Grid>
+        <StackPanel Margin="10">
+            <GroupBox
+                materialDesign:ShadowAssist.ShadowDepth="Depth3"
+                BorderThickness="0"
+                Header="Настройки подключения"
+                Style="{DynamicResource MaterialDesignGroupBox}">
+                <StackPanel>
+                    <Grid>
+                        <materialDesign:PackIcon VerticalAlignment="Center" Kind="Person" />
+                        <TextBox
+                            Margin="18,10,0,0"
+                            Padding="3,0,0,0"
+                            HorizontalAlignment="Stretch"
+                            materialDesign:HintAssist.Hint="Адрес сервера"
+                            Text="" />
+                    </Grid>
+                    <Grid Margin="0,4,0,0">
+                        <materialDesign:PackIcon VerticalAlignment="Center" Kind="Person" />
+                        <TextBox
+                            MinWidth="150"
+                            Margin="18,10,0,0"
+                            Padding="3,0,0,0"
+                            materialDesign:HintAssist.Hint="Логин"
+                            Text="" />
+                    </Grid>
+                    <Grid Margin="0,14,0,0">
+                        <materialDesign:PackIcon VerticalAlignment="Center" Kind="Key" />
+                        <PasswordBox
+                            MinWidth="150"
+                            Margin="18,0,0,0"
+                            Padding="3,0,0,0"
+                            materialDesign:HintAssist.Hint="Пароль" />
+                    </Grid>
+                </StackPanel>
+            </GroupBox>
+            <GroupBox
+                Margin="0,10,0,0"
+                materialDesign:ShadowAssist.ShadowDepth="Depth3"
+                BorderThickness="0"
+                Header="Настройки инвентаризации"
+                Style="{DynamicResource MaterialDesignGroupBox}">
+                <StackPanel>
+                    <TextBox
+                        Margin="18,14,0,0"
+                        VerticalAlignment="Center"
+                        materialDesign:HintAssist.Hint="Символ инвентарного номера"
+                        Style="{StaticResource MaterialDesignFloatingHintTextBox}"
+                        Text="{Binding InvSymbol}" />
+                    <TextBox
+                        Margin="18,10,0,0"
+                        VerticalAlignment="Center"
+                        materialDesign:HintAssist.Hint="ОКУД"
+                        Style="{StaticResource MaterialDesignFloatingHintTextBox}"
+                        Text="" />
+                    <TextBox
+                        Margin="18,10,0,0"
+                        VerticalAlignment="Center"
+                        materialDesign:HintAssist.Hint="ОКПО"
+                        Style="{StaticResource MaterialDesignFloatingHintTextBox}" />
+                    <TextBox
+                        Margin="18,10,0,0"
+                        VerticalAlignment="Center"
+                        materialDesign:HintAssist.Hint="Город"
+                        Style="{StaticResource MaterialDesignFloatingHintTextBox}" />
+                </StackPanel>
+            </GroupBox>
+            <WrapPanel Margin="0,10,0,0">
+                <Label Content="Темная тема" />
+                <ToggleButton
+                    Name="ToggleButton"
+                    Checked="ToggleSwitch_Checked"
+                    Style="{StaticResource MaterialDesignSwitchToggleButton}"
+                    ToolTip="Default ToggleButton Style"
+                    Unchecked="ToggleSwitch_Unchecked" />
+            </WrapPanel>
+            <Button
+                Margin="0,10,0,0"
+                Content="Сохранить"
+                Style="{StaticResource MaterialDesignRaisedAccentButton}"
+                ToolTip="Resource name: MaterialDesignRaisedAccentButton" />
+        </StackPanel>
+    </Grid>
+</Window>

@@ -9,6 +9,7 @@ namespace Property_inventory.Models
         private bool _isExpanded;
         private string _name;
         private int _sortIndex;
+        private int _roomId;
 
         public string Name
         {
@@ -36,6 +37,16 @@ namespace Property_inventory.Models
             set
             {
                 _sortIndex = value;
+                OnPropertyChanged();
+            }
+        }
+
+        public int RoomId
+        {
+            get => _roomId;
+            set
+            {
+                _roomId = value;
                 OnPropertyChanged();
             }
         }

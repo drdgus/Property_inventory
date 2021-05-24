@@ -1,6 +1,6 @@
-﻿namespace Property_inventory.Models
+﻿namespace Property_inventory.Entities
 {
-    public class Accountability
+    public class Org
     {
         public int Id { get; set; }
         public string Name { get; set; }

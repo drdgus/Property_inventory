@@ -1,11 +1,6 @@
-﻿using System.Collections.Generic;
-using System.ComponentModel;
+﻿using System.ComponentModel;
 using System.Globalization;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Data;
-using Property_inventory.Models;
 using Type = System.Type;
 
 namespace Property_inventory.Views.Converters

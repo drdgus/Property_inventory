@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Reflection;
 
-namespace Property_inventory.Services
+namespace Property_inventory.Services.Tools
 {
     public static class MyExtensions
     {

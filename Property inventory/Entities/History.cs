@@ -1,10 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Property_inventory.Services;
+﻿using Property_inventory.Services.Tools;
+using System;
 
-namespace Property_inventory.Models
+namespace Property_inventory.Entities
 {
     public class History
     {

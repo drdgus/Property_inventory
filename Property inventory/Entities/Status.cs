@@ -1,4 +1,4 @@
-﻿namespace Property_inventory.Models
+﻿namespace Property_inventory.Entities
 {
     public class Status
     {

@@ -1,10 +1,6 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
-namespace Property_inventory.Services
+namespace Property_inventory.Services.Tools
 {
     public class StringValueAttribute : Attribute
     {

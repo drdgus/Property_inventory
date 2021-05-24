@@ -1,12 +1,9 @@
-﻿using System;
+﻿using Property_inventory.Entities;
 using System.Collections.Generic;
 using System.Diagnostics;
-using System.Linq;
 using System.Net;
 using System.Net.Sockets;
 using System.Text;
-using System.Threading.Tasks;
-using Property_inventory.Models;
 
 namespace Property_inventory.Services
 {

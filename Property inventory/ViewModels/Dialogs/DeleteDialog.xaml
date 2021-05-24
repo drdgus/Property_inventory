@@ -1,0 +1,38 @@
+﻿<UserControl x:Class="Property_inventory.ViewModels.Dialogs.DeleteDialog"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:wpf="clr-namespace:MaterialDesignThemes.Wpf;assembly=MaterialDesignThemes.Wpf"
+             xmlns:system="clr-namespace:System;assembly=mscorlib"
+             mc:Ignorable="d" 
+             d:DesignHeight="300" d:DesignWidth="300">
+    <Grid Margin="20">
+
+        <StackPanel>
+        <TextBlock Text="{Binding MessageDialogContent}" Margin="0 0 0 20"/>
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition/>
+                    <ColumnDefinition/>
+                </Grid.ColumnDefinitions>
+                <Button
+                    Command="{x:Static wpf:DialogHost.CloseDialogCommand}" Margin="0 0 4 0" Width="120" BorderBrush="#FFB73A3A" Background="#FFB73A3A">
+                    <Button.CommandParameter>
+                        <system:Boolean>True</system:Boolean>
+                    </Button.CommandParameter>
+                    Да
+                </Button>
+                <Button IsCancel="True" Margin="4 0 0 0"
+                        Width="120"
+                        Grid.Column="1"
+                        Command="{x:Static wpf:DialogHost.CloseDialogCommand}">
+                    <Button.CommandParameter>
+                        <system:Boolean>False</system:Boolean>
+                    </Button.CommandParameter>
+                    Нет
+                </Button>
+            </Grid>
+        </StackPanel>
+    </Grid>
+</UserControl>
