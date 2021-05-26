@@ -94,14 +94,15 @@ namespace Property_inventory.ViewModels
                 {
                     RegistrationDate = DateTime.Now,
                     Name = "",
-                    InvNum = DbContext.Equips.AsNoTracking().Max(i => i.InvNum) + 1,
-                    Org = DbContext.Orgs.Single(),
+                    InvNum = 0,
+                    OrgId = DbContext.Orgs.Single().Id,
                     RoomId = 0,
-                    Status = DbContext.Statuses.First(),
-                    Accountability = DbContext.Accountabilities.First(),
+                    StatusId = DbContext.Statuses.First().Id,
+                    Type = new Type(),
+                    AccountabilityId = DbContext.Accountabilities.First().Id,
                     History = new List<History>(),
                     Note = "",
-                    Count = 0,
+                    Count = 1,
                     IsDeleted = false,
                     ReleaseDate = DateTime.Now,
                     BasePrice = 0,
@@ -184,10 +185,13 @@ namespace Property_inventory.ViewModels
         public ObservableCollection<Type> EquipTypes { get; set; }
         public ObservableCollection<string> DepreciationGroups { get; set; }
         public ObservableCollection<MOL> EquipMOLs { get; set; }
+        public ObservableCollection<Category> Categories { get; set; }
         public string InvSymbol { get; set; }
 
         private List<Room> Rooms { get; set; }
         private List<Equip> EquipList { get; set; }
+
+        public ObservableCollection<EquipInfo> AllEquip { get; set; }
         public string SearchText
         {
             get => _searchText;
@@ -214,11 +218,13 @@ namespace Property_inventory.ViewModels
             //View = (ICollectionViewLiveShaping)CollectionViewSource.GetDefaultView(Nodes);
             //View.IsLiveSorting = true;
             CurrentRoomEquip = new ObservableCollection<Equip>();
-            EquipTypes = new ObservableCollection<Type>(DbContext.Types.AsNoTracking().ToList());
+            EquipTypes = new ObservableCollection<Type>(DbContext.Types.ToList());
             DepreciationGroups = new ObservableCollection<string>(Enum.GetNames(typeof(Equip.DepreciationGroups)));
             EquipMOLs = new ObservableCollection<MOL>(DbContext.MOLs.AsNoTracking().ToList());
             Rooms = DbContext.Rooms.AsNoTracking().Where(r => r.IsDeleted == false).ToList();
-            EquipList = DbContext.Equips.AsNoTracking().Where(r => r.IsDeleted == false).ToList();
+            EquipList = DbContext.Equips.Where(r => r.IsDeleted == false).ToList();
+            Categories = new ObservableCollection<Category>(DbContext.Categories.AsNoTracking().ToList());
+            AllEquip = new ObservableCollection<EquipInfo>();
         }
 
         
@@ -232,6 +238,58 @@ namespace Property_inventory.ViewModels
                 });
             }
         }
+        
+        public ICommand OpenAllEquipCommand
+        {
+            get
+            {
+                return new RelayCommand(o =>
+                {
+                    var view = new AllEquipDialog()
+                    {
+                        DataContext = this
+                    };
+
+                    AllEquip.Clear();
+
+                    DbContext.Equips
+                        .AsNoTracking()
+                        .Include(i => i.Type)
+                        .Include(i => i.Status)
+                        .Include(e => e.MOL)
+                        .Include(e => e.Type.Category)
+                        .Where(i => i.IsDeleted == false)
+                        .ToList().ForEach(i => AllEquip.Add(new EquipInfo
+                        {
+                            Id = i.Id,
+                            RegistrationDate = i.RegistrationDate,
+                            Name = i.Name,
+                            InvNum = i.InvNum,
+                            Org = i.Org,
+                            RoomId = i.RoomId,
+                            Room = i.Room,
+                            Type = i.Type,
+                            Status = i.Status,
+                            Accountability = i.Accountability,
+                            History = i.History,
+                            Note = i.Note,
+                            Count = i.Count,
+                            IsDeleted = i.IsDeleted,
+                            MOL = i.MOL,
+                            ReleaseDate = i.ReleaseDate,
+                            BasePrice = i.BasePrice,
+                            DepreciationRate = i.DepreciationRate,
+                            DepreciationGroup = i.DepreciationGroup,
+                            BaseInvNum = i.BaseInvNum,
+                            Free = i.RoomId == 0 ? 1 : 0,
+                            Used = i.RoomId != 0 ? 1 : 0
+                        }));
+
+                    DialogHost.Show(view, "RootDialog");
+                });
+            }
+        }
+
         public ICommand CreateRoomCommand
         {
             get
@@ -246,13 +304,24 @@ namespace Property_inventory.ViewModels
                     var result = await DialogHost.Show(view, "RootDialog", ClosingEventHandler);
                     if ((bool)result)
                     {
-                        DbContext.Rooms.Add(new Room
+                        var newRoom = DbContext.Rooms.Add(new Room
                             {
                                 Name = NewName,
+                                OrgId = Nodes.Single().RoomId,
                                 IsDeleted = false
                             });
-                     
+
                         DbContext.SaveChanges();
+                        
+                        Nodes[0].Nodes.Add(new Node
+                        {
+                            Name = NewName,
+                            IsExpanded = false,
+                            SortIndex = 0,
+                            RoomId = newRoom.Id,
+                            Nodes = new ObservableCollection<Node>()
+                        });
+                     
                     }
                 });
             }

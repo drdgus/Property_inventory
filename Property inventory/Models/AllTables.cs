@@ -13,5 +13,6 @@ namespace Property_inventory.Models
         public List<Accountability> Accountabilities { get; set; }
         public List<History> History { get; set; }
         public List<MOL> MOLs { get; set; }
+        public List<Category> Categories { get; set; }
     }
 }

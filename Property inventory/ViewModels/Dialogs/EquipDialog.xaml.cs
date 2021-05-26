@@ -47,7 +47,7 @@ namespace Property_inventory.ViewModels.Dialogs
 
         private void Price_OnPreviewTextInput(object sender, TextCompositionEventArgs e)
         {
-            if (e.Text == "." && ((TextBox) sender).Text.Contains("."))
+            if (e.Text == "." && !((TextBox) sender).Text.Contains("."))
             {
                 e.Handled = true;
                 return;

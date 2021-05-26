@@ -123,9 +123,13 @@
     <Compile Include="Entities\Equip.cs" />
     <Compile Include="Entities\History.cs" />
     <Compile Include="Entities\MOL.cs" />
+    <Compile Include="Models\EquipInfo.cs" />
     <Compile Include="Services\ExcelEditor.cs" />
     <Compile Include="Services\View\GLOBAL.cs" />
     <Compile Include="ViewModels\ActVM.cs" />
+    <Compile Include="ViewModels\Dialogs\AllEquipDialog.xaml.cs">
+      <DependentUpon>AllEquipDialog.xaml</DependentUpon>
+    </Compile>
     <Compile Include="ViewModels\Dialogs\CreateRoomUC.xaml.cs">
       <DependentUpon>CreateRoomUC.xaml</DependentUpon>
     </Compile>
@@ -209,6 +213,10 @@
     <Compile Include="Views\SettingsWindow.xaml.cs">
       <DependentUpon>SettingsWindow.xaml</DependentUpon>
     </Compile>
+    <Page Include="ViewModels\Dialogs\AllEquipDialog.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="ViewModels\Dialogs\CreateRoomUC.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>

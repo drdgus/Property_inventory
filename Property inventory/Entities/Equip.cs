@@ -13,26 +13,22 @@ namespace Property_inventory.Entities
         public DateTime RegistrationDate { get; set; }
         public string Name { get; set; }
         public int InvNum { get; set; }
+        public int OrgId { get; set; }
         public Org Org { get; set; }
         public int RoomId { get; set; }
         public Room Room { get; set; }
-
-        public Type Type
-        {
-            get => _type;
-            set
-            {
-                _type = value;
-                OnPropertyChanged();
-            }
-        }
-
+        public int TypeId { get; set; }
+        public Type Type { get; set; }
+        public int StatusId { get; set; }
         public Status Status { get; set; }
+        public int AccountabilityId { get; set; }
         public Accountability Accountability { get; set; }
+        public int HistoryId { get; set; }
         public List<History> History { get; set; }
         public string Note { get; set; }
         public int Count { get; set; }
         [DefaultValue(false)] public bool IsDeleted { get; set; }
+        public int MOLId { get; set; }
         /// <summary>
         /// Материально ответственное лицо.
         /// </summary>

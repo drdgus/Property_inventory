@@ -187,6 +187,10 @@
                     <MenuItem Height="20" Header="Справочники">
                         <MenuItem
                             Height="25"
+                            Command="{Binding OpenAllEquipCommand}"
+                            Header="Основные средства" />
+                        <MenuItem
+                            Height="25"
                             Command="{Binding OpenDicTypesCommand}"
                             Header="Типы" />
                         <MenuItem
@@ -204,11 +208,15 @@
                         <MenuItem
                             Height="25"
                             Command="{Binding HandoverCommand}"
-                            Header="Акт приема-передачи" />
+                            Header="Акт приема оборудования" />
                         <MenuItem
                             Height="25"
                             Command="{Binding HandoverMOLCommand}"
                             Header="Акт приема-передачи МОЛ" />
+                        <MenuItem
+                            Height="25"
+                            Command="{Binding HandoverMOLCommand}"
+                            Header="Акт приема-передачи МОЛ к МОЛ" />
                         <MenuItem
                             Height="25"
                             Command="{Binding OpenInvCardWinCommand}"

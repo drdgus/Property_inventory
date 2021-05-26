@@ -15,6 +15,7 @@ namespace Property_inventory.DAL
         public DbSet<Accountability> Accountabilities { get; set; }
         public DbSet<History> History { get; set; }
         public DbSet<MOL> MOLs { get; set; }
+        public DbSet<Category> Categories { get; set; }
 
         private static InvDbContext _instance;
  

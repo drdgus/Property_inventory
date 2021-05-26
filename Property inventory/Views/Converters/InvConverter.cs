@@ -15,7 +15,9 @@ namespace Property_inventory.Views.Converters
 
         public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
         {
-            throw new NotImplementedException();
+            if(value != null)
+                return System.Convert.ToInt32(((string) value).Replace($"{Settings.Default.InvSymbol}-", ""));
+            return null;
         }
     }
 }
