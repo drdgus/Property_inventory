@@ -10,6 +10,7 @@ namespace Property_inventory.Views.Converters
     {
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
+            if (((int) value) == 0) return "-";
             return ((int)value).ToString($"{Settings.Default.InvSymbol}-0000000");
         }
 

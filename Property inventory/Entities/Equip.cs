@@ -23,7 +23,6 @@ namespace Property_inventory.Entities
         public Status Status { get; set; }
         public int AccountabilityId { get; set; }
         public Accountability Accountability { get; set; }
-        public int HistoryId { get; set; }
         public List<History> History { get; set; }
         public string Note { get; set; }
         public int Count { get; set; }

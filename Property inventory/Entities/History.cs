@@ -6,7 +6,7 @@ namespace Property_inventory.Entities
     public class History
     {
         public int Id { get; set; }
-        public int itemId { get; set; }
+        public int EquipId { get; set; }
         public DateTime Date { get; set; }
         public OperationCode Code { get; set; }
         public Property ChangedProperty { get; set; }
@@ -39,7 +39,19 @@ namespace Property_inventory.Entities
             [StringValue("Заметка")]
             Note,
             [StringValue("Количество")]
-            Count
+            Count,
+            [StringValue("Базовая стоимость")]
+            BasePrice,
+            [StringValue("Дата регистрации")]
+            RegistrationDate,
+            [StringValue("Дата выпуска")]
+            ReleaseDate,
+            [StringValue("Амортизация")]
+            Depreciation,
+            [StringValue("Смена МОЛ")]
+            MOL,
+            [StringValue("Смена заводского инвентарного номера")]
+            BaseInvNum
         }
     }
 }

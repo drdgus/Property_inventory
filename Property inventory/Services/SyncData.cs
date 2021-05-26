@@ -99,7 +99,6 @@ namespace Property_inventory.Services
                         TypeId = VARIABLE.TypeId,
                         StatusId = VARIABLE.StatusId,
                         AccountabilityId = VARIABLE.AccountabilityId,
-                        HistoryId = VARIABLE.HistoryId,
                         Note = VARIABLE.Note,
                         Count = VARIABLE.Count,
                         IsDeleted = VARIABLE.IsDeleted,

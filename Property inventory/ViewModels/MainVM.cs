@@ -222,7 +222,12 @@ namespace Property_inventory.ViewModels
             DepreciationGroups = new ObservableCollection<string>(Enum.GetNames(typeof(Equip.DepreciationGroups)));
             EquipMOLs = new ObservableCollection<MOL>(DbContext.MOLs.AsNoTracking().ToList());
             Rooms = DbContext.Rooms.AsNoTracking().Where(r => r.IsDeleted == false).ToList();
-            EquipList = DbContext.Equips.Where(r => r.IsDeleted == false).ToList();
+            EquipList = DbContext.Equips
+                .Include(i => i.Type)
+                .Include(i => i.Status)
+                .Include(i => i.MOL)
+                .Include(i => i.Room)
+                .Where(r => r.IsDeleted == false).ToList();
             Categories = new ObservableCollection<Category>(DbContext.Categories.AsNoTracking().ToList());
             AllEquip = new ObservableCollection<EquipInfo>();
         }
@@ -254,10 +259,6 @@ namespace Property_inventory.ViewModels
 
                     DbContext.Equips
                         .AsNoTracking()
-                        .Include(i => i.Type)
-                        .Include(i => i.Status)
-                        .Include(e => e.MOL)
-                        .Include(e => e.Type.Category)
                         .Where(i => i.IsDeleted == false)
                         .ToList().ForEach(i => AllEquip.Add(new EquipInfo
                         {
@@ -424,7 +425,7 @@ namespace Property_inventory.ViewModels
             {
                 return new RelayCommand(o =>
                 {
-                    
+                    new HistoryWindow().ShowDialog();
                 });
             }
         }
@@ -442,8 +443,137 @@ namespace Property_inventory.ViewModels
                     var result = await DialogHost.Show(create, "RootDialog", ClosingEventHandler);
                     if(result is null || !(bool)result) return;
 
-                    var equip = DbContext.Equips.Single(e => e.Id == SelectedEquip.Id);
+                    var equip = DbContext.Equips
+                        .Include(i => i.Type)
+                        .Include(i => i.Status)
+                        .Include(i => i.MOL)
+                        .Include(i => i.Room)
+                        .Single(e => e.Id == SelectedEquip.Id);
+
+                    if(equip.BasePrice != SelectedEquip.BasePrice)
+                        DbContext.History.Add(new History
+                        {
+                            EquipId = equip.Id,
+                            Date = DateTime.Now,
+                            Code = (History.OperationCode) 1,
+                            ChangedProperty = History.Property.BasePrice,
+                            OldValue = equip.BasePrice.ToString("C"),
+                            NewValue = SelectedEquip.BasePrice.ToString("C")
+                        });
+                    if(equip.MOL != SelectedEquip.MOL)
+                        DbContext.History.Add(new History
+                        {
+                            EquipId = equip.Id,
+                            Date = DateTime.Now,
+                            Code = (History.OperationCode) 1,
+                            ChangedProperty = History.Property.MOL,
+                            OldValue = equip.MOL.ShortFullName.ToString(),
+                            NewValue = SelectedEquip.MOL.ShortFullName.ToString()
+                        });
+                    if(equip.InvNum != SelectedEquip.InvNum)
+                        DbContext.History.Add(new History
+                        {
+                            EquipId = equip.Id,
+                            Date = DateTime.Now,
+                            Code = (History.OperationCode) 1,
+                            ChangedProperty = History.Property.InvNum,
+                            OldValue = equip.InvNum.ToString(),
+                            NewValue = SelectedEquip.InvNum.ToString()
+                        });
+                    if(equip.RegistrationDate != SelectedEquip.RegistrationDate)
+                        DbContext.History.Add(new History
+                        {
+                            EquipId = equip.Id,
+                            Date = DateTime.Now,
+                            Code = (History.OperationCode) 1,
+                            ChangedProperty = History.Property.RegistrationDate,
+                            OldValue = equip.RegistrationDate.ToString("MM.dd.yyyy"),
+                            NewValue = SelectedEquip.RegistrationDate.ToString("MM.dd.yyyy")
+                        });
+                    if(equip.BaseInvNum != SelectedEquip.BaseInvNum)
+                        DbContext.History.Add(new History
+                        {
+                            EquipId = equip.Id,
+                            Date = DateTime.Now,
+                            Code = (History.OperationCode) 1,
+                            ChangedProperty = History.Property.BaseInvNum,
+                            OldValue = equip.BaseInvNum.ToString(),
+                            NewValue = SelectedEquip.BaseInvNum.ToString()
+                        });
+                    if(equip.Type != SelectedEquip.Type)
+                        DbContext.History.Add(new History
+                        {
+                            EquipId = equip.Id,
+                            Date = DateTime.Now,
+                            Code = (History.OperationCode) 1,
+                            ChangedProperty = History.Property.Type,
+                            OldValue = equip.Type.Name.ToString(),
+                            NewValue = SelectedEquip.Type.Name.ToString()
+                        });
+                    if(equip.Status != SelectedEquip.Status)
+                        DbContext.History.Add(new History
+                        {
+                            EquipId = equip.Id,
+                            Date = DateTime.Now,
+                            Code = (History.OperationCode) 1,
+                            ChangedProperty = History.Property.Status,
+                            OldValue = equip.Status.Name.ToString(),
+                            NewValue = SelectedEquip.Status.Name.ToString()
+                        });
+                    if(equip.DepreciationGroup != SelectedEquip.DepreciationGroup)
+                        DbContext.History.Add(new History
+                        {
+                            EquipId = equip.Id,
+                            Date = DateTime.Now,
+                            Code = (History.OperationCode) 1,
+                            ChangedProperty = History.Property.Depreciation,
+                            OldValue = equip.DepreciationGroup.ToString(),
+                            NewValue = SelectedEquip.DepreciationGroup.ToString()
+                        });
+                    if(equip.DepreciationRate != SelectedEquip.DepreciationRate)
+                        DbContext.History.Add(new History
+                        {
+                            EquipId = equip.Id,
+                            Date = DateTime.Now,
+                            Code = (History.OperationCode) 1,
+                            ChangedProperty = History.Property.Depreciation,
+                            OldValue = equip.DepreciationRate.ToString(),
+                            NewValue = SelectedEquip.DepreciationRate.ToString()
+                        });
+                    if(equip.Name != SelectedEquip.Name)
+                        DbContext.History.Add(new History
+                        {
+                            EquipId = equip.Id,
+                            Date = DateTime.Now,
+                            Code = (History.OperationCode) 1,
+                            ChangedProperty = History.Property.Name,
+                            OldValue = equip.Name.ToString(),
+                            NewValue = SelectedEquip.Name.ToString()
+                        });
+                    if(equip.Note != SelectedEquip.Note)
+                        DbContext.History.Add(new History
+                        {
+                            EquipId = equip.Id,
+                            Date = DateTime.Now,
+                            Code = (History.OperationCode) 1,
+                            ChangedProperty = History.Property.Note,
+                            OldValue = equip.Note.ToString(),
+                            NewValue = SelectedEquip.Note.ToString()
+                        });
+                    if(equip.ReleaseDate != SelectedEquip.ReleaseDate)
+                        DbContext.History.Add(new History
+                        {
+                            EquipId = equip.Id,
+                            Date = DateTime.Now,
+                            Code = (History.OperationCode) 1,
+                            ChangedProperty = History.Property.ReleaseDate,
+                            OldValue = equip.ReleaseDate.ToString("MM.dd.yyyy"),
+                            NewValue = SelectedEquip.ReleaseDate.ToString("MM.dd.yyyy")
+                        });
+
                     equip = SelectedEquip;
+
+                    
                     DbContext.SaveChanges();
                 });
             }
@@ -463,7 +593,16 @@ namespace Property_inventory.ViewModels
                     var result = await DialogHost.Show(view, "RootDialog", ClosingEventHandler);
                     if ((bool)result)
                     {
-                        DbContext.Equips.Remove(SelectedEquip);
+                        DbContext.Equips.Single(i => i.Id == SelectedEquip.Id).IsDeleted = true;
+                        DbContext.History.Add(new History
+                        {
+                            EquipId = SelectedEquip.Id,
+                            Date = DateTime.Now,
+                            Code = History.OperationCode.Deleted,
+                            ChangedProperty = History.Property.None,
+                            OldValue = SelectedEquip.Name,
+                            NewValue = "Имущество удалено"
+                        });
                         CurrentRoomEquip.Remove(SelectedEquip);
                         DbContext.SaveChanges();
                     }
@@ -558,11 +697,26 @@ namespace Property_inventory.ViewModels
                     if(result is null || !(bool)result) return;
 
                     NewEquip.RoomId = SelectedNode.RoomId;
+                    var molId = NewEquip.MOL.Id;
+                    NewEquip.MOL = null;
+                    NewEquip.MOLId = molId;
                     DbContext.Equips.Add(NewEquip);
+                    DbContext.SaveChanges();
+                    var id = DbContext.Equips.ToList().Last().Id;
+                    DbContext.History.Add(new History
+                    {
+                        EquipId = id,
+                        Date = DateTime.Now,
+                        Code = (History.OperationCode) 0,
+                        ChangedProperty = History.Property.None,
+                        OldValue = "-",
+                        NewValue = "Добавлено"
+                    });
                     DbContext.SaveChanges();
                     CurrentRoomEquip.Add(NewEquip);
                     NewEquip = null;
                     ClearCreateEquipCommand.Execute(null);
+                    HandoverCommand.Execute(null);
                 });
             }
         }

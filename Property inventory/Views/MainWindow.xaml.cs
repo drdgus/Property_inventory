@@ -122,5 +122,10 @@ namespace Property_inventory.Views
         {
             ((dynamic)DataContext).EditEquipCommand.Execute(null);
         }
+
+        private void DeleteEquip(object sender, RoutedEventArgs e)
+        {
+            ((dynamic)DataContext).DeleteEquipCommand.Execute(null);
+        }
     }
 }

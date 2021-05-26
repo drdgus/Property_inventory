@@ -89,6 +89,7 @@
             <Button
                 Margin="0,10,0,0"
                 Content="Печать"
+                Command="{Binding PrintHandoverActCommand}"
                 Style="{StaticResource MaterialDesignRaisedAccentButton}"
                 ToolTip="Resource name: MaterialDesignRaisedAccentButton" />
         </StackPanel>

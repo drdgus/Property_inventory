@@ -123,6 +123,7 @@
     <Compile Include="Entities\Equip.cs" />
     <Compile Include="Entities\History.cs" />
     <Compile Include="Entities\MOL.cs" />
+    <Compile Include="Models\EquipHistory.cs" />
     <Compile Include="Models\EquipInfo.cs" />
     <Compile Include="Services\ExcelEditor.cs" />
     <Compile Include="Services\View\GLOBAL.cs" />
@@ -149,6 +150,7 @@
       <DependentUpon>RenameUC.xaml</DependentUpon>
     </Compile>
     <Compile Include="ViewModels\DictionaryVM.cs" />
+    <Compile Include="ViewModels\HistoryVM.cs" />
     <Compile Include="ViewModels\SettingsVM.cs" />
     <Compile Include="Views\Acts\AllEquipAct.xaml.cs">
       <DependentUpon>AllEquipAct.xaml</DependentUpon>

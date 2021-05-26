@@ -55,6 +55,17 @@ namespace Property_inventory.ViewModels
             }
         }
 
+        public ICommand PrintHandoverActCommand
+        {
+            get
+            {
+                return new RelayCommand(o =>
+                {
+                    new ExcelEditor();
+                });
+            }
+        }
+
 
         public event PropertyChangedEventHandler PropertyChanged;
 
