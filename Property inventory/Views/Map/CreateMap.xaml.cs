@@ -1,9 +1,8 @@
-﻿using System;
+﻿using MaterialDesignThemes.Wpf;
+using System;
 using System.Text.RegularExpressions;
 using System.Windows;
 using System.Windows.Input;
-using MaterialDesignThemes.Wpf;
-using Property_inventory.Services.View;
 
 namespace Property_inventory.Views.Map
 {

@@ -14,7 +14,7 @@ namespace Property_inventory.Models
 
         public EquipHistory()
         {
-          
+
         }
     }
 }

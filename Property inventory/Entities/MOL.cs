@@ -6,7 +6,8 @@ namespace Property_inventory.Entities
     {
         public int Id { get; set; }
         public string FullName { get; set; }
-
+        public MOLPosition Position { get; set; }
+        public int PersonnelNumber { get; set; }
         public string ShortFullName => ShortingFullName(FullName);
 
         private string ShortingFullName(string fullName)

@@ -3,13 +3,13 @@ using Property_inventory.DAL;
 using Property_inventory.Entities;
 using Property_inventory.Infrastructure;
 using Property_inventory.ViewModels.Dialogs;
-using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Data.Entity;
 using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Windows.Input;
+using Property_inventory.DAL.Repositories;
 using Type = Property_inventory.Entities.Type;
 
 namespace Property_inventory.ViewModels
@@ -34,8 +34,8 @@ namespace Property_inventory.ViewModels
 
         public DictionaryVM()
         {
-            TypeList = new ObservableCollection<Type>(InvDbContext.GetInstance().Types.AsNoTracking().ToList());
-            MOLList = new ObservableCollection<MOL>(InvDbContext.GetInstance().MOLs.AsNoTracking().ToList());
+            TypeList = new ObservableCollection<Type>(new DictionaryRepository().GetTypes());
+            MOLList = new ObservableCollection<MOL>(new DictionaryRepository().GetMOLs());
         }
 
         public ICommand CreateTypeCommand
@@ -52,12 +52,11 @@ namespace Property_inventory.ViewModels
                     var result = await DialogHost.Show(view, "RootDialogDic");
                     if (result != null && (bool)result)
                     {
-                        var newType = InvDbContext.GetInstance().Types.Add(new Type
+                        var newType = new DictionaryRepository().AddType(new Type
                         {
                             Name = NewName,
                         });
                         TypeList.Add(newType);
-                        InvDbContext.GetInstance().SaveChanges();
                     }
                 });
             }
@@ -77,7 +76,7 @@ namespace Property_inventory.ViewModels
                     var result = await DialogHost.Show(view, "RootDialogDic");
                     if (result != null && (bool)result)
                     {
-                        var newMOL = InvDbContext.GetInstance().MOLs.Add(new MOL
+                        var newMOL = new DictionaryRepository().AddMOL(new MOL
                         {
                             FullName = NewName
                         });
@@ -104,10 +103,7 @@ namespace Property_inventory.ViewModels
                     var result = await DialogHost.Show(view, "RootDialogDic");
                     if (result != null && (bool)result)
                     {
-                        InvDbContext.GetInstance().Entry(SelectedItem).State = EntityState.Deleted;
-                        InvDbContext.GetInstance().Types.Remove((Type)SelectedItem);
-                        InvDbContext.GetInstance().SaveChanges();
-
+                        new DictionaryRepository().RemoveType((Type) SelectedItem);
                         TypeList.Remove((Type)SelectedItem);
                     }
                 });
@@ -129,10 +125,7 @@ namespace Property_inventory.ViewModels
                     var result = await DialogHost.Show(view, "RootDialogDic");
                     if (result != null && (bool)result)
                     {
-                        InvDbContext.GetInstance().Entry(SelectedItem).State = EntityState.Deleted;
-                        InvDbContext.GetInstance().MOLs.Remove((MOL)SelectedItem);
-                        InvDbContext.GetInstance().SaveChanges();
-
+                        new DictionaryRepository().RemoveMOL((MOL)SelectedItem);
                         MOLList.Remove((MOL)SelectedItem);
                     }
                 });
@@ -153,8 +146,8 @@ namespace Property_inventory.ViewModels
                     var result = await DialogHost.Show(view, "RootDialogDic");
                     if (result != null && (bool)result)
                     {
-                        InvDbContext.GetInstance().Types.Single(r => r.Id == ((Type)SelectedItem).Id).Name = NewName;
-                        InvDbContext.GetInstance().SaveChanges();
+                        ((Type) SelectedItem).Name = NewName;
+                        new DictionaryRepository().UpdateType((Type)SelectedItem);
                     }
                 });
             }
@@ -174,8 +167,8 @@ namespace Property_inventory.ViewModels
                     var result = await DialogHost.Show(view, "RootDialogDic");
                     if (result != null && (bool)result)
                     {
-                        InvDbContext.GetInstance().MOLs.Single(r => r.Id == ((MOL)SelectedItem).Id).FullName = NewName;
-                        InvDbContext.GetInstance().SaveChanges();
+                        ((MOL) SelectedItem).FullName = NewName;
+                        new DictionaryRepository().UpdateMOL((MOL)SelectedItem);
                     }
                 });
             }

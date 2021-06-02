@@ -1,4 +1,4 @@
-﻿using Property_inventory.Services.Tools;
+﻿using Property_inventory.Services;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -13,8 +13,6 @@ namespace Property_inventory.Entities
         public DateTime RegistrationDate { get; set; }
         public string Name { get; set; }
         public int InvNum { get; set; }
-        public int OrgId { get; set; }
-        public Org Org { get; set; }
         public int RoomId { get; set; }
         public Room Room { get; set; }
         public int TypeId { get; set; }
@@ -45,7 +43,7 @@ namespace Property_inventory.Entities
         /// </summary>
         public int DepreciationRate { get; set; }
 
-        public DepreciationGroups DepreciationGroup
+        public InvEnums.DepreciationGroups DepreciationGroup
         {
             get => _depreciationGroup;
             set
@@ -60,21 +58,18 @@ namespace Property_inventory.Entities
         /// В процентах
         /// </summary>
 
-        public enum DepreciationGroups
-        {
-            [StringValue("Первая группа")] I,
-            [StringValue("Вторая группа")] II,
-            [StringValue("Третья группа")] III,
-            [StringValue("Четвертая группа")] IV,
-            [StringValue("Пятая группа")] V,
-            [StringValue("Шестая группа")] VI,
-            [StringValue("Седьмая группа")] VII,
-            [StringValue("Восьмая группа")] VIII
-        }
-
         Dictionary<string, string> _errors;
         private Type _type;
-        private DepreciationGroups _depreciationGroup;
+
+        private InvEnums.DepreciationGroups _depreciationGroup;
+        public int ManufacturerId { get; set; }
+        public Manufacturer Manufacturer { get; set; }
+
+
+
+
+
+
         public string this[string columnName] => _errors.ContainsKey(columnName) ? _errors[columnName] : null;
         public string Error { get; }
         public bool IsValid => _errors.Values.All(x => x == null);

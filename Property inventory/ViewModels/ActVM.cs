@@ -1,15 +1,11 @@
-﻿using System;
+﻿using Property_inventory.Entities;
+using Property_inventory.Infrastructure;
+using Property_inventory.Services;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
 using System.Runtime.CompilerServices;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Input;
-using Property_inventory.Entities;
-using Property_inventory.Infrastructure;
-using Property_inventory.Services;
-using Property_inventory.Views.Acts;
 
 namespace Property_inventory.ViewModels
 {
@@ -30,7 +26,7 @@ namespace Property_inventory.ViewModels
         }
 
         public List<Equip> EquipList { get; set; }
-       
+
 
 
         public ICommand PrintInvCardCommand
@@ -39,11 +35,11 @@ namespace Property_inventory.ViewModels
             {
                 return new RelayCommand(o =>
                 {
-                    
+
                 });
             }
         }
-        
+
         public ICommand PrintAllEquipActCommand
         {
             get

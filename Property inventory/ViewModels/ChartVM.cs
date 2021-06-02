@@ -1,5 +1,6 @@
 ﻿using LiveCharts;
 using LiveCharts.Wpf;
+using Property_inventory.DAL;
 using Property_inventory.Models;
 using System;
 using System.Collections.Generic;
@@ -7,8 +8,7 @@ using System.Data.Entity;
 using System.Globalization;
 using System.Linq;
 using System.Windows.Media;
-using Property_inventory.DAL;
-using Property_inventory.Entities;
+using Property_inventory.DAL.Repositories;
 
 namespace Property_inventory.ViewModels
 {
@@ -26,7 +26,7 @@ namespace Property_inventory.ViewModels
         public ChartVM()
         {
             YFormatter = value => value.ToString("C");
-            var Equips = InvDbContext.GetInstance().Equips.AsNoTracking().Include(e => e.Type).Include(e => e.Type.Category).ToList();
+            var Equips = new EquipRepository().GetEquip();
 
 
             TotalSum = Equips.Sum(e => e.BasePrice * e.Count);

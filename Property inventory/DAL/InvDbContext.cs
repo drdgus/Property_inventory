@@ -1,6 +1,6 @@
-﻿using System.Data.Entity;
-using Property_inventory.Entities;
+﻿using Property_inventory.Entities;
 using SQLite.CodeFirst;
+using System.Data.Entity;
 using History = Property_inventory.Entities.History;
 
 namespace Property_inventory.DAL
@@ -16,12 +16,17 @@ namespace Property_inventory.DAL
         public DbSet<History> History { get; set; }
         public DbSet<MOL> MOLs { get; set; }
         public DbSet<Category> Categories { get; set; }
+        public DbSet<UnappliedChange> UnappliedChanges { get; set; }
+        public DbSet<InvDocument> InvDocuments { get; set; }
+        public DbSet<MOLPosition> MolPositions { get; set; }
+        public DbSet<Manufacturer> Manufacturers { get; set; }
+
 
         private static InvDbContext _instance;
- 
-        private InvDbContext(): base("DefaultConnection")
-        {}
- 
+
+        private InvDbContext() : base("DefaultConnection")
+        { }
+
         public static InvDbContext GetInstance()
         {
             return _instance ?? (_instance = new InvDbContext());

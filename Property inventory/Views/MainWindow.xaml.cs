@@ -1,18 +1,16 @@
-﻿using Property_inventory.Views.Map;
+﻿using MaterialDesignThemes.Wpf;
+using Property_inventory.Services.View;
+using Property_inventory.Views.Map;
 using System;
 using System.Text.RegularExpressions;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
-using MaterialDesignThemes.Wpf;
-using Property_inventory.Services.View;
-using Property_inventory.ViewModels;
-using Property_inventory.Views.Acts;
 
 namespace Property_inventory.Views
 {
 
-    
+
 
     /// <summary>
     /// Логика взаимодействия для MainWindow.xaml
@@ -88,7 +86,7 @@ namespace Property_inventory.Views
 
         private void Price_OnPreviewTextInput(object sender, TextCompositionEventArgs e)
         {
-            if (e.Text == "." && ((TextBox) sender).Text.Contains("."))
+            if (e.Text == "." && ((TextBox)sender).Text.Contains("."))
             {
                 e.Handled = true;
                 return;

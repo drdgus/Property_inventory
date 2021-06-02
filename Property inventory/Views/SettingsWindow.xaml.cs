@@ -1,7 +1,7 @@
 ﻿using MaterialDesignThemes.Wpf;
+using Property_inventory.Services.View;
 using System.Windows;
 using System.Windows.Input;
-using Property_inventory.Services.View;
 
 namespace Property_inventory.Views
 {

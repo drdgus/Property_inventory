@@ -1,8 +1,7 @@
+using Property_inventory.Properties;
 using System;
 using System.Globalization;
-using System.Windows;
 using System.Windows.Data;
-using Property_inventory.Properties;
 
 namespace Property_inventory.Views.Converters
 {
@@ -10,14 +9,14 @@ namespace Property_inventory.Views.Converters
     {
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
-            if (((int) value) == 0) return "-";
+            if (((int)value) == 0) return "-";
             return ((int)value).ToString($"{Settings.Default.InvSymbol}-0000000");
         }
 
         public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
         {
-            if(value != null)
-                return System.Convert.ToInt32(((string) value).Replace($"{Settings.Default.InvSymbol}-", ""));
+            if (value != null)
+                return System.Convert.ToInt32(((string)value).Replace($"{Settings.Default.InvSymbol}-", ""));
             return null;
         }
     }

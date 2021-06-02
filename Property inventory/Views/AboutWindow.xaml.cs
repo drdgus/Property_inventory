@@ -2,7 +2,6 @@
 using System;
 using System.Reflection;
 using System.Windows;
-using Property_inventory.Services.View;
 
 namespace Property_inventory.Views
 {

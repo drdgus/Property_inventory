@@ -1,22 +1,22 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using MaterialDesignThemes.Wpf;
+using Property_inventory.DAL;
 using Property_inventory.Entities;
 using Property_inventory.Infrastructure;
 using Property_inventory.Models;
-using System.Collections.ObjectModel;
-using System.ComponentModel;
-using System.Linq;
-using System.Data.Entity;
-using System.Diagnostics;
-using System.Runtime.CompilerServices;
-using System.Windows.Input;
-using MaterialDesignThemes.Wpf;
-using Property_inventory.DAL;
-using Property_inventory.Properties;
 using Property_inventory.Services;
 using Property_inventory.ViewModels.Dialogs;
 using Property_inventory.Views;
 using Property_inventory.Views.Acts;
+using System;
+using System.Collections.Generic;
+using System.Collections.ObjectModel;
+using System.ComponentModel;
+using System.Data.Entity;
+using System.Diagnostics;
+using System.Linq;
+using System.Runtime.CompilerServices;
+using System.Windows.Input;
+using Property_inventory.DAL.Repositories;
 using Type = Property_inventory.Entities.Type;
 
 namespace Property_inventory.ViewModels
@@ -63,7 +63,6 @@ namespace Property_inventory.ViewModels
             }
         }
 
-        public InvDbContext DbContext { get; set; }
         public Node SelectedNode
         {
             get => _selectedNode;
@@ -72,15 +71,7 @@ namespace Property_inventory.ViewModels
                 _selectedNode = value;
 
                 CurrentRoomEquip.Clear();
-                DbContext.Equips
-                    .AsNoTracking()
-                    .Include(i => i.Type)
-                    .Include(i => i.Status)
-                    .Include(e => e.MOL)
-                    .Include(e => e.Type.Category)
-                    .Where(i => i.RoomId == _selectedNode.RoomId && i.IsDeleted == false)
-                    .ToList()
-                    .ForEach(i => CurrentRoomEquip.Add(i));
+                new EquipRepository().GetEquipByRoom(_selectedNode.RoomId).ForEach(i => CurrentRoomEquip.Add(i));
                 OnPropertyChanged();
             }
         }
@@ -92,22 +83,25 @@ namespace Property_inventory.ViewModels
             get =>
                 _newEquip ?? (_newEquip = new Equip
                 {
+                    Id = 0,
                     RegistrationDate = DateTime.Now,
                     Name = "",
                     InvNum = 0,
-                    OrgId = DbContext.Orgs.Single().Id,
                     RoomId = 0,
-                    StatusId = DbContext.Statuses.First().Id,
-                    Type = new Type(),
-                    AccountabilityId = DbContext.Accountabilities.First().Id,
-                    History = new List<History>(),
+                    TypeId = 0,
+                    StatusId = 0,
+                    AccountabilityId = 0,
+                    History = null,
                     Note = "",
                     Count = 1,
                     IsDeleted = false,
-                    ReleaseDate = DateTime.Now,
+                    MOLId = 0,
+                    ReleaseDate = default,
                     BasePrice = 0,
                     DepreciationRate = 0,
-                    BaseInvNum = ""
+                    DepreciationGroup = InvEnums.DepreciationGroups.I,
+                    BaseInvNum = "",
+                    ManufacturerId = 0,
                 });
             private set => _newEquip = value;
         }
@@ -119,7 +113,7 @@ namespace Property_inventory.ViewModels
                 if (_nodes is null)
                 {
                     var nodes = new ObservableCollection<Node>();
-                    DbContext.Rooms.AsNoTracking().Where(r => r.IsDeleted == false).ToList().ForEach(i => nodes.Add(new Node
+                    new RoomRepository().Get().ForEach(i => nodes.Add(new Node
                     {
                         Name = i.Name,
                         RoomId = i.Id,
@@ -131,7 +125,7 @@ namespace Property_inventory.ViewModels
                     {
                         new Node
                         {
-                            Name = DbContext.Orgs.Single().Name,
+                            Name = InvDbContext.GetInstance().Orgs.Single().Name,
                             RoomId = -1,
                             SortIndex = 0,
                             Nodes = nodes
@@ -214,25 +208,19 @@ namespace Property_inventory.ViewModels
         public MainVM()
         {
             new SyncData();
-            DbContext = InvDbContext.GetInstance();
             //View = (ICollectionViewLiveShaping)CollectionViewSource.GetDefaultView(Nodes);
             //View.IsLiveSorting = true;
             CurrentRoomEquip = new ObservableCollection<Equip>();
-            EquipTypes = new ObservableCollection<Type>(DbContext.Types.ToList());
-            DepreciationGroups = new ObservableCollection<string>(Enum.GetNames(typeof(Equip.DepreciationGroups)));
-            EquipMOLs = new ObservableCollection<MOL>(DbContext.MOLs.AsNoTracking().ToList());
-            Rooms = DbContext.Rooms.AsNoTracking().Where(r => r.IsDeleted == false).ToList();
-            EquipList = DbContext.Equips
-                .Include(i => i.Type)
-                .Include(i => i.Status)
-                .Include(i => i.MOL)
-                .Include(i => i.Room)
-                .Where(r => r.IsDeleted == false).ToList();
-            Categories = new ObservableCollection<Category>(DbContext.Categories.AsNoTracking().ToList());
+            EquipTypes = new ObservableCollection<Type>(new DictionaryRepository().GetTypes());
+            DepreciationGroups = new ObservableCollection<string>(Enum.GetNames(typeof(InvEnums.DepreciationGroups)));
+            EquipMOLs = new ObservableCollection<MOL>(new DictionaryRepository().GetMOLs());
+            Rooms = new RoomRepository().Get();
+            EquipList = new EquipRepository().GetEquip();
+            Categories = new ObservableCollection<Category>(new DictionaryRepository().GetCategories());
             AllEquip = new ObservableCollection<EquipInfo>();
         }
 
-        
+
         public ICommand ClearCreateEquipCommand
         {
             get
@@ -243,7 +231,7 @@ namespace Property_inventory.ViewModels
                 });
             }
         }
-        
+
         public ICommand OpenAllEquipCommand
         {
             get
@@ -257,16 +245,13 @@ namespace Property_inventory.ViewModels
 
                     AllEquip.Clear();
 
-                    DbContext.Equips
-                        .AsNoTracking()
-                        .Where(i => i.IsDeleted == false)
-                        .ToList().ForEach(i => AllEquip.Add(new EquipInfo
+                    new EquipRepository().GetEquip()
+                        .ForEach(i => AllEquip.Add(new EquipInfo
                         {
                             Id = i.Id,
                             RegistrationDate = i.RegistrationDate,
                             Name = i.Name,
                             InvNum = i.InvNum,
-                            Org = i.Org,
                             RoomId = i.RoomId,
                             Room = i.Room,
                             Type = i.Type,
@@ -305,15 +290,15 @@ namespace Property_inventory.ViewModels
                     var result = await DialogHost.Show(view, "RootDialog", ClosingEventHandler);
                     if ((bool)result)
                     {
-                        var newRoom = DbContext.Rooms.Add(new Room
-                            {
-                                Name = NewName,
-                                OrgId = Nodes.Single().RoomId,
-                                IsDeleted = false
-                            });
-
-                        DbContext.SaveChanges();
+                        var newRoom = new Room
+                        {
+                            Name = NewName,
+                            OrgId = Nodes.Single().RoomId,
+                            IsDeleted = false
+                        };
                         
+                        newRoom .Id = new RoomRepository().Add(newRoom);
+
                         Nodes[0].Nodes.Add(new Node
                         {
                             Name = NewName,
@@ -322,7 +307,7 @@ namespace Property_inventory.ViewModels
                             RoomId = newRoom.Id,
                             Nodes = new ObservableCollection<Node>()
                         });
-                     
+
                     }
                 });
             }
@@ -337,18 +322,23 @@ namespace Property_inventory.ViewModels
                     {
                         DataContext = this
                     };
-                    
+
                     var oldName = SelectedNode.Name;
                     NewName = oldName;
 
                     var result = await DialogHost.Show(view, "RootDialog", ClosingEventHandler);
                     if ((bool)result)
                     {
-                        if(NewName == oldName) return;
+                        if (NewName == oldName) return;
 
-                        DbContext.Rooms.Single(r => r.Id == SelectedNode.RoomId).Name = NewName;
                         SelectedNode.Name = NewName;
-                        DbContext.SaveChanges();
+                        new RoomRepository().Update(new Room
+                        {
+                            Id = _selectedNode.RoomId,
+                            Name = _selectedNode.Name,
+                            OrgId = 1,
+                            IsDeleted = false
+                        });
                     }
                 });
             }
@@ -374,7 +364,7 @@ namespace Property_inventory.ViewModels
                     //Dialog
                     new DictionaryTypesWindow().ShowDialog();
                     EquipTypes.Clear();
-                    DbContext.Types.AsNoTracking().ToList().ForEach(i => EquipTypes.Add(i));
+                    new DictionaryRepository().GetTypes().ForEach(i => EquipTypes.Add(i));
                 });
             }
         }
@@ -388,14 +378,14 @@ namespace Property_inventory.ViewModels
                     //Dialog
                     new DictionaryMOLsWindow().ShowDialog();
                     EquipMOLs.Clear();
-                    DbContext.MOLs.AsNoTracking().ToList().ForEach(i => EquipMOLs.Add(i));
+                    new DictionaryRepository().GetMOLs().ForEach(i => EquipMOLs.Add(i));
                 });
             }
         }
 
         private void ClosingEventHandler(object sender, DialogClosingEventArgs eventArgs)
             => Debug.WriteLine("You can intercept the closing event, and cancel here.");
-        public ICommand  DeleteRoomCommand
+        public ICommand DeleteRoomCommand
         {
             get
             {
@@ -410,11 +400,9 @@ namespace Property_inventory.ViewModels
                     var result = await DialogHost.Show(view, "RootDialog", ClosingEventHandler);
                     if ((bool)result)
                     {
-                        DbContext.Rooms.Single(r => r.Id == SelectedNode.RoomId).IsDeleted = true;
-                        await DbContext.Equips.Where(e => e.RoomId == SelectedNode.RoomId).ForEachAsync(i => i.IsDeleted = true);
+                        new RoomRepository().Remove(_selectedNode.RoomId);
 
                         Nodes[0].Nodes.Remove(SelectedNode);
-                        DbContext.SaveChanges();
                     }
                 });
             }
@@ -441,140 +429,9 @@ namespace Property_inventory.ViewModels
                     };
 
                     var result = await DialogHost.Show(create, "RootDialog", ClosingEventHandler);
-                    if(result is null || !(bool)result) return;
+                    if (result is null || !(bool)result) return;
 
-                    var equip = DbContext.Equips
-                        .Include(i => i.Type)
-                        .Include(i => i.Status)
-                        .Include(i => i.MOL)
-                        .Include(i => i.Room)
-                        .Single(e => e.Id == SelectedEquip.Id);
-
-                    if(equip.BasePrice != SelectedEquip.BasePrice)
-                        DbContext.History.Add(new History
-                        {
-                            EquipId = equip.Id,
-                            Date = DateTime.Now,
-                            Code = (History.OperationCode) 1,
-                            ChangedProperty = History.Property.BasePrice,
-                            OldValue = equip.BasePrice.ToString("C"),
-                            NewValue = SelectedEquip.BasePrice.ToString("C")
-                        });
-                    if(equip.MOL != SelectedEquip.MOL)
-                        DbContext.History.Add(new History
-                        {
-                            EquipId = equip.Id,
-                            Date = DateTime.Now,
-                            Code = (History.OperationCode) 1,
-                            ChangedProperty = History.Property.MOL,
-                            OldValue = equip.MOL.ShortFullName.ToString(),
-                            NewValue = SelectedEquip.MOL.ShortFullName.ToString()
-                        });
-                    if(equip.InvNum != SelectedEquip.InvNum)
-                        DbContext.History.Add(new History
-                        {
-                            EquipId = equip.Id,
-                            Date = DateTime.Now,
-                            Code = (History.OperationCode) 1,
-                            ChangedProperty = History.Property.InvNum,
-                            OldValue = equip.InvNum.ToString(),
-                            NewValue = SelectedEquip.InvNum.ToString()
-                        });
-                    if(equip.RegistrationDate != SelectedEquip.RegistrationDate)
-                        DbContext.History.Add(new History
-                        {
-                            EquipId = equip.Id,
-                            Date = DateTime.Now,
-                            Code = (History.OperationCode) 1,
-                            ChangedProperty = History.Property.RegistrationDate,
-                            OldValue = equip.RegistrationDate.ToString("MM.dd.yyyy"),
-                            NewValue = SelectedEquip.RegistrationDate.ToString("MM.dd.yyyy")
-                        });
-                    if(equip.BaseInvNum != SelectedEquip.BaseInvNum)
-                        DbContext.History.Add(new History
-                        {
-                            EquipId = equip.Id,
-                            Date = DateTime.Now,
-                            Code = (History.OperationCode) 1,
-                            ChangedProperty = History.Property.BaseInvNum,
-                            OldValue = equip.BaseInvNum.ToString(),
-                            NewValue = SelectedEquip.BaseInvNum.ToString()
-                        });
-                    if(equip.Type != SelectedEquip.Type)
-                        DbContext.History.Add(new History
-                        {
-                            EquipId = equip.Id,
-                            Date = DateTime.Now,
-                            Code = (History.OperationCode) 1,
-                            ChangedProperty = History.Property.Type,
-                            OldValue = equip.Type.Name.ToString(),
-                            NewValue = SelectedEquip.Type.Name.ToString()
-                        });
-                    if(equip.Status != SelectedEquip.Status)
-                        DbContext.History.Add(new History
-                        {
-                            EquipId = equip.Id,
-                            Date = DateTime.Now,
-                            Code = (History.OperationCode) 1,
-                            ChangedProperty = History.Property.Status,
-                            OldValue = equip.Status.Name.ToString(),
-                            NewValue = SelectedEquip.Status.Name.ToString()
-                        });
-                    if(equip.DepreciationGroup != SelectedEquip.DepreciationGroup)
-                        DbContext.History.Add(new History
-                        {
-                            EquipId = equip.Id,
-                            Date = DateTime.Now,
-                            Code = (History.OperationCode) 1,
-                            ChangedProperty = History.Property.Depreciation,
-                            OldValue = equip.DepreciationGroup.ToString(),
-                            NewValue = SelectedEquip.DepreciationGroup.ToString()
-                        });
-                    if(equip.DepreciationRate != SelectedEquip.DepreciationRate)
-                        DbContext.History.Add(new History
-                        {
-                            EquipId = equip.Id,
-                            Date = DateTime.Now,
-                            Code = (History.OperationCode) 1,
-                            ChangedProperty = History.Property.Depreciation,
-                            OldValue = equip.DepreciationRate.ToString(),
-                            NewValue = SelectedEquip.DepreciationRate.ToString()
-                        });
-                    if(equip.Name != SelectedEquip.Name)
-                        DbContext.History.Add(new History
-                        {
-                            EquipId = equip.Id,
-                            Date = DateTime.Now,
-                            Code = (History.OperationCode) 1,
-                            ChangedProperty = History.Property.Name,
-                            OldValue = equip.Name.ToString(),
-                            NewValue = SelectedEquip.Name.ToString()
-                        });
-                    if(equip.Note != SelectedEquip.Note)
-                        DbContext.History.Add(new History
-                        {
-                            EquipId = equip.Id,
-                            Date = DateTime.Now,
-                            Code = (History.OperationCode) 1,
-                            ChangedProperty = History.Property.Note,
-                            OldValue = equip.Note.ToString(),
-                            NewValue = SelectedEquip.Note.ToString()
-                        });
-                    if(equip.ReleaseDate != SelectedEquip.ReleaseDate)
-                        DbContext.History.Add(new History
-                        {
-                            EquipId = equip.Id,
-                            Date = DateTime.Now,
-                            Code = (History.OperationCode) 1,
-                            ChangedProperty = History.Property.ReleaseDate,
-                            OldValue = equip.ReleaseDate.ToString("MM.dd.yyyy"),
-                            NewValue = SelectedEquip.ReleaseDate.ToString("MM.dd.yyyy")
-                        });
-
-                    equip = SelectedEquip;
-
-                    
-                    DbContext.SaveChanges();
+                    new EquipRepository().Update(SelectedEquip);
                 });
             }
         }
@@ -593,18 +450,8 @@ namespace Property_inventory.ViewModels
                     var result = await DialogHost.Show(view, "RootDialog", ClosingEventHandler);
                     if ((bool)result)
                     {
-                        DbContext.Equips.Single(i => i.Id == SelectedEquip.Id).IsDeleted = true;
-                        DbContext.History.Add(new History
-                        {
-                            EquipId = SelectedEquip.Id,
-                            Date = DateTime.Now,
-                            Code = History.OperationCode.Deleted,
-                            ChangedProperty = History.Property.None,
-                            OldValue = SelectedEquip.Name,
-                            NewValue = "Имущество удалено"
-                        });
+                        new EquipRepository().Remove(SelectedEquip);
                         CurrentRoomEquip.Remove(SelectedEquip);
-                        DbContext.SaveChanges();
                     }
                 });
             }
@@ -669,7 +516,7 @@ namespace Property_inventory.ViewModels
                 });
             }
         }
-        
+
         public ICommand CreateEquipCommand
         {
             get
@@ -694,25 +541,13 @@ namespace Property_inventory.ViewModels
                     };
 
                     var result = await DialogHost.Show(create, "RootDialog", ClosingEventHandler);
-                    if(result is null || !(bool)result) return;
+                    if (result is null || !(bool)result) return;
 
                     NewEquip.RoomId = SelectedNode.RoomId;
                     var molId = NewEquip.MOL.Id;
-                    NewEquip.MOL = null;
                     NewEquip.MOLId = molId;
-                    DbContext.Equips.Add(NewEquip);
-                    DbContext.SaveChanges();
-                    var id = DbContext.Equips.ToList().Last().Id;
-                    DbContext.History.Add(new History
-                    {
-                        EquipId = id,
-                        Date = DateTime.Now,
-                        Code = (History.OperationCode) 0,
-                        ChangedProperty = History.Property.None,
-                        OldValue = "-",
-                        NewValue = "Добавлено"
-                    });
-                    DbContext.SaveChanges();
+                    
+                    var id = new EquipRepository().Add(NewEquip);
                     CurrentRoomEquip.Add(NewEquip);
                     NewEquip = null;
                     ClearCreateEquipCommand.Execute(null);

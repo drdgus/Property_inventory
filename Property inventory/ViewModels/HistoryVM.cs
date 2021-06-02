@@ -1,10 +1,9 @@
-﻿using System.Collections.Generic;
-using Property_inventory.DAL;
-using Property_inventory.Entities;
+﻿using Property_inventory.DAL;
+using Property_inventory.Models;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
-using Property_inventory.Models;
-using Property_inventory.Services.Tools;
+using Property_inventory.DAL.Repositories;
 
 namespace Property_inventory.ViewModels
 {
@@ -36,7 +35,7 @@ namespace Property_inventory.ViewModels
             {
                 //_search = value;
                 //HistoryList.Clear();
-           
+
                 //if (SelectedOperation == Operations[""])
                 //{
                 //    AllHistory.Where(i => i.InvNum.Contains(value) ||
@@ -64,7 +63,7 @@ namespace Property_inventory.ViewModels
         {
             HistoryList = new ObservableCollection<EquipHistory>();
             Splitter = "->";
-            InvDbContext.GetInstance().History.ToList().Select(i => new EquipHistory
+            new HistoryRepository().Get().Select(i => new EquipHistory
             {
                 EquipId = i.EquipId,
                 Date = i.Date,
@@ -74,7 +73,7 @@ namespace Property_inventory.ViewModels
                 NewValue = i.NewValue
             }).ToList().ForEach(i => HistoryList.Add(i));
 
-            
+
 
             Operations = new Dictionary<string, string>();
             Operations.Add("", "Все");

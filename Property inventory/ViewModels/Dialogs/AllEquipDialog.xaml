@@ -5,6 +5,7 @@
     xmlns:converters="clr-namespace:Property_inventory.Views.Converters"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:local="clr-namespace:Property_inventory.ViewModels.Dialogs"
+    xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     d:DesignHeight="450"
     d:DesignWidth="1200"
@@ -15,85 +16,95 @@
         <converters:InvConverter x:Key="InvConverter" />
     </UserControl.Resources>
     <Grid>
-        <DataGrid
-            AutoGenerateColumns="False"
-            IsReadOnly="True"
-            ItemsSource="{Binding AllEquip}"
-            SelectedItem="{Binding SelectedEquip, Mode=TwoWay}"
-            VirtualizingStackPanel.VirtualizationMode="Recycling">
-            <DataGrid.Resources>
-                <ContextMenu x:Key="ContextMenuForDatagridItem">
-                    <MenuItem Command="{Binding OpenEquipHistoryCommand}" Header="История" />
-                    <MenuItem Click="EditEquip" Header="Изменить" />
-                    <MenuItem Command="{Binding DeleteEquipCommand}" Header="Удалить" />
-                    <Separator />
-                    <MenuItem Command="{Binding OpenInvCardWinCommand}" Header="Инвентарная карточка" />
-                    <MenuItem Command="{Binding OpenRelocateWinCommand}" Header="Переместить" />
-                    <MenuItem Command="{Binding OpenWriteOffWinCommand}" Header="Списать" />
-                </ContextMenu>
-            </DataGrid.Resources>
-            <DataGrid.RowStyle>
-                <Style BasedOn="{StaticResource {x:Type DataGridRow}}" TargetType="DataGridRow">
-                    <Setter Property="ToolTip">
-                        <Setter.Value>
-                            <TextBlock
-                                Width="600"
-                                Text="{Binding Note}"
-                                TextWrapping="Wrap"
-                                Visibility="{Binding Note, Converter={StaticResource TooltipVisibilityConverter}}" />
-                        </Setter.Value>
-                    </Setter>
-                    <Setter Property="ContextMenu" Value="{StaticResource ContextMenuForDatagridItem}" />
-                </Style>
-            </DataGrid.RowStyle>
-            <DataGrid.Columns>
-                <DataGridTextColumn
-                    Width="Auto"
-                    Binding="{Binding InvNum, Converter={StaticResource InvConverter}}"
-                    Header="Инв. Номер" />
-                <DataGridTextColumn
-                    Width="Auto"
-                    Binding="{Binding Name}"
-                    Header="Наименование">
-                    <DataGridTextColumn.ElementStyle>
-                        <Style>
-                            <Setter Property="TextBlock.TextWrapping" Value="Wrap" />
+        <ScrollViewer>
+            <Grid>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition />
+                </Grid.RowDefinitions>
+                <TextBox
+                    Margin="10,0"
+                    materialDesign:HintAssist.Hint="Поиск"
+                    Style="{StaticResource MaterialDesignFloatingHintTextBox}"
+                    Text="{Binding SearchText, UpdateSourceTrigger=PropertyChanged}" />
+                <DataGrid
+                    Grid.Row="1"
+                    AutoGenerateColumns="False"
+                    IsReadOnly="True"
+                    ItemsSource="{Binding AllEquip}"
+                    SelectedItem="{Binding SelectedEquip, Mode=TwoWay}"
+                    VirtualizingStackPanel.VirtualizationMode="Recycling">
+                    <DataGrid.Resources>
+                        <ContextMenu x:Key="ContextMenuForDatagridItem">
+                            <MenuItem Command="{Binding OpenEquipHistoryCommand}" Header="История" />
+                            <MenuItem Click="EditEquip" Header="Изменить" />
+                            <MenuItem Command="{Binding DeleteEquipCommand}" Header="Удалить" />
+                            <Separator />
+                            <MenuItem Command="{Binding OpenInvCardWinCommand}" Header="Инвентарная карточка" />
+                            <MenuItem Command="{Binding OpenRelocateWinCommand}" Header="Переместить" />
+                            <MenuItem Command="{Binding OpenWriteOffWinCommand}" Header="Списать" />
+                        </ContextMenu>
+                    </DataGrid.Resources>
+                    <DataGrid.RowStyle>
+                        <Style BasedOn="{StaticResource {x:Type DataGridRow}}" TargetType="DataGridRow">
+                            <Setter Property="ToolTip">
+                                <Setter.Value>
+                                    <TextBlock
+                                        Width="600"
+                                        Text="{Binding Note}"
+                                        TextWrapping="Wrap"
+                                        Visibility="{Binding Note, Converter={StaticResource TooltipVisibilityConverter}}" />
+                                </Setter.Value>
+                            </Setter>
+                            <Setter Property="ContextMenu" Value="{StaticResource ContextMenuForDatagridItem}" />
                         </Style>
-                    </DataGridTextColumn.ElementStyle>
-                </DataGridTextColumn>
-                <DataGridTextColumn
-                    Width="Auto"
-                    Binding="{Binding Type.Category.Name}"
-                    Header="Категория" />
-                <DataGridTextColumn
-                    Width="Auto"
-                    Binding="{Binding Type.Name}"
-                    Header="Тип" />
-                <DataGridTextColumn
-                    Width="Auto"
-                    Binding="{Binding Count}"
-                    Header="Количество" />
-                <DataGridTextColumn
-                    Width="Auto"
-                    Binding="{Binding BasePrice, StringFormat=C, ConverterCulture=ru-RU}"
-                    Header="Первоначальная стоимость" />
-                <DataGridTextColumn
-                    Width="Auto"
-                    Binding="{Binding MOL.ShortFullName}"
-                    Header="МОЛ" />
-                <DataGridTextColumn
-                    Width="120"
-                    Binding="{Binding DepreciationGroup}"
-                    Header="Аморт. группа" />
-                <DataGridTextColumn
-                    Width="120"
-                    Binding="{Binding Free}"
-                    Header="Доступно" />
-                <DataGridTextColumn
-                    Width="120"
-                    Binding="{Binding Used}"
-                    Header="Выдано" />
-            </DataGrid.Columns>
-        </DataGrid>
+                    </DataGrid.RowStyle>
+                    <DataGrid.Columns>
+                        <DataGridTextColumn
+                            Width="Auto"
+                            Binding="{Binding InvNum, Converter={StaticResource InvConverter}}"
+                            Header="Инв. Номер" />
+                        <DataGridTextColumn
+                            Width="Auto"
+                            Binding="{Binding Name}"
+                            Header="Наименование">
+                            <DataGridTextColumn.ElementStyle>
+                                <Style>
+                                    <Setter Property="TextBlock.TextWrapping" Value="Wrap" />
+                                </Style>
+                            </DataGridTextColumn.ElementStyle>
+                        </DataGridTextColumn>
+                        <DataGridTextColumn
+                            Width="Auto"
+                            Binding="{Binding Type.Category.Name}"
+                            Header="Категория" />
+                        <DataGridTextColumn
+                            Width="Auto"
+                            Binding="{Binding Type.Name}"
+                            Header="Тип" />
+                        <DataGridTextColumn
+                            Width="Auto"
+                            Binding="{Binding Count}"
+                            Header="Количество" />
+                        <DataGridTextColumn
+                            Width="Auto"
+                            Binding="{Binding BasePrice, StringFormat=C, ConverterCulture=ru-RU}"
+                            Header="Первоначальная стоимость" />
+                        <DataGridTextColumn
+                            Width="Auto"
+                            Binding="{Binding MOL.ShortFullName}"
+                            Header="МОЛ" />
+                        <DataGridTextColumn
+                            Width="120"
+                            Binding="{Binding DepreciationGroup}"
+                            Header="Аморт. группа" />
+                        <DataGridTextColumn
+                            Width="120"
+                            Binding="{Binding Free}"
+                            Header="Не выдано" />
+                    </DataGrid.Columns>
+                </DataGrid>
+            </Grid>
+        </ScrollViewer>
     </Grid>
 </UserControl>

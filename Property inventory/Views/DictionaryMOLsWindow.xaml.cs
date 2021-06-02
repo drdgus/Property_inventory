@@ -1,6 +1,5 @@
-﻿using System.Windows;
-using MaterialDesignThemes.Wpf;
-using Property_inventory.Services.View;
+﻿using MaterialDesignThemes.Wpf;
+using System.Windows;
 
 namespace Property_inventory.Views
 {
@@ -17,12 +16,12 @@ namespace Property_inventory.Views
 
         private void DeleteMOL(object sender, RoutedEventArgs e)
         {
-            ((dynamic) DataContext).DeleteMOLCommand.Execute(null);
+            ((dynamic)DataContext).DeleteMOLCommand.Execute(null);
         }
 
         private void EditMOL(object sender, RoutedEventArgs e)
         {
-            ((dynamic) DataContext).EditMOLCommand.Execute(null);
+            ((dynamic)DataContext).EditMOLCommand.Execute(null);
         }
     }
 }

@@ -1,6 +1,5 @@
-﻿using System.Windows;
-using MaterialDesignThemes.Wpf;
-using Property_inventory.Services.View;
+﻿using MaterialDesignThemes.Wpf;
+using System.Windows;
 
 namespace Property_inventory.Views
 {
