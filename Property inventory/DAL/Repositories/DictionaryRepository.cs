@@ -19,19 +19,28 @@ namespace Property_inventory.DAL.Repositories
 
         public List<Type> GetTypes()
         {
-            return InvDbContext.GetInstance().Types.ToList();
+            return InvDbContext.GetInstance().Types.Include(i => i.Category).ToList();
         }
 
         public List<MOL> GetMOLs()
         {
-            return InvDbContext.GetInstance().MOLs.AsNoTracking().ToList();
+            return InvDbContext.GetInstance().MOLs.AsNoTracking().Include(i => i.Position).ToList();
+        }
+
+        public List<MOLPosition> GetMolPositions()
+        {
+            return InvDbContext.GetInstance().MolPositions.AsNoTracking().ToList();
         }
 
         public Type AddType(Type type)
         {
             var newType = InvDbContext.GetInstance().Types.Add(type);
             InvDbContext.GetInstance().SaveChanges();
-            new SyncData().AddType(type);
+            new SyncData().AddType(new Type
+            {
+                CategoryId = type.CategoryId,
+                Name = type.Name
+            });
             return newType;
         }
 
@@ -39,7 +48,13 @@ namespace Property_inventory.DAL.Repositories
         {
             var newMOL = InvDbContext.GetInstance().MOLs.Add(mol);
             InvDbContext.GetInstance().SaveChanges();
-            new SyncData().AddMOL(mol);
+            newMOL = InvDbContext.GetInstance().MOLs.Include(i => i.Position).Single(i => i.Id == newMOL.Id);
+            new SyncData().AddMOL(new MOL
+            {
+                FullName = mol.FullName,
+                PositionId = mol.PositionId,
+                PersonnelNumber = mol.PersonnelNumber
+            });
             return newMOL;
         }
 

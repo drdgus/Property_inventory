@@ -125,5 +125,20 @@ namespace Property_inventory.Views
         {
             ((dynamic)DataContext).DeleteEquipCommand.Execute(null);
         }
+
+        private void OpenRelocateWin(object sender, RoutedEventArgs e)
+        {
+            ((dynamic)DataContext).OpenRelocateWinCommand.Execute(null);
+        }
+
+        private void OpenWriteOffWin(object sender, RoutedEventArgs e)
+        {
+            ((dynamic)DataContext).OpenWriteOffWinCommand.Execute(null);
+        }
+
+        private void OpenInvCardWin(object sender, RoutedEventArgs e)
+        {
+            ((dynamic)DataContext).OpenInvCardWinCommand.Execute(null);
+        }
     }
 }

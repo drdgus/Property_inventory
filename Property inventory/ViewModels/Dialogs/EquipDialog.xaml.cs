@@ -27,22 +27,28 @@ namespace Property_inventory.ViewModels.Dialogs
             e.Handled = !regexItem.IsMatch(e.Text);
         }
 
-        private void Price_OnPreviewKeyDown(object sender, KeyEventArgs e)
+        private static readonly Regex _regex = new Regex(@"[^0-9]+");
+        private static bool IsTextAllowed(string text)
         {
-            if (e.Key == Key.Back || e.Key == Key.Decimal)
-                e.Handled = !true;
+            return !_regex.IsMatch(text);
         }
 
         private void Price_OnPreviewTextInput(object sender, TextCompositionEventArgs e)
         {
-            if (e.Text == "." && !((TextBox)sender).Text.Contains("."))
+            if (((TextBox)sender).Text.Contains(".") && e.Text == ".")
             {
                 e.Handled = true;
                 return;
             }
-            var regexItem = new Regex("^[0-9.]*$");
 
-            e.Handled = !regexItem.IsMatch(e.Text);
+            if (e.Text == ".")
+            {
+                e.Handled = false;
+            }
+            else
+            {
+                e.Handled = !IsTextAllowed(e.Text);
+            }
         }
     }
 }

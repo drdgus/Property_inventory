@@ -47,8 +47,16 @@
                     <DataGrid.Columns>
                         <DataGridTextColumn
                             Width="*"
+                            Binding="{Binding Position.Name}"
+                            Header="Должность" />
+                        <DataGridTextColumn
+                            Width="*"
                             Binding="{Binding FullName}"
-                            Header="Название" />
+                            Header="ФИО" />
+                        <DataGridTextColumn
+                            Width="*"
+                            Binding="{Binding PersonnelNumber}"
+                            Header="Таб. номер" />
                     </DataGrid.Columns>
                     <DataGrid.RowStyle>
                         <Style BasedOn="{StaticResource {x:Type DataGridRow}}" TargetType="{x:Type DataGridRow}">

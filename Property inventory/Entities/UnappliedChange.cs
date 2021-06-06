@@ -10,5 +10,10 @@ namespace Property_inventory.Entities
         public InvEnums.Table TableCode { get; set; }
         public object ChangedObject { get; set; }
         public InvEnums.OperationCode OperationType { get; set; }
+
+        public override string ToString()
+        {
+            return $"CreatedTime: {CreatedTime.ToShortDateString()} Таблица: {TableCode} Объект: {ChangedObject} Операция: {OperationType}";
+        }
     }
 }

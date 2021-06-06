@@ -246,6 +246,7 @@
     <Compile Include="DAL\Repositories\EquipRepository.cs" />
     <Compile Include="DAL\Repositories\HistoryRepository.cs" />
     <Compile Include="DAL\Repositories\InvDocumentRepository.cs" />
+    <Compile Include="DAL\Repositories\ManufacturerRepository.cs" />
     <Compile Include="DAL\Repositories\RoomRepository.cs" />
     <Compile Include="Entities\Accountability.cs" />
     <Compile Include="Entities\Category.cs" />
@@ -262,11 +263,20 @@
     <Compile Include="Services\InvEnums.cs" />
     <Compile Include="Services\View\GLOBAL.cs" />
     <Compile Include="ViewModels\ActVM.cs" />
+    <Compile Include="ViewModels\Dialogs\AddManufacturerUC.xaml.cs">
+      <DependentUpon>AddManufacturerUC.xaml</DependentUpon>
+    </Compile>
     <Compile Include="ViewModels\Dialogs\AllEquipDialog.xaml.cs">
       <DependentUpon>AllEquipDialog.xaml</DependentUpon>
     </Compile>
+    <Compile Include="ViewModels\Dialogs\CreateMolUC.xaml.cs">
+      <DependentUpon>CreateMolUC.xaml</DependentUpon>
+    </Compile>
     <Compile Include="ViewModels\Dialogs\CreateRoomUC.xaml.cs">
       <DependentUpon>CreateRoomUC.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="ViewModels\Dialogs\CreateTypeUC.xaml.cs">
+      <DependentUpon>CreateTypeUC.xaml</DependentUpon>
     </Compile>
     <Compile Include="ViewModels\Dialogs\DeleteDialog.xaml.cs">
       <DependentUpon>DeleteDialog.xaml</DependentUpon>
@@ -331,10 +341,10 @@
     <Compile Include="Views\AboutWindow.xaml.cs">
       <DependentUpon>AboutWindow.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Views\DictionaryMOLsWindow.xaml.cs">
+    <Compile Include="Views\Dictionaries\DictionaryMOLsWindow.xaml.cs">
       <DependentUpon>DictionaryMOLsWindow.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Views\DictionaryTypesWindow.xaml.cs">
+    <Compile Include="Views\Dictionaries\DictionaryTypesWindow.xaml.cs">
       <DependentUpon>DictionaryTypesWindow.xaml</DependentUpon>
     </Compile>
     <Compile Include="Views\HistoryWindow.xaml.cs">
@@ -349,11 +359,23 @@
     <Compile Include="Views\SettingsWindow.xaml.cs">
       <DependentUpon>SettingsWindow.xaml</DependentUpon>
     </Compile>
+    <Page Include="ViewModels\Dialogs\AddManufacturerUC.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="ViewModels\Dialogs\AllEquipDialog.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
+    <Page Include="ViewModels\Dialogs\CreateMolUC.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="ViewModels\Dialogs\CreateRoomUC.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="ViewModels\Dialogs\CreateTypeUC.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -409,11 +431,11 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="Views\DictionaryMOLsWindow.xaml">
+    <Page Include="Views\Dictionaries\DictionaryMOLsWindow.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
-    <Page Include="Views\DictionaryTypesWindow.xaml">
+    <Page Include="Views\Dictionaries\DictionaryTypesWindow.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -476,16 +498,14 @@
     <None Include="Resources\Accounting\4.1 Акт перемещения.xlsx" />
     <None Include="Resources\Accounting\4.2 Акт приема-передачи другому МОЛу.doc" />
     <None Include="Resources\Accounting\5. Акт списания.xls" />
+    <None Include="Resources\Accounting\Акт приема-передачи.xlsx" />
     <None Include="Resources\Inventory\1. Акт инвентаризационная опись.xlsx" />
     <None Include="Resources\Inventory\2. Сличительная ведомость.xls" />
-    <None Include="Resources\Inventory\3. Жунал инвентаризации.xls" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Views\Dictionaries\" />
-  </ItemGroup>
+  <ItemGroup />
   <ItemGroup>
     <Resource Include="Resources\ico.ico">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>

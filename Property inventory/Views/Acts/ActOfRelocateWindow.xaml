@@ -17,9 +17,6 @@
     TextOptions.TextFormattingMode="Ideal"
     TextOptions.TextRenderingMode="Auto"
     mc:Ignorable="d">
-    <Window.DataContext>
-        <viewModels:ActVM/>
-    </Window.DataContext>
     <Grid>
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="*" />
@@ -40,40 +37,39 @@
             Margin="30,0">
             <ComboBox
                 Margin="0,10,0,0"
-                SelectedItem="{Binding SelectedEquip}"
-                SelectedIndex="{Binding SelectedEquipIndex}"
-                ItemsSource="{Binding EquipList}"
-                DisplayMemberPath="Name"
                 materialDesign:HintAssist.Hint="Имущество"
                 materialDesign:HintAssist.HintOpacity=".26"
-                IsEditable="True" />
-            <ComboBox
-                Margin="0,10,0,0"
-                materialDesign:HintAssist.Hint="Работодатель"
-                materialDesign:HintAssist.HintOpacity=".26"
-                IsEditable="True" />
-            <ComboBox
+                DisplayMemberPath="Name"
+                IsEditable="True"
+                ItemsSource="{Binding EquipList}"
+                SelectedIndex="{Binding SelectedEquipIndex}"
+                SelectedItem="{Binding SelectedEquip}" />
+            <TextBox
                 Margin="0,10,0,0"
                 materialDesign:HintAssist.Hint="Основание"
                 materialDesign:HintAssist.HintOpacity=".26"
-                IsEditable="True" />
+                Text="{Binding Reason}" />
             <ComboBox
                 Margin="0,10"
-                materialDesign:HintAssist.Hint="МОЛ"
+                materialDesign:HintAssist.Hint="Старое МОЛ"
                 materialDesign:HintAssist.HintOpacity=".26"
-                IsEditable="True" />
-            <TextBox
-                Margin="0,10,0,0"
-                VerticalAlignment="Center"
-                materialDesign:HintAssist.Hint="Паспортные данные МОЛ"
-                Style="{StaticResource MaterialDesignFloatingHintTextBox}" />
-            <TextBox
-                Margin="0,10,0,0"
-                VerticalAlignment="Center"
-                materialDesign:HintAssist.Hint="Адрес МОЛ"
-                Style="{StaticResource MaterialDesignFloatingHintTextBox}" />
+                DisplayMemberPath="FullName"
+                IsEditable="True"
+                IsEnabled="False"
+                ItemsSource="{Binding MOLList}"
+                SelectedIndex="{Binding SelectedOldMOLIndex}" />
+            <ComboBox
+                Margin="0,10"
+                materialDesign:HintAssist.Hint="Новое МОЛ"
+                materialDesign:HintAssist.HintOpacity=".26"
+                DisplayMemberPath="FullName"
+                IsEditable="True"
+                ItemsSource="{Binding MOLList}"
+                SelectedIndex="0"
+                SelectedItem="{Binding SelectedNewMOL}" />
             <Button
                 Margin="0,10,0,0"
+                Command="{Binding PrintRelocateCommand}"
                 Content="Печать"
                 Style="{StaticResource MaterialDesignRaisedAccentButton}"
                 ToolTip="Resource name: MaterialDesignRaisedAccentButton" />

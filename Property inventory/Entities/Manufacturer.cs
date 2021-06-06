@@ -3,9 +3,11 @@
     public class Manufacturer
     {
         public int Id { get; set; }
-        public string Name { get; set; }
-        public string Requisites { get; set; }
-        public string Address { get; set; }
-        public string Phone { get; set; }
+        public string SupplyerName { get; set; }
+        public string SupplyerAddress { get; set; }
+        public string SupplyerRequisites { get; set; }
+        public string ReleaserName { get; set; }
+        public string TransportName { get; set; }
+        public string TransportInfo { get; set; }
     }
 }

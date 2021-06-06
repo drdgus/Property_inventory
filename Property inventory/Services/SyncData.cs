@@ -1,18 +1,15 @@
-﻿using Newtonsoft.Json;
+﻿using Microsoft.AspNetCore.SignalR.Client;
+using Newtonsoft.Json;
 using Property_inventory.DAL;
 using Property_inventory.Entities;
 using Property_inventory.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Net;
 using System.Net.Http;
 using System.Net.Http.Headers;
-using System.Net.Sockets;
-using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
-using Microsoft.AspNetCore.SignalR.Client;
 using Type = Property_inventory.Entities.Type;
 
 namespace Property_inventory.Services
@@ -20,6 +17,7 @@ namespace Property_inventory.Services
     public class SyncData
     {
         private string ServerAddress => "http://drdgus.space";
+        private string TESTServer => "http://localhost";
         private string Login => "Android";
         private string Password => "Android";
         private HttpClient Client { get; set; }
@@ -39,65 +37,56 @@ namespace Property_inventory.Services
             Client.Timeout = new TimeSpan(0, 0, 5);
 
             LoadDb();
+            StartListen();
         }
 
         private void LoadDb()
         {
-            StartListen();
-            
+
+
             try
             {
                 var db = InvDbContext.GetInstance();
                 if (db.Orgs.Any()) return;
-                var response = Client.GetAsync(ServerAddress + "/All");
+                var response = Client.GetAsync($"{TESTServer}/All");
                 response.Wait();
 
                 var allTables = JsonConvert.DeserializeObject<AllTables>(response.Result.Content.ReadAsStringAsync().Result);
-
+                
+                db.Database.BeginTransaction();
                 foreach (var VARIABLE in allTables.Accountabilities)
                 {
-                    db.Database.BeginTransaction();
                     db.Accountabilities.Add(VARIABLE);
-                    db.Database.CurrentTransaction.Commit();
                 }
                 foreach (var VARIABLE in allTables.Categories)
                 {
-                    db.Database.BeginTransaction();
                     db.Categories.Add(VARIABLE);
-                    db.Database.CurrentTransaction.Commit();
                 }
                 foreach (var VARIABLE in allTables.Types)
                 {
-                    db.Database.BeginTransaction();
                     db.Types.Add(new Type
                     {
                         Name = VARIABLE.Name,
                         CategoryId = VARIABLE.CategoryId,
                     });
-                    db.Database.CurrentTransaction.Commit();
                 }
                 foreach (var VARIABLE in allTables.Rooms)
                 {
-                    db.Database.BeginTransaction();
                     db.Rooms.Add(new Room
                     {
                         OrgId = VARIABLE.OrgId,
                         Name = VARIABLE.Name,
                         IsDeleted = VARIABLE.IsDeleted
                     });
-                    db.Database.CurrentTransaction.Commit();
                 }
                 foreach (var VARIABLE in allTables.MOLs)
                 {
-                    db.Database.BeginTransaction();
                     db.MOLs.Add(VARIABLE);
-                    db.Database.CurrentTransaction.Commit();
                 }
 
                 db.SaveChanges();
                 foreach (var VARIABLE in allTables.Equips)
                 {
-                    db.Database.BeginTransaction();
                     db.Equips.Add(new Equip
                     {
                         RegistrationDate = VARIABLE.RegistrationDate,
@@ -118,83 +107,73 @@ namespace Property_inventory.Services
                         BaseInvNum = VARIABLE.BaseInvNum,
                         ManufacturerId = VARIABLE.ManufacturerId
                     });
-                    db.Database.CurrentTransaction.Commit();
                 }
                 foreach (var VARIABLE in allTables.History)
                 {
-                    db.Database.BeginTransaction();
                     db.History.Add(VARIABLE);
-                    db.Database.CurrentTransaction.Commit();
                 }
                 foreach (var VARIABLE in allTables.Orgs)
                 {
-                    db.Database.BeginTransaction();
                     db.Orgs.Add(VARIABLE);
-                    db.Database.CurrentTransaction.Commit();
                 }
                 foreach (var VARIABLE in allTables.Statuses)
                 {
-                    db.Database.BeginTransaction();
                     db.Statuses.Add(VARIABLE);
-                    db.Database.CurrentTransaction.Commit();
                 }
                 foreach (var VARIABLE in allTables.InvDocuments)
                 {
-                    db.Database.BeginTransaction();
                     db.InvDocuments.Add(VARIABLE);
-                    db.Database.CurrentTransaction.Commit();
                 }
                 foreach (var VARIABLE in allTables.Manufacturers)
                 {
-                    db.Database.BeginTransaction();
                     db.Manufacturers.Add(VARIABLE);
-                    db.Database.CurrentTransaction.Commit();
                 }
                 foreach (var VARIABLE in allTables.MolPositions)
                 {
-                    db.Database.BeginTransaction();
                     db.MolPositions.Add(VARIABLE);
-                    db.Database.CurrentTransaction.Commit();
                 }
-
 
                 db.SaveChanges();
             }
-            catch (Exception e)
+            catch(Exception e)
             {
-                throw new Exception("Ошибка при получении всех таблиц.");
+                throw new Exception($"Ошибка при получении таблиц с сервера. {e}");
             }
 
 
-        }
-
-        private async void SubscribeToChanges()
-        {
-            await Client.GetAsync(ServerAddress + "/Subscribe");
         }
 
         private async void StartListen()
         {
-            //SubscribeToChanges();
-            //IPHostEntry ipHostEntry = Dns.GetHostEntry(Dns.GetHostName());
-
-            //IPEndPoint ipPoint = new IPEndPoint(ipHostEntry.AddressList[0], 80);
-
-           
             connection = new HubConnectionBuilder()
-                .WithUrl("https://localhost:44304/ChangesHub")
+                .WithUrl($"{TESTServer}/ChangesHub")
                 .WithAutomaticReconnect()
                 .Build();
 
+
+            connection.Reconnecting += delegate(Exception e)
+            {
+                return new Task(() => Console.WriteLine($"Reconnecting... {e}"));
+            };
+
+            connection.Reconnected += delegate(string s)
+            {
+                return new Task(() => Console.WriteLine("Reconnected"));
+            };
+            connection.Closed += delegate(Exception e)
+            {
+                return new Task(() => Console.WriteLine($"Closed. {e}"));
+            };
+
             connection.On<List<UnappliedChange>>("ReceiveChanges", (changesList) =>
             {
-                Console.WriteLine(changesList);
+                MessageBox.Show($"Изменения: {String.Join("\n",changesList)}");
             });
 
             try
             {
                 await connection.StartAsync();
-                await connection.InvokeAsync("SendChangesList");
+                connection.
             }
             catch (Exception ex)
             {
@@ -208,88 +187,88 @@ namespace Property_inventory.Services
         }
 
 
-        public void Relocate(int equipId, int newRoomId)
+        public async void Relocate(int equipId, int newRoomId, int molId)
         {
-            throw new NotImplementedException();
+            await connection.InvokeAsync("Relocate", (equipId, newRoomId, molId));
         }
 
         #region Add
 
-        public void AddEquip(Equip newEquip)
+        public async void AddEquip(Equip newEquip)
         {
-            throw new NotImplementedException();
+            await connection.InvokeAsync("AddEquip", newEquip);
         }
 
-        public void AddHistory(History history)
+        public async void AddHistory(History history)
         {
-            throw new NotImplementedException();
+            await connection.InvokeAsync("AddHistory", history);
         }
 
-        public void AddType(Type type)
+        public async void AddType(Type type)
         {
-            throw new NotImplementedException();
+            await connection.InvokeAsync("AddType", type);
         }
 
-        public void AddMOL(MOL mol)
+        public async void AddMOL(MOL mol)
         {
-            throw new NotImplementedException();
+            await connection.InvokeAsync("AddMOL", mol);
         }
 
-        public void AddRoom(Room newRoom)
+        public async void AddRoom(Room newRoom)
         {
-            throw new NotImplementedException();
+            await connection.InvokeAsync("AddRoom", newRoom);
         }
 
         #endregion
 
         #region Remove
 
-        public void RemoveType(int selectedItemId)
+        public async void RemoveType(int selectedItemId)
         {
-            throw new NotImplementedException();
+            await connection.InvokeAsync("RemoveType", selectedItemId);
         }
 
-        public void RemoveMOL(int selectedItemId)
+        public async void RemoveMOL(int selectedItemId)
         {
-            throw new NotImplementedException();
+            await connection.InvokeAsync("RemoveMOL", selectedItemId);
         }
 
-        public void RemoveEquip(int id)
+        public async void RemoveEquip(int id)
         {
-            throw new NotImplementedException();
+            await connection.InvokeAsync("RemoveEquip", id);
         }
 
-        public void RemoveRoom(int roomId)
+        public async void RemoveRoom(int roomId)
         {
-            throw new NotImplementedException();
+            await connection.InvokeAsync("RemoveRoom", roomId);
         }
 
         #endregion
 
         #region Update
 
-        public void UpdateType(Type selectedItem)
+        public async void UpdateType(Type selectedItem)
         {
-            throw new NotImplementedException();
+            await connection.InvokeAsync("UpdateType", selectedItem);
         }
 
-        public void UpdateMOL(MOL selectedItem)
+        public async void UpdateMOL(MOL selectedItem)
         {
-            throw new NotImplementedException();
+            await connection.InvokeAsync("UpdateMOL", selectedItem);
         }
 
-        public void UpdateRoom(Room room)
+        public async void UpdateRoom(Room room)
         {
-            throw new NotImplementedException();
+            await connection.InvokeAsync("UpdateRoom", room);
         }
 
-        public void UpdateEquip(Equip equip)
+        public async void UpdateEquip(Equip equip)
         {
-            throw new NotImplementedException();
+            await connection.InvokeAsync("UpdateEquip", equip);
         }
 
         #endregion
-       
+
     }
 
 }

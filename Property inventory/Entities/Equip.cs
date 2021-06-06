@@ -7,7 +7,7 @@ using System.Runtime.CompilerServices;
 
 namespace Property_inventory.Entities
 {
-    public class Equip : IDataErrorInfo, INotifyPropertyChanged
+    public class Equip : INotifyPropertyChanged
     {
         public int Id { get; set; }
         public DateTime RegistrationDate { get; set; }
@@ -43,36 +43,16 @@ namespace Property_inventory.Entities
         /// </summary>
         public int DepreciationRate { get; set; }
 
-        public InvEnums.DepreciationGroups DepreciationGroup
-        {
-            get => _depreciationGroup;
-            set
-            {
-                _depreciationGroup = value;
-                OnPropertyChanged();
-            }
-        }
+        public InvEnums.DepreciationGroups DepreciationGroup { get; set; }
 
         public string BaseInvNum { get; set; }
         /// <summary>
         /// В процентах
         /// </summary>
 
-        Dictionary<string, string> _errors;
-        private Type _type;
-
-        private InvEnums.DepreciationGroups _depreciationGroup;
         public int ManufacturerId { get; set; }
         public Manufacturer Manufacturer { get; set; }
 
-
-
-
-
-
-        public string this[string columnName] => _errors.ContainsKey(columnName) ? _errors[columnName] : null;
-        public string Error { get; }
-        public bool IsValid => _errors.Values.All(x => x == null);
         public event PropertyChangedEventHandler PropertyChanged;
 
         protected virtual void OnPropertyChanged([CallerMemberName] string propertyName = null)

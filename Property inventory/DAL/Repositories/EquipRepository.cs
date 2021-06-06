@@ -5,17 +5,19 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Property_inventory.Entities;
+using Property_inventory.Properties;
 using Property_inventory.Services;
 
 namespace Property_inventory.DAL.Repositories
 {
     public class EquipRepository
     {
-        public List<Equip> GetEquipByRoom(int selectedNodeRoomId)
+        public List<Equip> GetEquipByRoom(int selectedNodeRoomId, string filter = "")
         {
             return InvDbContext.GetInstance().Equips
                 .AsNoTracking()
                 .Include(i => i.Type)
+                .Include(i =>i.Type.Category)
                 .Include(i => i.Status)
                 .Include(e => e.MOL)
                 .Include(e => e.Type.Category)
@@ -28,6 +30,7 @@ namespace Property_inventory.DAL.Repositories
             return InvDbContext.GetInstance().Equips
                 .AsNoTracking()
                 .Include(i => i.Type)
+                .Include(i =>i.Type.Category)
                 .Include(i => i.Status)
                 .Include(i => i.MOL)
                 .Include(i => i.Room)
@@ -37,6 +40,7 @@ namespace Property_inventory.DAL.Repositories
         {
             return InvDbContext.GetInstance().Equips
                 .Include(i => i.Type)
+                .Include(i =>i.Type.Category)
                 .Include(i => i.Status)
                 .Include(i => i.MOL)
                 .Include(i => i.Room)
@@ -49,7 +53,7 @@ namespace Property_inventory.DAL.Repositories
             if (equip.BasePrice != selectedEquip.BasePrice)
                 new HistoryRepository().Add(new History
                 {
-                    EquipId = equip.Id,
+                    ObjectId = equip.Id, TableCode = InvEnums.Table.Equip, 
                     Date = DateTime.Now,
                     Code = (InvEnums.OperationCode)1,
                     ChangedProperty = InvEnums.HistoryProperty.BasePrice,
@@ -59,7 +63,7 @@ namespace Property_inventory.DAL.Repositories
             if (equip.MOL != selectedEquip.MOL)
                 new HistoryRepository().Add(new History
                 {
-                    EquipId = equip.Id,
+                    ObjectId = equip.Id, TableCode = InvEnums.Table.Equip, 
                     Date = DateTime.Now,
                     Code = (InvEnums.OperationCode)1,
                     ChangedProperty = InvEnums.HistoryProperty.MOL,
@@ -69,7 +73,7 @@ namespace Property_inventory.DAL.Repositories
             if (equip.InvNum != selectedEquip.InvNum)
                 new HistoryRepository().Add(new History
                 {
-                    EquipId = equip.Id,
+                    ObjectId = equip.Id, TableCode = InvEnums.Table.Equip, 
                     Date = DateTime.Now,
                     Code = (InvEnums.OperationCode)1,
                     ChangedProperty = InvEnums.HistoryProperty.InvNum,
@@ -79,7 +83,7 @@ namespace Property_inventory.DAL.Repositories
             if (equip.RegistrationDate != selectedEquip.RegistrationDate)
                 new HistoryRepository().Add(new History
                 {
-                    EquipId = equip.Id,
+                    ObjectId = equip.Id, TableCode = InvEnums.Table.Equip, 
                     Date = DateTime.Now,
                     Code = (InvEnums.OperationCode)1,
                     ChangedProperty = InvEnums.HistoryProperty.RegistrationDate,
@@ -89,7 +93,7 @@ namespace Property_inventory.DAL.Repositories
             if (equip.BaseInvNum != selectedEquip.BaseInvNum)
                 new HistoryRepository().Add(new History
                 {
-                    EquipId = equip.Id,
+                    ObjectId = equip.Id, TableCode = InvEnums.Table.Equip, 
                     Date = DateTime.Now,
                     Code = (InvEnums.OperationCode)1,
                     ChangedProperty = InvEnums.HistoryProperty.BaseInvNum,
@@ -99,7 +103,7 @@ namespace Property_inventory.DAL.Repositories
             if (equip.Type != selectedEquip.Type)
                 new HistoryRepository().Add(new History
                 {
-                    EquipId = equip.Id,
+                    ObjectId = equip.Id, TableCode = InvEnums.Table.Equip, 
                     Date = DateTime.Now,
                     Code = (InvEnums.OperationCode)1,
                     ChangedProperty = InvEnums.HistoryProperty.Type,
@@ -109,7 +113,7 @@ namespace Property_inventory.DAL.Repositories
             if (equip.Status != selectedEquip.Status)
                 new HistoryRepository().Add(new History
                 {
-                    EquipId = equip.Id,
+                    ObjectId = equip.Id, TableCode = InvEnums.Table.Equip, 
                     Date = DateTime.Now,
                     Code = (InvEnums.OperationCode)1,
                     ChangedProperty = InvEnums.HistoryProperty.Status,
@@ -119,7 +123,7 @@ namespace Property_inventory.DAL.Repositories
             if (equip.DepreciationGroup != selectedEquip.DepreciationGroup)
                 new HistoryRepository().Add(new History
                 {
-                    EquipId = equip.Id,
+                    ObjectId = equip.Id, TableCode = InvEnums.Table.Equip, 
                     Date = DateTime.Now,
                     Code = (InvEnums.OperationCode)1,
                     ChangedProperty = InvEnums.HistoryProperty.DepreciationGroup,
@@ -129,7 +133,7 @@ namespace Property_inventory.DAL.Repositories
             if (equip.DepreciationRate != selectedEquip.DepreciationRate)
                 new HistoryRepository().Add(new History
                 {
-                    EquipId = equip.Id,
+                    ObjectId = equip.Id, TableCode = InvEnums.Table.Equip, 
                     Date = DateTime.Now,
                     Code = (InvEnums.OperationCode)1,
                     ChangedProperty = InvEnums.HistoryProperty.DepreciationRate,
@@ -139,7 +143,7 @@ namespace Property_inventory.DAL.Repositories
             if (equip.Name != selectedEquip.Name)
                 new HistoryRepository().Add(new History
                 {
-                    EquipId = equip.Id,
+                    ObjectId = equip.Id, TableCode = InvEnums.Table.Equip, 
                     Date = DateTime.Now,
                     Code = (InvEnums.OperationCode)1,
                     ChangedProperty = InvEnums.HistoryProperty.Name,
@@ -149,7 +153,7 @@ namespace Property_inventory.DAL.Repositories
             if (equip.Note != selectedEquip.Note)
                 new HistoryRepository().Add(new History
                 {
-                    EquipId = equip.Id,
+                    ObjectId = equip.Id, TableCode = InvEnums.Table.Equip, 
                     Date = DateTime.Now,
                     Code = (InvEnums.OperationCode)1,
                     ChangedProperty = InvEnums.HistoryProperty.Note,
@@ -159,7 +163,7 @@ namespace Property_inventory.DAL.Repositories
             if (equip.ReleaseDate != selectedEquip.ReleaseDate)
                 new HistoryRepository().Add(new History
                 {
-                    EquipId = equip.Id,
+                    ObjectId = equip.Id, TableCode = InvEnums.Table.Equip, 
                     Date = DateTime.Now,
                     Code = (InvEnums.OperationCode) 1,
                     ChangedProperty = InvEnums.HistoryProperty.ReleaseDate,
@@ -179,7 +183,8 @@ namespace Property_inventory.DAL.Repositories
             InvDbContext.GetInstance().Equips.Single(i => i.Id == selectedEquip.Id).IsDeleted = true;
             new HistoryRepository().Add(new History
             {
-                EquipId = selectedEquip.Id,
+                ObjectId = selectedEquip.Id,
+                TableCode = InvEnums.Table.Equip,
                 Date = DateTime.Now,
                 Code = InvEnums.OperationCode.Deleted,
                 ChangedProperty = InvEnums.HistoryProperty.None,
@@ -190,22 +195,44 @@ namespace Property_inventory.DAL.Repositories
             new SyncData().RemoveEquip(selectedEquip.Id);
         }
 
-        public int Add(Equip newEquip)
+        public Equip Add(Equip newEquip)
         {
-            var id = InvDbContext.GetInstance().Equips.Add(newEquip).Id;
+            var equip = new Equip
+            {
+                RegistrationDate = newEquip.RegistrationDate,
+                Name = newEquip.Name,
+                InvNum = newEquip.InvNum,
+                RoomId = newEquip.RoomId,
+                TypeId = newEquip.TypeId,
+                StatusId = newEquip.StatusId,
+                AccountabilityId = newEquip.AccountabilityId,
+                Note = newEquip.Note,
+                Count = newEquip.Count,
+                IsDeleted = false,
+                MOLId = newEquip.MOLId,
+                ReleaseDate = newEquip.ReleaseDate,
+                BasePrice = newEquip.BasePrice,
+                DepreciationRate = newEquip.DepreciationRate,
+                DepreciationGroup = newEquip.DepreciationGroup,
+                BaseInvNum = newEquip.BaseInvNum,
+                Manufacturer = newEquip.Manufacturer,
+            };
+
+            var addedEquip = InvDbContext.GetInstance().Equips.Add(newEquip);
+            InvDbContext.GetInstance().SaveChanges();
             new HistoryRepository().Add(new History
             {
-                EquipId = id,
+                ObjectId = addedEquip.Id,
+                TableCode = InvEnums.Table.Equip,
                 Date = DateTime.Now,
-                Code = (InvEnums.OperationCode)0,
+                Code = InvEnums.OperationCode.Created,
                 ChangedProperty = InvEnums.HistoryProperty.None,
                 OldValue = "-",
-                NewValue = "Добавлено"
+                NewValue = "На балансе"
             });
+            new SyncData().AddEquip(equip);
 
-            new SyncData().AddEquip(newEquip);
-
-            return id;
+            return addedEquip;
         }
     }
 }

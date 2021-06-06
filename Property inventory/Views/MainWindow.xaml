@@ -73,7 +73,7 @@
                 </Grid.ColumnDefinitions>
                 <TextBox
                     Grid.Row="1"
-                    Margin="10,0"
+                    Margin="10,0,0,0"
                     materialDesign:HintAssist.Hint="Поиск"
                     Style="{StaticResource MaterialDesignFloatingHintTextBox}"
                     Text="{Binding SearchText, UpdateSourceTrigger=PropertyChanged}" />
@@ -117,9 +117,9 @@
                                 Command="{Binding DeleteEquipCommand}"
                                 Header="Удалить" />
                             <Separator />
-                            <MenuItem Command="{Binding OpenInvCardWinCommand}" Header="Инвентарная карточка" />
-                            <MenuItem Command="{Binding OpenRelocateWinCommand}" Header="Переместить" />
-                            <MenuItem Command="{Binding OpenWriteOffWinCommand}" Header="Списать" />
+                            <MenuItem Command="{Binding OpenInvCardWinCommand}" Click="OpenInvCardWin" Header="Инвентарная карточка" />
+                            <MenuItem Command="{Binding OpenRelocateWinCommand}" Click="OpenRelocateWin" Header="Переместить" />
+                            <MenuItem Command="{Binding OpenWriteOffWinCommand}" Click="OpenWriteOffWin" Header="Списать" />
                         </ContextMenu>
                     </DataGrid.Resources>
                     <DataGrid.RowStyle>
@@ -153,8 +153,9 @@
                         </DataGridTextColumn>
                         <DataGridTextColumn
                             Width="Auto"
-                            Binding="{Binding Type.Category.Name}"
+                            Binding="{Binding Type.Category.Class}"
                             Header="Категория" />
+
                         <DataGridTextColumn
                             Width="Auto"
                             Binding="{Binding Type.Name}"
@@ -180,7 +181,7 @@
                 <Menu
                     Grid.Row="0"
                     Grid.ColumnSpan="3"
-                    Padding="0,4,0,0"
+                    Margin="0,10"
                     FontSize="12">
                     <MenuItem Height="20" Header="Файл">
                         <MenuItem
@@ -192,11 +193,11 @@
                         <MenuItem
                             Height="25"
                             Command="{Binding}"
-                            Header="Списанные средства" />
+                            Header="Списанное имущество" />
                         <MenuItem
                             Height="25"
                             Command="{Binding OpenAllEquipCommand}"
-                            Header="Основные средства" />
+                            Header="Имущество на балансе" />
                         <MenuItem
                             Height="25"
                             Command="{Binding OpenDicTypesCommand}"
@@ -215,49 +216,47 @@
                         <MenuItem
                             Height="25"
                             Command="{Binding AllEquipActCommand}"
-                            Header="Акт инвентаризационная опись" />
+                            Header="Инвентаризационная опись" />
                         <MenuItem
                             Height="25"
                             Command="{Binding AllEquipActCommand}"
                             Header="Сличительная ведомость" />
-                        <MenuItem
-                            Height="25"
-                            Command="{Binding AllEquipActCommand}"
-                            Header="Учет выполнения приказов" />
-                        <MenuItem
-                            Height="25"
-                            Command="{Binding AllEquipActCommand}"
-                            Header="Журнал инвентаризации" />
-                        <MenuItem
-                            Height="25"
-                            Command="{Binding AllEquipActCommand}"
-                            Header="Результаты инвентаризации" />
                     </MenuItem>
                     <MenuItem Height="20" Header="Учет ОС">
                         <MenuItem
                             Height="25"
-                            Command="{Binding AllEquipActCommand}"
+                            Command="{Binding OpenSupplyWinCommand}"
                             Header="Акт о поступлении оборудования" />
                         <MenuItem
                             Height="25"
-                            Command="{Binding HandoverCommand}"
+                            Command="{Binding OpenSupplyMaterialsWinCommand}"
+                            Header="Акт о поступлении материально-товарных ценностей" />
+                        <Separator />
+                        <MenuItem
+                            Height="25"
+                            Command="{Binding OpenInvCardWinCommandCommand}"
                             Header="Инвентарная карта" />
                         <MenuItem
                             Height="25"
-                            Command="{Binding HandoverMOLCommand}"
-                            Header="Акт приема-передачи МОЛу" />
-                        <MenuItem
-                            Height="25"
-                            Command="{Binding HandoverMOLCommand}"
+                            Command="{Binding OpenHandoverMOLWinCommand}"
                             Header="Акт перемещения" />
                         <MenuItem
                             Height="25"
-                            Command="{Binding OpenInvCardWinCommand}"
-                            Header="Акт приема-передачи ОС от МОЛ другому МОЛу" />
+                            Command="{Binding OpenWriteOffWinCommand}"
+                            Header="Акт списания" />
+                        <Separator />
                         <MenuItem
                             Height="25"
-                            Command="{Binding OpenRelocateWinCommand}"
-                            Header="Акт списания" />
+                            Command="{Binding OpenHandoverMOLWinCommand}"
+                            Header="Акт приема-передачи МОЛу" />
+                        <MenuItem
+                            Height="25"
+                            Command="{Binding OpenHandoverToNewMOLCommand}"
+                            Header="Акт приема-передачи другому МОЛ" />
+                        <MenuItem
+                            Height="25"
+                            Command="{Binding OpenHandoverWinCommand}"
+                            Header="Акт приема-передачи" />
                     </MenuItem>
                     <MenuItem
                         Height="20"

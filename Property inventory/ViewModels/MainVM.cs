@@ -17,12 +17,29 @@ using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Windows.Input;
 using Property_inventory.DAL.Repositories;
+using Property_inventory.Properties;
 using Type = Property_inventory.Entities.Type;
 
 namespace Property_inventory.ViewModels
 {
     public class MainVM : INotifyPropertyChanged
     {
+        public MainVM()
+        {
+            new SyncData();
+            //View = (ICollectionViewLiveShaping)CollectionViewSource.GetDefaultView(Nodes);
+            //View.IsLiveSorting = true;
+            CurrentRoomEquip = new ObservableCollection<Equip>();
+            EquipTypes = new ObservableCollection<Type>(new DictionaryRepository().GetTypes());
+            DepreciationGroups = new ObservableCollection<string>(Enum.GetNames(typeof(InvEnums.DepreciationGroups)));
+            EquipMOLs = new ObservableCollection<MOL>(new DictionaryRepository().GetMOLs());
+            EquipMOLs.Insert(0, new MOL());
+            Rooms = new RoomRepository().Get();
+            EquipList = new EquipRepository().GetEquip();
+            Categories = new ObservableCollection<Category>(new DictionaryRepository().GetCategories());
+            AllEquip = new ObservableCollection<EquipInfo>();
+        }
+
         private ObservableCollection<Node> _nodes;
         private Node _selectedNode;
         private string _searchText;
@@ -62,7 +79,6 @@ namespace Property_inventory.ViewModels
                 OnPropertyChanged();
             }
         }
-
         public Node SelectedNode
         {
             get => _selectedNode;
@@ -71,72 +87,44 @@ namespace Property_inventory.ViewModels
                 _selectedNode = value;
 
                 CurrentRoomEquip.Clear();
-                new EquipRepository().GetEquipByRoom(_selectedNode.RoomId).ForEach(i => CurrentRoomEquip.Add(i));
+                var equip = new EquipRepository().GetEquipByRoom(_selectedNode.RoomId, SearchText)
+                    .ToList();
+                equip.ForEach(i => CurrentRoomEquip.Add(i));
                 OnPropertyChanged();
             }
         }
-
         public Equip SelectedEquip { get; set; }
-
+        public Type SelectedType { get; set; }
         public Equip NewEquip
         {
-            get =>
-                _newEquip ?? (_newEquip = new Equip
+            get
+            {
+                var allEquips = InvDbContext.GetInstance().Equips.ToList();
+                var newInvNum = allEquips.Count == 0 ? 1 : allEquips.Max(i => i.InvNum) + 1;
+                return _newEquip ?? (_newEquip = new Equip
                 {
-                    Id = 0,
                     RegistrationDate = DateTime.Now,
                     Name = "",
-                    InvNum = 0,
-                    RoomId = 0,
+                    InvNum = newInvNum,
+                    RoomId = 1,
                     TypeId = 0,
-                    StatusId = 0,
-                    AccountabilityId = 0,
+                    StatusId = 1,
+                    AccountabilityId = 2,
                     History = null,
                     Note = "",
                     Count = 1,
                     IsDeleted = false,
-                    MOLId = 0,
-                    ReleaseDate = default,
-                    BasePrice = 0,
-                    DepreciationRate = 0,
+                    MOLId = 1,
+                    ReleaseDate = DateTime.Now,
+                    BasePrice = 0.0m,
                     DepreciationGroup = InvEnums.DepreciationGroups.I,
                     BaseInvNum = "",
                     ManufacturerId = 0,
                 });
+            }
             private set => _newEquip = value;
         }
-
-        public ObservableCollection<Node> Nodes
-        {
-            get
-            {
-                if (_nodes is null)
-                {
-                    var nodes = new ObservableCollection<Node>();
-                    new RoomRepository().Get().ForEach(i => nodes.Add(new Node
-                    {
-                        Name = i.Name,
-                        RoomId = i.Id,
-                        IsExpanded = false,
-                        SortIndex = 0,
-                    }));
-
-                    _nodes = new ObservableCollection<Node>
-                    {
-                        new Node
-                        {
-                            Name = InvDbContext.GetInstance().Orgs.Single().Name,
-                            RoomId = -1,
-                            SortIndex = 0,
-                            Nodes = nodes
-                        }
-                    };
-                };
-                return _nodes;
-            }
-            set => _nodes = value;
-        }
-
+        public Manufacturer NewManufacturer { get; set; } = new Manufacturer();
         public string NewName
         {
             get => _newName;
@@ -174,105 +162,104 @@ namespace Property_inventory.ViewModels
             }
         }
 
+        public ObservableCollection<Node> Nodes
+        {
+            get
+            {
+                if (_nodes is null)
+                {
+                    var nodes = new ObservableCollection<Node>();
+                    new RoomRepository().Get().ForEach(i => nodes.Add(new Node
+                    {
+                        Name = i.Name,
+                        RoomId = i.Id,
+                        IsExpanded = false,
+                        SortIndex = 0,
+                    }));
 
+                    _nodes = new ObservableCollection<Node>
+                    {
+                        new Node
+                        {
+                            Name = InvDbContext.GetInstance().Orgs.Single().Name,
+                            RoomId = -1,
+                            SortIndex = 0,
+                            Nodes = nodes
+                        }
+                    };
+                };
+                return _nodes;
+            }
+            set => _nodes = value;
+        }
         public ObservableCollection<Equip> CurrentRoomEquip { get; set; }
         public ObservableCollection<Type> EquipTypes { get; set; }
         public ObservableCollection<string> DepreciationGroups { get; set; }
         public ObservableCollection<MOL> EquipMOLs { get; set; }
         public ObservableCollection<Category> Categories { get; set; }
-        public string InvSymbol { get; set; }
-
         private List<Room> Rooms { get; set; }
         private List<Equip> EquipList { get; set; }
-
         public ObservableCollection<EquipInfo> AllEquip { get; set; }
         public string SearchText
         {
             get => _searchText;
             set
             {
-                _searchText = value;
-                Nodes[0].Nodes.Clear();
-                Rooms.Where(i => i.Name.Contains(value)).ToList().ForEach(i => Nodes[0].Nodes.Add(new Node
+                _searchText = value.ToLower();
+                
+                var filteredEquip = EquipList.Where(i => i.InvNum.ToString($"{Settings.Default.InvSymbol}-0000000").ToLower().Contains(value) ||
+                                    i.Name.ToLower().Contains(value) ||
+                                    i.MOL.FullName.ToLower().Contains(value) ||
+                                    i.Room.Name.ToLower().Contains(value) ||
+                                    i.MOL.FullName.ToLower().Contains(value)).ToList();
+
+                AllEquip.Clear();
+                filteredEquip.ForEach(i => AllEquip.Add(new EquipInfo
                 {
+                    Id = i.Id,
+                    RegistrationDate = i.RegistrationDate,
                     Name = i.Name,
-                    IsExpanded = false,
-                    RoomId = i.Id,
-                    Nodes = new ObservableCollection<Node>()
+                    InvNum = i.InvNum,
+                    RoomId = i.RoomId,
+                    Room = i.Room,
+                    Type = i.Type,
+                    Status = i.Status,
+                    Accountability = i.Accountability,
+                    History = i.History,
+                    Note = i.Note,
+                    Count = i.Count,
+                    IsDeleted = i.IsDeleted,
+                    MOL = i.MOL,
+                    ReleaseDate = i.ReleaseDate,
+                    BasePrice = i.BasePrice,
+                    DepreciationRate = i.DepreciationRate,
+                    DepreciationGroup = i.DepreciationGroup,
+                    BaseInvNum = i.BaseInvNum
                 }));
+
+                CurrentRoomEquip.Clear();
+                filteredEquip.ForEach(i =>
+                {
+                    if(i.RoomId == SelectedNode.RoomId) CurrentRoomEquip.Add(i);
+                });
+
+
+                //filteredEquip.Where(i => !Nodes[0].Nodes.Contains(new Node
+                //{
+                //    Name = null,
+                //    IsExpanded = false,
+                //    SortIndex = 0,
+                //    RoomId = 0,
+                //    Nodes = null
+                //})).ToList().ForEach(i => Nodes[0].Nodes.Add(new Node
+                //{
+                //    Name = i.Room.Name,
+                //    IsExpanded = false,
+                //    RoomId = i.Room.Id,
+                //    Nodes = new ObservableCollection<Node>()
+                //}));
                 SelectedEquip = null;
                 OnPropertyChanged();
-            }
-        }
-
-        public MainVM()
-        {
-            new SyncData();
-            //View = (ICollectionViewLiveShaping)CollectionViewSource.GetDefaultView(Nodes);
-            //View.IsLiveSorting = true;
-            CurrentRoomEquip = new ObservableCollection<Equip>();
-            EquipTypes = new ObservableCollection<Type>(new DictionaryRepository().GetTypes());
-            DepreciationGroups = new ObservableCollection<string>(Enum.GetNames(typeof(InvEnums.DepreciationGroups)));
-            EquipMOLs = new ObservableCollection<MOL>(new DictionaryRepository().GetMOLs());
-            Rooms = new RoomRepository().Get();
-            EquipList = new EquipRepository().GetEquip();
-            Categories = new ObservableCollection<Category>(new DictionaryRepository().GetCategories());
-            AllEquip = new ObservableCollection<EquipInfo>();
-        }
-
-
-        public ICommand ClearCreateEquipCommand
-        {
-            get
-            {
-                return new RelayCommand(o =>
-                {
-                    NewEquip = null;
-                });
-            }
-        }
-
-        public ICommand OpenAllEquipCommand
-        {
-            get
-            {
-                return new RelayCommand(o =>
-                {
-                    var view = new AllEquipDialog()
-                    {
-                        DataContext = this
-                    };
-
-                    AllEquip.Clear();
-
-                    new EquipRepository().GetEquip()
-                        .ForEach(i => AllEquip.Add(new EquipInfo
-                        {
-                            Id = i.Id,
-                            RegistrationDate = i.RegistrationDate,
-                            Name = i.Name,
-                            InvNum = i.InvNum,
-                            RoomId = i.RoomId,
-                            Room = i.Room,
-                            Type = i.Type,
-                            Status = i.Status,
-                            Accountability = i.Accountability,
-                            History = i.History,
-                            Note = i.Note,
-                            Count = i.Count,
-                            IsDeleted = i.IsDeleted,
-                            MOL = i.MOL,
-                            ReleaseDate = i.ReleaseDate,
-                            BasePrice = i.BasePrice,
-                            DepreciationRate = i.DepreciationRate,
-                            DepreciationGroup = i.DepreciationGroup,
-                            BaseInvNum = i.BaseInvNum,
-                            Free = i.RoomId == 0 ? 1 : 0,
-                            Used = i.RoomId != 0 ? 1 : 0
-                        }));
-
-                    DialogHost.Show(view, "RootDialog");
-                });
             }
         }
 
@@ -312,6 +299,67 @@ namespace Property_inventory.ViewModels
                 });
             }
         }
+        public ICommand CreateEquipCommand
+        {
+            get
+            {
+                return new RelayCommand(async o =>
+                {
+                    if (SelectedNode == null || SelectedNode.RoomId <= 0)
+                    {
+                        var info = new InfoDialog()
+                        {
+                            DataContext = this
+                        };
+                        MessageDialogContent = "Выберите помещение.";
+
+                        await DialogHost.Show(info, "RootDialog", ClosingEventHandler);
+                        return;
+                    }
+
+                    var create = new EquipDialog()
+                    {
+                        DataContext = this
+                    };
+
+                    var result = await DialogHost.Show(create, "RootDialog", ClosingEventHandler);
+                    if (result is null || (string)result == "False") return;
+
+                    var createManufacturer = new AddManufacturerUC()
+                    {
+                        DataContext = this
+                    };
+
+                    var resultManufacturer = await DialogHost.Show(createManufacturer, "RootDialog", ClosingEventHandler);
+                    if (resultManufacturer is null || !(bool)resultManufacturer) return;
+
+                    //if (new ManufacturerRepository().Contains(NewManufacturer))
+                    //    NewEquip.ManufacturerId = NewManufacturer.Id;
+                    //else
+                    NewEquip.Manufacturer = NewManufacturer;
+
+                    NewEquip.TypeId = SelectedType.Id;
+
+                    var addedEquip = new EquipRepository().Add(NewEquip);
+                    CurrentRoomEquip.Add(addedEquip);
+                    NewEquip = null;
+                    ClearCreateEquipCommand.Execute(null);
+            
+                    if ((string)result == "Repeat") CreateEquipCommand.Execute(null);
+                });
+            }
+        }
+        public ICommand ClearCreateEquipCommand
+        {
+            get
+            {
+                return new RelayCommand(o =>
+                {
+                    NewEquip = null;
+                });
+            }
+        }
+        
         public ICommand EditRoomCommand
         {
             get
@@ -343,48 +391,25 @@ namespace Property_inventory.ViewModels
                 });
             }
         }
-        public ICommand PrintQRCodesCommand
+        public ICommand EditEquipCommand
         {
             get
             {
-                return new RelayCommand(o =>
+                return new RelayCommand(async o =>
                 {
-                    //Dialog
-                    throw new NotImplementedException();
+                    var create = new EquipEditDialog()
+                    {
+                        DataContext = this
+                    };
+
+                    var result = await DialogHost.Show(create, "RootDialog", ClosingEventHandler);
+                    if (result is null || !(bool)result) return;
+
+                    new EquipRepository().Update(SelectedEquip);
                 });
             }
         }
-
-        public ICommand OpenDicTypesCommand
-        {
-            get
-            {
-                return new RelayCommand(o =>
-                {
-                    //Dialog
-                    new DictionaryTypesWindow().ShowDialog();
-                    EquipTypes.Clear();
-                    new DictionaryRepository().GetTypes().ForEach(i => EquipTypes.Add(i));
-                });
-            }
-        }
-
-        public ICommand OpenDicMOLsCommand
-        {
-            get
-            {
-                return new RelayCommand(o =>
-                {
-                    //Dialog
-                    new DictionaryMOLsWindow().ShowDialog();
-                    EquipMOLs.Clear();
-                    new DictionaryRepository().GetMOLs().ForEach(i => EquipMOLs.Add(i));
-                });
-            }
-        }
-
-        private void ClosingEventHandler(object sender, DialogClosingEventArgs eventArgs)
-            => Debug.WriteLine("You can intercept the closing event, and cancel here.");
+        
         public ICommand DeleteRoomCommand
         {
             get
@@ -404,34 +429,6 @@ namespace Property_inventory.ViewModels
 
                         Nodes[0].Nodes.Remove(SelectedNode);
                     }
-                });
-            }
-        }
-        public ICommand OpenEquipHistoryCommand
-        {
-            get
-            {
-                return new RelayCommand(o =>
-                {
-                    new HistoryWindow().ShowDialog();
-                });
-            }
-        }
-        public ICommand EditEquipCommand
-        {
-            get
-            {
-                return new RelayCommand(async o =>
-                {
-                    var create = new EquipEditDialog()
-                    {
-                        DataContext = this
-                    };
-
-                    var result = await DialogHost.Show(create, "RootDialog", ClosingEventHandler);
-                    if (result is null || !(bool)result) return;
-
-                    new EquipRepository().Update(SelectedEquip);
                 });
             }
         }
@@ -456,6 +453,97 @@ namespace Property_inventory.ViewModels
                 });
             }
         }
+        
+        public ICommand PrintQRCodesCommand
+        {
+            get
+            {
+                return new RelayCommand(o =>
+                {
+                    //Dialog
+                    throw new NotImplementedException();
+                });
+            }
+        }
+        public ICommand OpenAllEquipCommand
+        {
+            get
+            {
+                return new RelayCommand(o =>
+                {
+                    var view = new AllEquipDialog()
+                    {
+                        DataContext = this
+                    };
+
+                    AllEquip.Clear();
+
+                    new EquipRepository().GetEquip()
+                        .ForEach(i => AllEquip.Add(new EquipInfo
+                        {
+                            Id = i.Id,
+                            RegistrationDate = i.RegistrationDate,
+                            Name = i.Name,
+                            InvNum = i.InvNum,
+                            RoomId = i.RoomId,
+                            Room = i.Room,
+                            Type = i.Type,
+                            Status = i.Status,
+                            Accountability = i.Accountability,
+                            History = i.History,
+                            Note = i.Note,
+                            Count = i.Count,
+                            IsDeleted = i.IsDeleted,
+                            MOL = i.MOL,
+                            ReleaseDate = i.ReleaseDate,
+                            BasePrice = i.BasePrice,
+                            DepreciationRate = i.DepreciationRate,
+                            DepreciationGroup = i.DepreciationGroup,
+                            BaseInvNum = i.BaseInvNum,
+                            Free = i.RoomId == 0 ? 1 : 0,
+                        }));
+
+                    DialogHost.Show(view, "RootDialog");
+                });
+            }
+        }
+        public ICommand OpenEquipHistoryCommand
+        {
+            get
+            {
+                return new RelayCommand(o =>
+                {
+                    new HistoryWindow().ShowDialog();
+                });
+            }
+        }
+        public ICommand OpenDicTypesCommand
+        {
+            get
+            {
+                return new RelayCommand(o =>
+                {
+                    //Dialog
+                    new DictionaryTypesWindow().ShowDialog();
+                    EquipTypes.Clear();
+                    new DictionaryRepository().GetTypes().ForEach(i => EquipTypes.Add(i));
+                });
+            }
+        }
+        public ICommand OpenDicMOLsCommand
+        {
+            get
+            {
+                return new RelayCommand(o =>
+                {
+                    //Dialog
+                    new DictionaryMOLsWindow().ShowDialog();
+                    EquipMOLs.Clear();
+                    new DictionaryRepository().GetMOLs().ForEach(i => EquipMOLs.Add(i));
+                });
+            }
+        }
+        
         public ICommand HandoverCommand
         {
             get
@@ -486,13 +574,14 @@ namespace Property_inventory.ViewModels
                 });
             }
         }
+
         public ICommand OpenInvCardWinCommand
         {
             get
             {
                 return new RelayCommand(o =>
                 {
-                    new InvCardWindow().ShowDialog();
+                    new InvCardWindow(){ DataContext = new ActVM(SelectedEquip)}.ShowDialog();
                 });
             }
         }
@@ -502,7 +591,7 @@ namespace Property_inventory.ViewModels
             {
                 return new RelayCommand(o =>
                 {
-                    new ActOfRelocateWindow().ShowDialog();
+                    new ActOfRelocateWindow(){ DataContext = new ActVM(SelectedEquip)}.ShowDialog();
                 });
             }
         }
@@ -512,52 +601,15 @@ namespace Property_inventory.ViewModels
             {
                 return new RelayCommand(o =>
                 {
-                    new WriteOffWindow().ShowDialog();
+                    new WriteOffWindow(){ DataContext = new ActVM(SelectedEquip)}.ShowDialog();
                 });
             }
         }
 
-        public ICommand CreateEquipCommand
-        {
-            get
-            {
-                return new RelayCommand(async o =>
-                {
-                    if (SelectedNode == null || SelectedNode.RoomId <= 0)
-                    {
-                        var info = new InfoDialog()
-                        {
-                            DataContext = this
-                        };
-                        MessageDialogContent = "Выберите помещение.";
-
-                        await DialogHost.Show(info, "RootDialog", ClosingEventHandler);
-                        return;
-                    }
-
-                    var create = new EquipDialog()
-                    {
-                        DataContext = this
-                    };
-
-                    var result = await DialogHost.Show(create, "RootDialog", ClosingEventHandler);
-                    if (result is null || !(bool)result) return;
-
-                    NewEquip.RoomId = SelectedNode.RoomId;
-                    var molId = NewEquip.MOL.Id;
-                    NewEquip.MOLId = molId;
-                    
-                    var id = new EquipRepository().Add(NewEquip);
-                    CurrentRoomEquip.Add(NewEquip);
-                    NewEquip = null;
-                    ClearCreateEquipCommand.Execute(null);
-                    HandoverCommand.Execute(null);
-                });
-            }
-        }
+        private void ClosingEventHandler(object sender, DialogClosingEventArgs eventArgs)
+            => Debug.WriteLine("You can intercept the closing event, and cancel here.");
 
         public event PropertyChangedEventHandler PropertyChanged;
-
         protected virtual void OnPropertyChanged([CallerMemberName] string propertyName = null)
         {
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));

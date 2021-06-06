@@ -18,11 +18,12 @@ namespace Property_inventory.DAL.Repositories
 
         public int Add(Room newRoom)
         {
-            var id = InvDbContext.GetInstance().Rooms.Add(newRoom).Id;
-            newRoom.Id = id;
+            newRoom.OrgId = 1;
+            var room = InvDbContext.GetInstance().Rooms.Add(newRoom);
             InvDbContext.GetInstance().SaveChanges();
+            newRoom.Id = room.Id;
             new SyncData().AddRoom(newRoom);
-            return id;
+            return room.Id;
         }
 
         public void Update(Room room)

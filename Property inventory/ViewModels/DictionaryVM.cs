@@ -20,8 +20,13 @@ namespace Property_inventory.ViewModels
 
         public ObservableCollection<Type> TypeList { get; set; }
         public ObservableCollection<MOL> MOLList { get; set; }
+        public ObservableCollection<MOLPosition> Positions { get; set; }
+        public ObservableCollection<Category> Categories { get; set; }
         public object SelectedItem { get; set; }
         public string NewName { get; set; }
+        public string TypeName { get; set; }
+        public string FullName { get; set; }
+        public int PersonnelNumber { get; set; }
         public string MessageDialogContent
         {
             get => _messageDialogContent;
@@ -36,6 +41,8 @@ namespace Property_inventory.ViewModels
         {
             TypeList = new ObservableCollection<Type>(new DictionaryRepository().GetTypes());
             MOLList = new ObservableCollection<MOL>(new DictionaryRepository().GetMOLs());
+            Positions = new ObservableCollection<MOLPosition>(new DictionaryRepository().GetMolPositions());
+            Categories = new ObservableCollection<Category>(new DictionaryRepository().GetCategories());
         }
 
         public ICommand CreateTypeCommand
@@ -44,7 +51,7 @@ namespace Property_inventory.ViewModels
             {
                 return new RelayCommand(async o =>
                 {
-                    var view = new CreateRoomUC()
+                    var view = new CreateTypeUC()
                     {
                         DataContext = this
                     };
@@ -54,7 +61,8 @@ namespace Property_inventory.ViewModels
                     {
                         var newType = new DictionaryRepository().AddType(new Type
                         {
-                            Name = NewName,
+                            CategoryId = ((Category)SelectedItem).Id,
+                            Name = TypeName,
                         });
                         TypeList.Add(newType);
                     }
@@ -68,7 +76,7 @@ namespace Property_inventory.ViewModels
             {
                 return new RelayCommand(async o =>
                 {
-                    var view = new CreateRoomUC()
+                    var view = new CreateMolUC()
                     {
                         DataContext = this
                     };
@@ -78,7 +86,9 @@ namespace Property_inventory.ViewModels
                     {
                         var newMOL = new DictionaryRepository().AddMOL(new MOL
                         {
-                            FullName = NewName
+                            FullName = FullName,
+                            PersonnelNumber = PersonnelNumber,
+                            PositionId = ((MOLPosition)SelectedItem).Id
                         });
 
                         MOLList.Add(newMOL);

@@ -17,9 +17,6 @@
     TextOptions.TextFormattingMode="Ideal"
     TextOptions.TextRenderingMode="Auto"
     mc:Ignorable="d">
-    <Window.DataContext>
-        <viewModels:ActVM/>
-    </Window.DataContext>
     <Grid>
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="*" />
@@ -39,31 +36,30 @@
             Grid.Column="0"
             Margin="30,0">
             <ComboBox
-                ItemsSource="{Binding EquipList}"
-                SelectedItem="{Binding SelectedEquip}"
-                SelectedIndex="{Binding SelectedEquipIndex}"
                 Margin="0,10,0,0"
                 materialDesign:HintAssist.Hint="Имущество"
                 materialDesign:HintAssist.HintOpacity=".26"
-                IsEditable="True" />
-            <ComboBox
-                Margin="0,10,0,0"
-                materialDesign:HintAssist.Hint="Основание для составления документа"
-                materialDesign:HintAssist.HintOpacity=".26"
-                IsEditable="True" />
+                DisplayMemberPath="Name"
+                IsEditable="True"
+                ItemsSource="{Binding EquipList}"
+                SelectedIndex="{Binding SelectedEquipIndex}"
+                SelectedItem="{Binding SelectedEquip}" />
             <TextBox
                 Margin="0,10,0,0"
                 VerticalAlignment="Center"
-                materialDesign:HintAssist.Hint="Дата составления документа"
-                Style="{StaticResource MaterialDesignFloatingHintTextBox}" />
-
+                materialDesign:HintAssist.Hint="Основание для составления документа"
+                Style="{StaticResource MaterialDesignFloatingHintTextBox}"
+                Text="{Binding Reason}" />
             <ComboBox
                 Margin="0,10"
                 materialDesign:HintAssist.Hint="Причина списания"
                 materialDesign:HintAssist.HintOpacity=".26"
-                IsEditable="True" />
+                IsEditable="True"
+                ItemsSource="{Binding Causes}"
+                SelectedIndex="0"
+                SelectedItem="{Binding SelectedCause}" />
             <Button
-                Margin="0,10,0,0"
+                Command="{Binding PrintWriteOffCommand}"
                 Content="Печать"
                 Style="{StaticResource MaterialDesignRaisedAccentButton}"
                 ToolTip="Resource name: MaterialDesignRaisedAccentButton" />

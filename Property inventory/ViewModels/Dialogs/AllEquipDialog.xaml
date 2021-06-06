@@ -100,8 +100,8 @@
                             Header="Аморт. группа" />
                         <DataGridTextColumn
                             Width="120"
-                            Binding="{Binding Free}"
-                            Header="Не выдано" />
+                            Binding="{Binding Room.Name}"
+                            Header="Помещение" />
                     </DataGrid.Columns>
                 </DataGrid>
             </Grid>

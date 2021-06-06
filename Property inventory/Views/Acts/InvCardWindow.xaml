@@ -17,9 +17,6 @@
     TextOptions.TextFormattingMode="Ideal"
     TextOptions.TextRenderingMode="Auto"
     mc:Ignorable="d">
-    <Window.DataContext>
-        <viewModels:ActVM/>
-    </Window.DataContext>
     <Grid>
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="*" />
@@ -40,17 +37,17 @@
             Margin="30,0">
             <ComboBox
                 Margin="0,10,0,0"
-                ItemsSource="{Binding EquipList}"
-                SelectedItem="{Binding SelectedEquip}"
-                SelectedIndex="{Binding SelectedEquipIndex}"
-                DisplayMemberPath="Name"
                 materialDesign:HintAssist.Hint="Имущество"
                 materialDesign:HintAssist.HintOpacity=".26"
-                IsEditable="True" />
+                DisplayMemberPath="Name"
+                IsEditable="True"
+                ItemsSource="{Binding EquipList}"
+                SelectedIndex="{Binding SelectedEquipIndex}"
+                SelectedItem="{Binding SelectedEquip}" />
             <Button
                 Margin="0,10,0,0"
-                Content="Печать"
                 Command="{Binding PrintInvCardCommand}"
+                Content="Печать"
                 Style="{StaticResource MaterialDesignRaisedAccentButton}"
                 ToolTip="Resource name: MaterialDesignRaisedAccentButton" />
         </StackPanel>

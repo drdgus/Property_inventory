@@ -65,7 +65,7 @@ namespace Property_inventory.ViewModels
             Splitter = "->";
             new HistoryRepository().Get().Select(i => new EquipHistory
             {
-                EquipId = i.EquipId,
+                ObjectId = i.ObjectId,
                 Date = i.Date,
                 Code = i.Code,
                 ChangedProperty = i.ChangedProperty,
