@@ -269,6 +269,9 @@
     <Compile Include="ViewModels\Dialogs\AllEquipDialog.xaml.cs">
       <DependentUpon>AllEquipDialog.xaml</DependentUpon>
     </Compile>
+    <Compile Include="ViewModels\Dialogs\AuthUC.xaml.cs">
+      <DependentUpon>AuthUC.xaml</DependentUpon>
+    </Compile>
     <Compile Include="ViewModels\Dialogs\CreateMolUC.xaml.cs">
       <DependentUpon>CreateMolUC.xaml</DependentUpon>
     </Compile>
@@ -364,6 +367,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="ViewModels\Dialogs\AllEquipDialog.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="ViewModels\Dialogs\AuthUC.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -500,7 +507,9 @@
     <None Include="Resources\Accounting\5. Акт списания.xls" />
     <None Include="Resources\Accounting\Акт приема-передачи.xlsx" />
     <None Include="Resources\Inventory\1. Акт инвентаризационная опись.xlsx" />
+    <None Include="Resources\Inventory\2 страница инвентаризационной описи.xlsx" />
     <None Include="Resources\Inventory\2. Сличительная ведомость.xls" />
+    <None Include="Resources\Inventory\Инвентаризационная опись ТМЦ.xls" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />

@@ -3,6 +3,7 @@ using Property_inventory.DAL;
 using Property_inventory.Entities;
 using Property_inventory.Properties;
 using System;
+using System.Collections.Generic;
 using System.Data.Entity;
 using System.Globalization;
 using System.IO;
@@ -14,19 +15,16 @@ namespace Property_inventory.Services
     {
         public ExcelEditor()
         {
-            AllEquipAct();
-            InvCard();
-            HandoverAct();
-            RelocateAct();
-            WriteOffAct();
+    
         }
 
         public void AllEquipAct()
         {
-            ExcelPackage excel = new ExcelPackage(new FileInfo(@"Resources\AllEquipAct.xlsx"));
+            ExcelPackage excel = new ExcelPackage(new FileInfo(@"Resources\1. (опись)Акт инвентаризационная опись.xlsx"));
 
+            var workbook = excel.Workbook;
             // name of the sheet
-            var workSheet = excel.Workbook.Worksheets[0];
+            var workSheet = workbook.Worksheets[0];
 
             // Header of the Excel sheet
             var startRow = 1;
@@ -48,25 +46,7 @@ namespace Property_inventory.Services
             cellRange.Single(c => c.Text == "$equipCategory").Value = equip[0].Type.Name;
             cellRange.Single(c => c.Text == "$orgAddress").Value = "Красноярский край, Богучанский район, п. Таёжный, ул. Новая 15";
 
-
-            for (int i = 0; i < equip.Count; i++)
-            {
-                cellRange[$"A{51 + i}"].Value = i + 1;
-                cellRange[$"E{51 + i}"].Value = equip[i].Name;
-                cellRange[$"S{51 + i}"].Value = "regName";
-                cellRange[$"X{51 + i}"].Value = equip[i].RegistrationDate.ToString();
-                cellRange[$"AC{51 + i}"].Value = 1;
-                cellRange[$"AH{51 + i}"].Value = equip[i].ReleaseDate.ToString();
-                cellRange[$"AN{51 + i}"].Value = equip[i].InvNum.ToString("Т-0000000");
-                cellRange[$"AU{51 + i}"].Value = equip[i].BaseInvNum;
-                cellRange[$"AZ{51 + i}"].Value = "Passport";
-                cellRange[$"BG{51 + i}"].Value = equip[i].Count;
-                cellRange[$"BL{51 + i}"].Value = equip[i].Count * equip[i].BasePrice;
-            }
-
-
-            cellRange["BG73"].Value = equip.Sum(i => i.Count);
-            cellRange["BL73"].Value = equip.Sum(i => i.BasePrice * i.Count);
+            InsertEquipTable(workbook);
 
             cellRange["AJ121"].Value = DateTime.Now.Day;
             cellRange["AN121"].Value = DateTime.Now.ToString("MMMM", CultureInfo.CreateSpecificCulture("ru"));
@@ -82,7 +62,62 @@ namespace Property_inventory.Services
             excel.Dispose();
         }
 
-        private void RelocateAct()
+        private void InsertEquipTable(ExcelWorkbook AllEquipActWorkbook)
+        {
+            ExcelPackage excel = new ExcelPackage(new FileInfo(@"Resources\1. (опись)Акт инвентаризационная опись.xlsx"));
+
+            // name of the sheet
+            var workSheet = excel.Workbook.Worksheets[0];
+
+            // Header of the Excel sheet
+            var startRow = 1;
+            var endRow = 900;
+            var columnStart = 1;
+            var columnEnd = workSheet.Cells.End.Column;
+
+            var cellRange = workSheet.Cells[startRow, columnStart, endRow, columnEnd];
+
+            var equip = InvDbContext.GetInstance().Equips.AsNoTracking().Include(e => e.Type).Where(e => e.Type.Id == 1).ToList();
+
+            //equip.Count 
+
+            for (int page = 1; page < equip.Count / 22; page++)
+            {
+                // На 1 вкладной лист
+                for (int i = 0; i < 22; i++)
+                {
+                    if(equip[i] == null) continue;
+
+                    cellRange[$"A{51 + i}"].Value = i + 1;
+                    cellRange[$"E{51 + i}"].Value = equip[i].Name;
+                    cellRange[$"S{51 + i}"].Value = "regName";
+                    cellRange[$"X{51 + i}"].Value = equip[i].RegistrationDate.ToString();
+                    cellRange[$"AC{51 + i}"].Value = 1;
+                    cellRange[$"AH{51 + i}"].Value = equip[i].ReleaseDate.ToString();
+                    cellRange[$"AN{51 + i}"].Value = equip[i].InvNum.ToString($"{Settings.Default.InvSymbol}-0000000");
+                    cellRange[$"AU{51 + i}"].Value = equip[i].BaseInvNum;
+                    cellRange[$"AZ{51 + i}"].Value = "";
+                    cellRange[$"BG{51 + i}"].Value = equip[i].Count;
+                    cellRange[$"BL{51 + i}"].Value = equip[i].Count * equip[i].BasePrice;
+                }
+
+                cellRange["BG73"].Value = equip.Sum(i => i.Count);
+                cellRange["BL73"].Value = equip.Sum(i => i.BasePrice * i.Count);
+
+                //Вставка всех листов как отдельные страницы в инвентаризационную опись
+                AllEquipActWorkbook.Worksheets.Add($"Страница №{page}");
+
+                for (int eq = 0; eq < 22; eq++)
+                {
+                    if(equip.Count != 0) equip.RemoveAt(0);
+                }
+            }
+           
+            //excel.SaveAs(new FileInfo($"Акт инвентаризационной описи №1.xlsx"));
+            excel.Dispose();
+        }
+
+        public void RelocateAct()
         {
             ExcelPackage excel = new ExcelPackage(new FileInfo(@"Resources\Relocate.xlsx"));
 
@@ -101,7 +136,7 @@ namespace Property_inventory.Services
             cellRange.Single(c => c.Text == "$OKUD").Value = Settings.Default.OKUD;
             cellRange.Single(c => c.Text == "$OKPO").Value = Settings.Default.OKPO;
 
-            cellRange.Single(c => c.Text.Contains("$orgName")).Value = "МКОУ Таежнинска школа №20";
+            cellRange.Single(c => c.Text.Contains("$orgName")).Value = "МКОУ Таежнинская школа №20";
             cellRange.Single(c => c.Text.Contains("$oldRoom")).Value = "Каб. 101";
             cellRange.Single(c => c.Text.Contains("$newRoom")).Value = "Каб. 102";
             cellRange.Single(c => c.Text.Contains("$docNum")).Value = 1;
@@ -125,7 +160,7 @@ namespace Property_inventory.Services
             excel.Dispose();
         }
 
-        private void WriteOffAct()
+        public void WriteOffAct()
         {
             ExcelPackage excel = new ExcelPackage(new FileInfo(@"Resources\ActOfWriteOff.xlsx"));
             // name of the sheet
@@ -167,7 +202,7 @@ namespace Property_inventory.Services
             excel.Dispose();
         }
 
-        private void HandoverAct()
+        public void HandoverAct()
         {
             ExcelPackage excel = new ExcelPackage(new FileInfo(@"Resources\ActOfHandover.xlsx"));
 
@@ -220,7 +255,7 @@ namespace Property_inventory.Services
             excel.Dispose();
         }
 
-        private void InvCard()
+        public void InvCard()
         {
             ExcelPackage excel = new ExcelPackage(new FileInfo(@"Resources\InvCard.xlsx"));
 
@@ -263,7 +298,7 @@ namespace Property_inventory.Services
             excel.Dispose();
         }
 
-        private void HandoverMOLAct()
+        public void HandoverMOLAct()
         {
             //ExcelPackage excel = new ExcelPackage();
 

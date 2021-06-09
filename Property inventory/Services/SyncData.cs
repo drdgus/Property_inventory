@@ -150,21 +150,6 @@ namespace Property_inventory.Services
                 .WithAutomaticReconnect()
                 .Build();
 
-
-            connection.Reconnecting += delegate(Exception e)
-            {
-                return new Task(() => Console.WriteLine($"Reconnecting... {e}"));
-            };
-
-            connection.Reconnected += delegate(string s)
-            {
-                return new Task(() => Console.WriteLine("Reconnected"));
-            };
-            connection.Closed += delegate(Exception e)
-            {
-                return new Task(() => Console.WriteLine($"Closed. {e}"));
-            };
-
             connection.On<List<UnappliedChange>>("ReceiveChanges", (changesList) =>
             {
                 MessageBox.Show($"Изменения: {String.Join("\n",changesList)}");
@@ -173,7 +158,6 @@ namespace Property_inventory.Services
             try
             {
                 await connection.StartAsync();
-                connection.
             }
             catch (Exception ex)
             {

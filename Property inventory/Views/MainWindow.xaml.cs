@@ -140,5 +140,10 @@ namespace Property_inventory.Views
         {
             ((dynamic)DataContext).OpenInvCardWinCommand.Execute(null);
         }
+
+        private void MainWindow_OnLoaded(object sender, RoutedEventArgs e)
+        {
+            ((dynamic)DataContext).LoadedCommand.Execute(null);
+        }
     }
 }

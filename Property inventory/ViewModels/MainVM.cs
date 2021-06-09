@@ -15,9 +15,11 @@ using System.Data.Entity;
 using System.Diagnostics;
 using System.Linq;
 using System.Runtime.CompilerServices;
+using System.Threading;
 using System.Windows.Input;
 using Property_inventory.DAL.Repositories;
 using Property_inventory.Properties;
+using Property_inventory.Services.Tools;
 using Type = Property_inventory.Entities.Type;
 
 namespace Property_inventory.ViewModels
@@ -26,10 +28,51 @@ namespace Property_inventory.ViewModels
     {
         public MainVM()
         {
+            AllEquip = new ObservableCollection<EquipInfo>();
+            CurrentRoomEquip = new ObservableCollection<Equip>();
+            Nodes = new ObservableCollection<Node>();
+            AllowCloseOnClickAway = false;
             new SyncData();
+        }
+
+        
+
+        private void LoadRooms()
+        {
+            var rooms = new ObservableCollection<Node>();
+            new RoomRepository().Get().ForEach(i => rooms.Add(new Node
+            {
+                Name = i.Name,
+                RoomId = i.Id,
+                IsExpanded = false,
+                SortIndex = 0,
+            }));
+
+            Nodes.Add(new Node
+            {
+                Name = InvDbContext.GetInstance().Orgs.Single().Name,
+                RoomId = -1,
+                SortIndex = 0,
+                Nodes = rooms
+            });
+        }
+
+        private async void Authentication()
+        {
+            var create = new AuthUC()
+            {
+                DataContext = this
+            };
+
+            await DialogHost.Show(create, "RootDialog", ClosingEventHandler);
+            AllowCloseOnClickAway = true;
+            Init();
+        }
+
+        private void Init()
+        {
             //View = (ICollectionViewLiveShaping)CollectionViewSource.GetDefaultView(Nodes);
             //View.IsLiveSorting = true;
-            CurrentRoomEquip = new ObservableCollection<Equip>();
             EquipTypes = new ObservableCollection<Type>(new DictionaryRepository().GetTypes());
             DepreciationGroups = new ObservableCollection<string>(Enum.GetNames(typeof(InvEnums.DepreciationGroups)));
             EquipMOLs = new ObservableCollection<MOL>(new DictionaryRepository().GetMOLs());
@@ -37,7 +80,7 @@ namespace Property_inventory.ViewModels
             Rooms = new RoomRepository().Get();
             EquipList = new EquipRepository().GetEquip();
             Categories = new ObservableCollection<Category>(new DictionaryRepository().GetCategories());
-            AllEquip = new ObservableCollection<EquipInfo>();
+            LoadRooms();
         }
 
         private ObservableCollection<Node> _nodes;
@@ -51,6 +94,9 @@ namespace Property_inventory.ViewModels
         private string _equipDialogOperationContent;
         private int _selectedTypeIndex;
         private int _selectedDeprGroupIndex;
+        private string _authMessage;
+        private string _password;
+        private bool _allowCloseOnClickAway;
 
         public bool InfoDialogIsOpen
         {
@@ -162,34 +208,39 @@ namespace Property_inventory.ViewModels
             }
         }
 
+        public string Password
+        {
+            get => _password;
+            set
+            {
+                _password = value;
+                AuthMessage = "";
+            }
+        }
+
+        public string AuthMessage
+        {
+            get => _authMessage;
+            set
+            {
+                _authMessage = value;
+                OnPropertyChanged();
+            }
+        }
+
+        public bool AllowCloseOnClickAway
+        {
+            get => _allowCloseOnClickAway;
+            set
+            {
+                _allowCloseOnClickAway = value;
+                OnPropertyChanged();
+            }
+        }
+
         public ObservableCollection<Node> Nodes
         {
-            get
-            {
-                if (_nodes is null)
-                {
-                    var nodes = new ObservableCollection<Node>();
-                    new RoomRepository().Get().ForEach(i => nodes.Add(new Node
-                    {
-                        Name = i.Name,
-                        RoomId = i.Id,
-                        IsExpanded = false,
-                        SortIndex = 0,
-                    }));
-
-                    _nodes = new ObservableCollection<Node>
-                    {
-                        new Node
-                        {
-                            Name = InvDbContext.GetInstance().Orgs.Single().Name,
-                            RoomId = -1,
-                            SortIndex = 0,
-                            Nodes = nodes
-                        }
-                    };
-                };
-                return _nodes;
-            }
+            get => _nodes;
             set => _nodes = value;
         }
         public ObservableCollection<Equip> CurrentRoomEquip { get; set; }
@@ -341,6 +392,33 @@ namespace Property_inventory.ViewModels
                     NewEquip.TypeId = SelectedType.Id;
 
                     var addedEquip = new EquipRepository().Add(NewEquip);
+                    //var rnd = new Random();
+
+                    //for (int i = 0; i < 20; i++)
+                    //{
+                    //    var type = EquipTypes[rnd.Next(0, EquipTypes.Count)];
+                    //    new EquipRepository().Add(new Equip
+                    //    {
+                    //        RegistrationDate = DateTime.Now,
+                    //        Name = type.Name.Split()[0],
+                    //        InvNum = i,
+                    //        RoomId = SelectedNode.RoomId,
+                    //        TypeId = type.Id,
+                    //        StatusId = 1,
+                    //        AccountabilityId = 2,
+                    //        Note = "",
+                    //        Count = 1,
+                    //        IsDeleted = false,
+                    //        MOLId = 1,
+                    //        ReleaseDate = DateTime.Now.AddDays(rnd.Next(-100, 0)),
+                    //        BasePrice = rnd.NextDecimal(),
+                    //        DepreciationRate = 0,
+                    //        DepreciationGroup = InvEnums.DepreciationGroups.I,
+                    //        BaseInvNum = $"BaseInvNum{i}",
+                    //        ManufacturerId = 1,
+                    //    });
+                    //}
+
                     CurrentRoomEquip.Add(addedEquip);
                     NewEquip = null;
                     ClearCreateEquipCommand.Execute(null);
@@ -349,6 +427,35 @@ namespace Property_inventory.ViewModels
                 });
             }
         }
+
+        public ICommand AuthCommand
+        {
+            get
+            {
+                return new RelayCommand(o =>
+                {
+                    if (Password != "Android")
+                    {
+                        AuthMessage = "Введен неверный пароль";
+                        return;
+                    }
+
+                    DialogHost.Close("RootDialog");
+                });
+            }
+        }
+        
+        public ICommand LoadedCommand
+        {
+            get
+            {
+                return new RelayCommand(o =>
+                {
+                    Authentication();
+                });
+            }
+        }
+
         public ICommand ClearCreateEquipCommand
         {
             get

@@ -42,8 +42,9 @@
         </ContextMenu>
     </Window.Resources>
     <materialDesign:DialogHost
-        CloseOnClickAway="True"
+        Loaded="MainWindow_OnLoaded"
         DialogTheme="Inherit"
+        CloseOnClickAway="{Binding AllowCloseOnClickAway}"
         Identifier="RootDialog">
         <Grid>
             <materialDesign:DialogHost
@@ -111,12 +112,12 @@
                     <DataGrid.Resources>
                         <ContextMenu x:Key="ContextMenuForDatagridItem">
                             <MenuItem Command="{Binding OpenEquipHistoryCommand}" Header="История" />
-                            <MenuItem Click="EditEquip" Header="Изменить" />
+                            <!--<MenuItem Click="EditEquip" Header="Изменить" />
                             <MenuItem
                                 Click="DeleteEquip"
                                 Command="{Binding DeleteEquipCommand}"
                                 Header="Удалить" />
-                            <Separator />
+                            <Separator />-->
                             <MenuItem Command="{Binding OpenInvCardWinCommand}" Click="OpenInvCardWin" Header="Инвентарная карточка" />
                             <MenuItem Command="{Binding OpenRelocateWinCommand}" Click="OpenRelocateWin" Header="Переместить" />
                             <MenuItem Command="{Binding OpenWriteOffWinCommand}" Click="OpenWriteOffWin" Header="Списать" />

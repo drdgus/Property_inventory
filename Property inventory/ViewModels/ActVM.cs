@@ -64,6 +64,7 @@ namespace Property_inventory.ViewModels
                 return new RelayCommand(o =>
                 {
                     //SelectedEquip
+                    new ExcelEditor().InvCard();
                 });
             }
         }
@@ -78,6 +79,7 @@ namespace Property_inventory.ViewModels
                     //SelectedEquip.MOL.ShortFullName
                     //SelectedNewMOL
                     //Reason
+                    new ExcelEditor().RelocateAct();
                 });
             }
         }
@@ -91,6 +93,7 @@ namespace Property_inventory.ViewModels
                     //SelectedEquip
                     //Reason
                     //SelectedCause
+                    new ExcelEditor().WriteOffAct();
                 });
             }
         }
@@ -101,7 +104,7 @@ namespace Property_inventory.ViewModels
             {
                 return new RelayCommand(o =>
                 {
-                    //new ExcelEditor();
+                    new ExcelEditor().AllEquipAct();
                 });
             }
         }
@@ -112,7 +115,7 @@ namespace Property_inventory.ViewModels
             {
                 return new RelayCommand(o =>
                 {
-                    //new ExcelEditor();
+                    new ExcelEditor().HandoverAct();
                 });
             }
         }
