@@ -18,7 +18,7 @@ namespace Property_inventory.Services
     public class SyncData
     {
         private string ServerAddress => "http://drdgus.space";
-        private string TESTServer => "http://localhost";
+        private string TESTServer => "http://drdgus.space";
         private string Login => "Android";
         private string Password => "Android";
         private HttpClient Client { get; set; }
