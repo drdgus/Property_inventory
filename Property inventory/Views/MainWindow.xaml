@@ -37,15 +37,15 @@
         </ContextMenu>
         <ContextMenu x:Key="ContextMenuTreeViewItem">
             <MenuItem Click="EditRoom" Header="Изменить" />
-            <MenuItem Click="PrintQRCodes" Header="Печать QR-кодов" />
+            <MenuItem Click="PrintQRCodes" Header="Печать термоэтикеток" />
             <MenuItem Click="DeleteRoom" Header="Удалить" />
         </ContextMenu>
     </Window.Resources>
     <materialDesign:DialogHost
-        Loaded="MainWindow_OnLoaded"
-        DialogTheme="Inherit"
         CloseOnClickAway="{Binding AllowCloseOnClickAway}"
-        Identifier="RootDialog">
+        DialogTheme="Inherit"
+        Identifier="RootDialog"
+        Loaded="MainWindow_OnLoaded">
         <Grid>
             <materialDesign:DialogHost
                 CloseOnClickAway="True"
@@ -118,9 +118,22 @@
                                 Command="{Binding DeleteEquipCommand}"
                                 Header="Удалить" />
                             <Separator />-->
-                            <MenuItem Command="{Binding OpenInvCardWinCommand}" Click="OpenInvCardWin" Header="Инвентарная карточка" />
-                            <MenuItem Command="{Binding OpenRelocateWinCommand}" Click="OpenRelocateWin" Header="Переместить" />
-                            <MenuItem Command="{Binding OpenWriteOffWinCommand}" Click="OpenWriteOffWin" Header="Списать" />
+                            <MenuItem
+                                Click="OpenInvCardWin"
+                                Command="{Binding OpenInvCardWinCommand}"
+                                Header="Инвентарная карточка" />
+                            <MenuItem
+                                Click="OpenRelocateWin"
+                                Command="{Binding OpenRelocateWinCommand}"
+                                Header="Переместить" />
+                            <MenuItem
+                                Click="OpenWriteOffWin"
+                                Command="{Binding}"
+                                Header="Печать термоэтикетки" />
+                            <MenuItem
+                                Click="OpenWriteOffWin"
+                                Command="{Binding OpenWriteOffWinCommand}"
+                                Header="Списать" />
                         </ContextMenu>
                     </DataGrid.Resources>
                     <DataGrid.RowStyle>
@@ -193,10 +206,6 @@
                     <MenuItem Height="20" Header="Справочники">
                         <MenuItem
                             Height="25"
-                            Command="{Binding}"
-                            Header="Списанное имущество" />
-                        <MenuItem
-                            Height="25"
                             Command="{Binding OpenAllEquipCommand}"
                             Header="Имущество на балансе" />
                         <MenuItem
@@ -218,20 +227,12 @@
                             Height="25"
                             Command="{Binding AllEquipActCommand}"
                             Header="Инвентаризационная опись" />
-                        <MenuItem
-                            Height="25"
-                            Command="{Binding AllEquipActCommand}"
-                            Header="Сличительная ведомость" />
                     </MenuItem>
-                    <MenuItem Height="20" Header="Учет ОС">
+                    <MenuItem Height="20" Header="Учет имущества">
                         <MenuItem
                             Height="25"
                             Command="{Binding OpenSupplyWinCommand}"
                             Header="Акт о поступлении оборудования" />
-                        <MenuItem
-                            Height="25"
-                            Command="{Binding OpenSupplyMaterialsWinCommand}"
-                            Header="Акт о поступлении материально-товарных ценностей" />
                         <Separator />
                         <MenuItem
                             Height="25"
@@ -240,24 +241,12 @@
                         <MenuItem
                             Height="25"
                             Command="{Binding OpenHandoverMOLWinCommand}"
-                            Header="Акт перемещения" />
+                            Header="Накладная на внутреннее перемещение" />
                         <MenuItem
                             Height="25"
                             Command="{Binding OpenWriteOffWinCommand}"
                             Header="Акт списания" />
                         <Separator />
-                        <MenuItem
-                            Height="25"
-                            Command="{Binding OpenHandoverMOLWinCommand}"
-                            Header="Акт приема-передачи МОЛу" />
-                        <MenuItem
-                            Height="25"
-                            Command="{Binding OpenHandoverToNewMOLCommand}"
-                            Header="Акт приема-передачи другому МОЛ" />
-                        <MenuItem
-                            Height="25"
-                            Command="{Binding OpenHandoverWinCommand}"
-                            Header="Акт приема-передачи" />
                     </MenuItem>
                     <MenuItem
                         Height="20"

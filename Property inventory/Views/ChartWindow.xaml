@@ -28,57 +28,47 @@
             <RowDefinition Height="Auto" />
             <RowDefinition />
         </Grid.RowDefinitions>
-        <materialDesign:Card Padding="12" materialDesign:ShadowAssist.ShadowDepth="Depth1">
-            <Grid>
-                <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="auto" />
-                    <ColumnDefinition />
-                </Grid.ColumnDefinitions>
-                <TextBox
-                    materialDesign:HintAssist.Hint="Текущая стоимость имущества"
-                    FontSize="16"
-                    FontWeight="DemiBold"
-                    IsReadOnly="True"
-                    Style="{StaticResource MaterialDesignFloatingHintTextBox}"
-                    Text="{Binding TotalSum, StringFormat=C, ConverterCulture=ru-RU}" />
-            </Grid>
-        </materialDesign:Card>
-        <Grid Grid.Row="1" Margin="10">
+        <Grid Grid.Row="1">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width=".6*" />
                 <ColumnDefinition />
             </Grid.ColumnDefinitions>
             <Grid.RowDefinitions>
-                <RowDefinition Height=".3*" />
+                <RowDefinition Height="Auto" />
                 <RowDefinition />
                 <RowDefinition />
             </Grid.RowDefinitions>
-
             <materialDesign:Card
                 Grid.Row="1"
                 Grid.RowSpan="2"
+                Margin="0,2,0,0"
                 VerticalAlignment="Stretch"
                 materialDesign:ShadowAssist.ShadowDepth="Depth2">
-                <DataGrid AutoGenerateColumns="False" ItemsSource="{Binding ChartTypes}">
-                    <DataGrid.Columns>
-                        <DataGridTextColumn
-                            Width="*"
-                            Binding="{Binding Type.Category.Name}"
-                            Header="Категория" />
-                        <DataGridTextColumn
-                            Width="*"
-                            Binding="{Binding Type.Name}"
-                            Header="Тип" />
-                        <DataGridTextColumn
-                            Width="*"
-                            Binding="{Binding Count}"
-                            Header="Количество" />
-                        <DataGridTextColumn
-                            Width="*"
-                            Binding="{Binding Sum, StringFormat=C, ConverterCulture=ru-RU}"
-                            Header="Сумма" />
-                    </DataGrid.Columns>
-                </DataGrid>
+                <ScrollViewer>
+                    <DataGrid
+                        AutoGenerateColumns="False"
+                        CanUserAddRows="False"
+                        ItemsSource="{Binding ChartTypes}">
+                        <DataGrid.Columns>
+                            <DataGridTextColumn
+                                Width="*"
+                                Binding="{Binding Type.Category.Class}"
+                                Header="Категория" />
+                            <DataGridTextColumn
+                                Width="*"
+                                Binding="{Binding Type.Name}"
+                                Header="Тип" />
+                            <DataGridTextColumn
+                                Width="*"
+                                Binding="{Binding Count}"
+                                Header="Количество" />
+                            <DataGridTextColumn
+                                Width="*"
+                                Binding="{Binding Sum, StringFormat=C, ConverterCulture=ru-RU}"
+                                Header="Сумма" />
+                        </DataGrid.Columns>
+                    </DataGrid>
+                </ScrollViewer>
             </materialDesign:Card>
             <wpf:CartesianChart
                 Grid.Row="1"
@@ -96,7 +86,7 @@
             <wpf:CartesianChart
                 Grid.Row="2"
                 Grid.Column="1"
-                Margin="20,0,0,0"
+                Margin="20,0,10,0"
                 LegendLocation="Right"
                 Series="{Binding ProcurementCollection}">
                 <wpf:CartesianChart.AxisY>
@@ -107,5 +97,20 @@
                 </wpf:CartesianChart.AxisX>
             </wpf:CartesianChart>
         </Grid>
+        <materialDesign:Card Padding="12" materialDesign:ShadowAssist.ShadowDepth="Depth1">
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="auto" />
+                    <ColumnDefinition />
+                </Grid.ColumnDefinitions>
+                <TextBox
+                    materialDesign:HintAssist.Hint="Стоимость имущества на балансе"
+                    FontSize="16"
+                    FontWeight="DemiBold"
+                    IsReadOnly="True"
+                    Style="{StaticResource MaterialDesignFloatingHintTextBox}"
+                    Text="{Binding TotalSum, StringFormat=C, ConverterCulture=ru-RU}" />
+            </Grid>
+        </materialDesign:Card>
     </Grid>
 </Window>

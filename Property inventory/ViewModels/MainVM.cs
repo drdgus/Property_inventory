@@ -34,55 +34,7 @@ namespace Property_inventory.ViewModels
             AllowCloseOnClickAway = false;
             new SyncData();
         }
-
         
-
-        private void LoadRooms()
-        {
-            var rooms = new ObservableCollection<Node>();
-            new RoomRepository().Get().ForEach(i => rooms.Add(new Node
-            {
-                Name = i.Name,
-                RoomId = i.Id,
-                IsExpanded = false,
-                SortIndex = 0,
-            }));
-
-            Nodes.Add(new Node
-            {
-                Name = InvDbContext.GetInstance().Orgs.Single().Name,
-                RoomId = -1,
-                SortIndex = 0,
-                Nodes = rooms
-            });
-        }
-
-        private async void Authentication()
-        {
-            var create = new AuthUC()
-            {
-                DataContext = this
-            };
-
-            await DialogHost.Show(create, "RootDialog", ClosingEventHandler);
-            AllowCloseOnClickAway = true;
-            Init();
-        }
-
-        private void Init()
-        {
-            //View = (ICollectionViewLiveShaping)CollectionViewSource.GetDefaultView(Nodes);
-            //View.IsLiveSorting = true;
-            EquipTypes = new ObservableCollection<Type>(new DictionaryRepository().GetTypes());
-            DepreciationGroups = new ObservableCollection<string>(Enum.GetNames(typeof(InvEnums.DepreciationGroups)));
-            EquipMOLs = new ObservableCollection<MOL>(new DictionaryRepository().GetMOLs());
-            EquipMOLs.Insert(0, new MOL());
-            Rooms = new RoomRepository().Get();
-            EquipList = new EquipRepository().GetEquip();
-            Categories = new ObservableCollection<Category>(new DictionaryRepository().GetCategories());
-            LoadRooms();
-        }
-
         private ObservableCollection<Node> _nodes;
         private Node _selectedNode;
         private string _searchText;
@@ -159,7 +111,7 @@ namespace Property_inventory.ViewModels
                     History = null,
                     Note = "",
                     Count = 1,
-                    IsDeleted = false,
+                    IsWriteOff = false,
                     MOLId = 1,
                     ReleaseDate = DateTime.Now,
                     BasePrice = 0.0m,
@@ -279,7 +231,7 @@ namespace Property_inventory.ViewModels
                     History = i.History,
                     Note = i.Note,
                     Count = i.Count,
-                    IsDeleted = i.IsDeleted,
+                    IsWriteOff = i.IsWriteOff,
                     MOL = i.MOL,
                     ReleaseDate = i.ReleaseDate,
                     BasePrice = i.BasePrice,
@@ -289,6 +241,7 @@ namespace Property_inventory.ViewModels
                 }));
 
                 CurrentRoomEquip.Clear();
+                if(SelectedNode is null) return;
                 filteredEquip.ForEach(i =>
                 {
                     if(i.RoomId == SelectedNode.RoomId) CurrentRoomEquip.Add(i);
@@ -314,6 +267,54 @@ namespace Property_inventory.ViewModels
             }
         }
 
+        private async void Authentication()
+        {
+            var create = new AuthUC()
+            {
+                DataContext = this
+            };
+
+            await DialogHost.Show(create, "RootDialog", ClosingEventHandler);
+
+            AllowCloseOnClickAway = true;
+            Init();
+        }
+       
+        private void Init()
+        {
+            //View = (ICollectionViewLiveShaping)CollectionViewSource.GetDefaultView(Nodes);
+            //View.IsLiveSorting = true;
+            EquipTypes = new ObservableCollection<Type>(new DictionaryRepository().GetTypes());
+            DepreciationGroups = new ObservableCollection<string>(Enum.GetNames(typeof(InvEnums.DepreciationGroups)));
+            EquipMOLs = new ObservableCollection<MOL>(new DictionaryRepository().GetMOLs());
+            EquipMOLs.Insert(0, new MOL());
+            Rooms = new RoomRepository().Get();
+            EquipList = new EquipRepository().GetEquip();
+            Categories = new ObservableCollection<Category>(new DictionaryRepository().GetCategories());
+            LoadRooms();
+        }
+
+        private void LoadRooms()
+        {
+            var rooms = new ObservableCollection<Node>();
+            new RoomRepository().Get().ForEach(i => rooms.Add(new Node
+            {
+                Name = i.Name,
+                RoomId = i.Id,
+                IsExpanded = false,
+                SortIndex = 0,
+            }));
+
+            Nodes.Add(new Node
+            {
+                Name = InvDbContext.GetInstance().Orgs.Single().Name,
+                RoomId = -1,
+                SortIndex = 0,
+                Nodes = rooms
+            });
+        }
+
+        #region Commands
         public ICommand CreateRoomCommand
         {
             get
@@ -376,6 +377,18 @@ namespace Property_inventory.ViewModels
                     var result = await DialogHost.Show(create, "RootDialog", ClosingEventHandler);
                     if (result is null || (string)result == "False") return;
 
+                    NewManufacturer = new Manufacturer
+                    {
+                        SupplyerName = "ООО «Техноград»",
+                        SupplyerAddress = "г. Москва, ул. Северная, д. 23, тел. +7(495)234-45-67",
+                        SupplyerRequisites =
+                            "ПАО «Бета-банк», р/с  406029876100000000934, к/с 98761111300000000555,  БИК  067111123, ИНН 5679876543, КПП 123456765",
+                        ReleaserName = "Hewlett Packard, Вьетнам",
+                        TransportName = "ООО «Техноград» (поставщик)",
+                        TransportInfo =
+                            "+7(495)234-45-67, ПАО «Бета-банк», р/с  406029876100000000934, к/с 98761111300000000555,  БИК  067111123, ИНН 5679876543, КПП 123456765",
+                    };
+                    
                     var createManufacturer = new AddManufacturerUC()
                     {
                         DataContext = this
@@ -392,35 +405,12 @@ namespace Property_inventory.ViewModels
                     NewEquip.TypeId = SelectedType.Id;
 
                     var addedEquip = new EquipRepository().Add(NewEquip);
-                    //var rnd = new Random();
 
-                    //for (int i = 0; i < 20; i++)
-                    //{
-                    //    var type = EquipTypes[rnd.Next(0, EquipTypes.Count)];
-                    //    new EquipRepository().Add(new Equip
-                    //    {
-                    //        RegistrationDate = DateTime.Now,
-                    //        Name = type.Name.Split()[0],
-                    //        InvNum = i,
-                    //        RoomId = SelectedNode.RoomId,
-                    //        TypeId = type.Id,
-                    //        StatusId = 1,
-                    //        AccountabilityId = 2,
-                    //        Note = "",
-                    //        Count = 1,
-                    //        IsDeleted = false,
-                    //        MOLId = 1,
-                    //        ReleaseDate = DateTime.Now.AddDays(rnd.Next(-100, 0)),
-                    //        BasePrice = rnd.NextDecimal(),
-                    //        DepreciationRate = 0,
-                    //        DepreciationGroup = InvEnums.DepreciationGroups.I,
-                    //        BaseInvNum = $"BaseInvNum{i}",
-                    //        ManufacturerId = 1,
-                    //    });
-                    //}
-
+                    new ActVM(addedEquip).PrintSupplyActCommand.Execute(null);
+                    
                     CurrentRoomEquip.Add(addedEquip);
                     NewEquip = null;
+                    NewManufacturer = new Manufacturer();
                     ClearCreateEquipCommand.Execute(null);
             
                     if ((string)result == "Repeat") CreateEquipCommand.Execute(null);
@@ -568,7 +558,7 @@ namespace Property_inventory.ViewModels
                 return new RelayCommand(o =>
                 {
                     //Dialog
-                    throw new NotImplementedException();
+                    //throw new NotImplementedException();
                 });
             }
         }
@@ -600,7 +590,7 @@ namespace Property_inventory.ViewModels
                             History = i.History,
                             Note = i.Note,
                             Count = i.Count,
-                            IsDeleted = i.IsDeleted,
+                            IsWriteOff = i.IsWriteOff,
                             MOL = i.MOL,
                             ReleaseDate = i.ReleaseDate,
                             BasePrice = i.BasePrice,
@@ -713,6 +703,8 @@ namespace Property_inventory.ViewModels
             }
         }
 
+        #endregion
+        
         private void ClosingEventHandler(object sender, DialogClosingEventArgs eventArgs)
             => Debug.WriteLine("You can intercept the closing event, and cancel here.");
 

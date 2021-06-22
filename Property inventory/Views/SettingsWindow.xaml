@@ -95,8 +95,9 @@
                 </StackPanel>
             </GroupBox>
             <WrapPanel Margin="0,10,0,0">
-                <Label Content="Темная тема" />
+                <Label Content="Темная тема" Visibility="Collapsed"/>
                 <ToggleButton
+                    Visibility="Collapsed"
                     Name="ToggleButton"
                     Checked="ToggleSwitch_Checked"
                     IsChecked="{Binding IsDarkTheme}"

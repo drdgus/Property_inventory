@@ -20,6 +20,7 @@ namespace Property_inventory.DAL
         public DbSet<InvDocument> InvDocuments { get; set; }
         public DbSet<MOLPosition> MolPositions { get; set; }
         public DbSet<Manufacturer> Manufacturers { get; set; }
+        public DbSet<CheckEquip> CheckEquips { get; set; }
 
 
         private static InvDbContext _instance;

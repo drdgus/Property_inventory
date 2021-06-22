@@ -76,7 +76,7 @@
                         </DataGridTextColumn>
                         <DataGridTextColumn
                             Width="Auto"
-                            Binding="{Binding Type.Category.Name}"
+                            Binding="{Binding Type.Category.Class}"
                             Header="Категория" />
                         <DataGridTextColumn
                             Width="Auto"

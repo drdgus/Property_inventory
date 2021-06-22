@@ -8,7 +8,7 @@
     xmlns:viewModels="clr-namespace:Property_inventory.ViewModels"
     Title="Акт списания"
     Width="382.016"
-    Height="450"
+    Height="250"
     Background="{DynamicResource MaterialDesignPaper}"
     FontFamily="{DynamicResource MaterialDesignFont}"
     TextElement.FontSize="13"
@@ -60,7 +60,7 @@
                 SelectedItem="{Binding SelectedCause}" />
             <Button
                 Command="{Binding PrintWriteOffCommand}"
-                Content="Печать"
+                Content="Сохранить"
                 Style="{StaticResource MaterialDesignRaisedAccentButton}"
                 ToolTip="Resource name: MaterialDesignRaisedAccentButton" />
         </StackPanel>

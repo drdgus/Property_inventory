@@ -18,5 +18,6 @@ namespace Property_inventory.Models
         public List<InvDocument> InvDocuments { get; set; }
         public List<MOLPosition> MolPositions { get; set; }
         public List<Manufacturer> Manufacturers { get; set; }
+        public List<CheckEquip> CheckEquips { get; set; }
     }
 }

@@ -5,6 +5,7 @@ using Property_inventory.Entities;
 using Property_inventory.Models;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Net.Http;
 using System.Net.Http.Headers;
@@ -42,105 +43,111 @@ namespace Property_inventory.Services
 
         private void LoadDb()
         {
-
-
             try
             {
+                //if(File.Exists("inv.db")) File.Delete("inv.db");
+                
                 var db = InvDbContext.GetInstance();
                 if (db.Orgs.Any()) return;
+
+
                 var response = Client.GetAsync($"{TESTServer}/All");
                 response.Wait();
 
                 var allTables = JsonConvert.DeserializeObject<AllTables>(response.Result.Content.ReadAsStringAsync().Result);
                 
                 db.Database.BeginTransaction();
-                foreach (var VARIABLE in allTables.Accountabilities)
+                foreach (var accountability in allTables.Accountabilities)
                 {
-                    db.Accountabilities.Add(VARIABLE);
+                    db.Accountabilities.Add(accountability);
                 }
-                foreach (var VARIABLE in allTables.Categories)
+                foreach (var category in allTables.Categories)
                 {
-                    db.Categories.Add(VARIABLE);
+                    db.Categories.Add(category);
                 }
-                foreach (var VARIABLE in allTables.Types)
+                foreach (var type in allTables.Types)
                 {
                     db.Types.Add(new Type
                     {
-                        Name = VARIABLE.Name,
-                        CategoryId = VARIABLE.CategoryId,
+                        Id = type.Id,
+                        Name = type.Name,
+                        CategoryId = type.CategoryId,
                     });
                 }
-                foreach (var VARIABLE in allTables.Rooms)
+                foreach (var room in allTables.Rooms)
                 {
                     db.Rooms.Add(new Room
                     {
-                        OrgId = VARIABLE.OrgId,
-                        Name = VARIABLE.Name,
-                        IsDeleted = VARIABLE.IsDeleted
+                        Id = room.Id,
+                        OrgId = room.OrgId,
+                        Name = room.Name,
+                        IsDeleted = room.IsDeleted
                     });
                 }
-                foreach (var VARIABLE in allTables.MOLs)
+                foreach (var MOL in allTables.MOLs)
                 {
-                    db.MOLs.Add(VARIABLE);
+                    db.MOLs.Add(MOL);
                 }
-
-                db.SaveChanges();
-                foreach (var VARIABLE in allTables.Equips)
+                foreach (var equip in allTables.Equips)
                 {
                     db.Equips.Add(new Equip
                     {
-                        RegistrationDate = VARIABLE.RegistrationDate,
-                        Name = VARIABLE.Name,
-                        InvNum = VARIABLE.InvNum,
-                        RoomId = VARIABLE.RoomId,
-                        TypeId = VARIABLE.TypeId,
-                        StatusId = VARIABLE.StatusId,
-                        AccountabilityId = VARIABLE.AccountabilityId,
-                        Note = VARIABLE.Note,
-                        Count = VARIABLE.Count,
-                        IsDeleted = VARIABLE.IsDeleted,
-                        MOLId = VARIABLE.MOLId,
-                        ReleaseDate = VARIABLE.ReleaseDate,
-                        BasePrice = VARIABLE.BasePrice,
-                        DepreciationRate = VARIABLE.DepreciationRate,
-                        DepreciationGroup = VARIABLE.DepreciationGroup,
-                        BaseInvNum = VARIABLE.BaseInvNum,
-                        ManufacturerId = VARIABLE.ManufacturerId
+                        Id = equip.Id,
+                        RegistrationDate = equip.RegistrationDate,
+                        Name = equip.Name,
+                        InvNum = equip.InvNum,
+                        RoomId = equip.RoomId,
+                        TypeId = equip.TypeId,
+                        StatusId = equip.StatusId,
+                        AccountabilityId = equip.AccountabilityId,
+                        Note = equip.Note,
+                        Count = equip.Count,
+                        IsWriteOff = equip.IsWriteOff,
+                        MOLId = equip.MOLId,
+                        ReleaseDate = equip.ReleaseDate,
+                        BasePrice = equip.BasePrice,
+                        DepreciationRate = equip.DepreciationRate,
+                        DepreciationGroup = equip.DepreciationGroup,
+                        BaseInvNum = equip.BaseInvNum,
+                        ManufacturerId = equip.ManufacturerId
                     });
                 }
-                foreach (var VARIABLE in allTables.History)
+                foreach (var history in allTables.History)
                 {
-                    db.History.Add(VARIABLE);
+                    db.History.Add(history);
                 }
-                foreach (var VARIABLE in allTables.Orgs)
+                foreach (var org in allTables.Orgs)
                 {
-                    db.Orgs.Add(VARIABLE);
+                    db.Orgs.Add(org);
                 }
-                foreach (var VARIABLE in allTables.Statuses)
+                foreach (var status in allTables.Statuses)
                 {
-                    db.Statuses.Add(VARIABLE);
+                    db.Statuses.Add(status);
                 }
-                foreach (var VARIABLE in allTables.InvDocuments)
+                foreach (var invDocument in allTables.InvDocuments)
                 {
-                    db.InvDocuments.Add(VARIABLE);
+                    db.InvDocuments.Add(invDocument);
                 }
-                foreach (var VARIABLE in allTables.Manufacturers)
+                foreach (var manufacturer in allTables.Manufacturers)
                 {
-                    db.Manufacturers.Add(VARIABLE);
+                    db.Manufacturers.Add(manufacturer);
                 }
-                foreach (var VARIABLE in allTables.MolPositions)
+                foreach (var molPosition in allTables.MolPositions)
                 {
-                    db.MolPositions.Add(VARIABLE);
+                    db.MolPositions.Add(molPosition);
+                }
+                foreach (var check in allTables.CheckEquips)
+                {
+                    db.CheckEquips.Add(check);
                 }
 
+               // db.Database.CurrentTransaction.Commit();
                 db.SaveChanges();
             }
             catch(Exception e)
             {
-                throw new Exception($"Ошибка при получении таблиц с сервера. {e}");
+                 throw new Exception($"Ошибка при получении таблиц с сервера. {e}");
             }
-
-
         }
 
         private async void StartListen()
@@ -165,15 +172,9 @@ namespace Property_inventory.Services
             }
         }
 
-        private void StopListen()
-        {
-
-        }
-
-
         public async void Relocate(int equipId, int newRoomId, int molId)
         {
-            await connection.InvokeAsync("Relocate", (equipId, newRoomId, molId));
+            await connection.InvokeAsync("InvRelocate", equipId, newRoomId, molId);
         }
 
         #region Add
@@ -253,6 +254,10 @@ namespace Property_inventory.Services
 
         #endregion
 
+        public async void Decomission(int equipId)
+        {
+            await connection.InvokeAsync("Decomission", equipId);
+        }
     }
 
 }

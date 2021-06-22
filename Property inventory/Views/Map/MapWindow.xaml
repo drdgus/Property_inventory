@@ -5,11 +5,14 @@
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:userControls="clr-namespace:Property_inventory.Views.UserControls"
+    xmlns:viewModels="clr-namespace:Property_inventory.ViewModels"
     Title="Карта"
     Width="1280"
     Height="720"
     MinWidth="800"
     MinHeight="720"
+    AllowDrop="True"
     Background="{DynamicResource MaterialDesignPaper}"
     FontFamily="{DynamicResource MaterialDesignFont}"
     TextElement.FontSize="13"
@@ -20,34 +23,10 @@
     WindowStartupLocation="CenterScreen"
     mc:Ignorable="d">
 
+    <Window.DataContext>
+        <viewModels:MapVM />
+    </Window.DataContext>
     <Window.Resources>
-        <ControlTemplate x:Key="label" TargetType="Label">
-            <Label>
-                <DockPanel>
-                    <materialDesign:PackIcon
-                        Width="40"
-                        Height="40"
-                        Foreground="#FFD97C2B"
-                        Kind="MapMarker" />
-                    <Border
-                        Height="24"
-                        Background="Black"
-                        BorderThickness="1"
-                        CornerRadius="5,5,5,5"
-                        Opacity="0.8">
-                        <Label
-                            Name="MarkerRightText"
-                            Height="24"
-                            HorizontalAlignment="Center"
-                            VerticalAlignment="Center"
-                            HorizontalContentAlignment="Center"
-                            VerticalContentAlignment="Center"
-                            Content="{Binding ElementName=textboxHelper, Path=Text}"
-                            FontSize="12" />
-                    </Border>
-                </DockPanel>
-            </Label>
-        </ControlTemplate>
         <ContextMenu
             x:Key="cmMarker"
             Name="cmMarker"
@@ -72,19 +51,32 @@
             <RowDefinition Height="494*" />
             <RowDefinition Height="77" />
         </Grid.RowDefinitions>
+
         <Image
             x:Name="image"
             Grid.RowSpan="2"
             Margin="10"
             HorizontalAlignment="Stretch"
             VerticalAlignment="Stretch"
-            ContextMenu="{StaticResource cmMap}" />
-        <Canvas
-            x:Name="DragArena"
+            ContextMenu="{StaticResource cmMap}" Source="2 эт.jpg" />
+
+        <ItemsControl
             Grid.RowSpan="2"
             Margin="10"
-            HorizontalAlignment="Stretch"
-            VerticalAlignment="Stretch" />
+            ItemsSource="{Binding Markers}">
+            <ItemsControl.ItemsPanel>
+                <ItemsPanelTemplate>
+                    <Canvas MouseDown="UIElement_OnMouseDown" MouseMove="UIElement_OnMouseMove"/>
+                </ItemsPanelTemplate>
+            </ItemsControl.ItemsPanel>
+            <ItemsControl.ItemContainerStyle>
+                <Style TargetType="userControls:Marker">
+                    <Setter Property="Canvas.Left" Value="{Binding MarkerContent.Left}" />
+                    <Setter Property="Canvas.Top" Value="{Binding MarkerContent.Top}" />
+                </Style>
+            </ItemsControl.ItemContainerStyle>
+        </ItemsControl>
+
         <materialDesign:Card
             Grid.Row="1"
             Width="350"
@@ -136,5 +128,6 @@
                 </Button>
             </Grid>
         </materialDesign:Card>
+
     </Grid>
 </Window>

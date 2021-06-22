@@ -12,7 +12,7 @@
       <Value Profile="(Default)">Т</Value>
     </Setting>
     <Setting Name="ServerAddress" Type="System.String" Scope="User">
-      <Value Profile="(Default)" />
+      <Value Profile="(Default)">http://drdgus.space</Value>
     </Setting>
     <Setting Name="Login" Type="System.String" Scope="User">
       <Value Profile="(Default)" />
@@ -27,6 +27,15 @@
       <Value Profile="(Default)">0</Value>
     </Setting>
     <Setting Name="Location" Type="System.String" Scope="User">
+      <Value Profile="(Default)">Красноярский край, Богучанский район, п. Таёжный, ул. Новая 15</Value>
+    </Setting>
+    <Setting Name="OrgName" Type="System.String" Scope="User">
+      <Value Profile="(Default)">МКОУ Таежнинска школа №20</Value>
+    </Setting>
+    <Setting Name="OrgPhone" Type="System.String" Scope="User">
+      <Value Profile="(Default)">89500000000</Value>
+    </Setting>
+    <Setting Name="OrgRequisites" Type="System.String" Scope="User">
       <Value Profile="(Default)" />
     </Setting>
   </Settings>

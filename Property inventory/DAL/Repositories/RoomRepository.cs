@@ -38,7 +38,7 @@ namespace Property_inventory.DAL.Repositories
         {
             InvDbContext.GetInstance().Rooms.Single(i => i.Id == roomId).IsDeleted = true;
             await InvDbContext.GetInstance().Equips.Where(e => e.RoomId == roomId)
-                .ForEachAsync(i => i.IsDeleted = true);
+                .ForEachAsync(i => i.IsWriteOff = true);
             InvDbContext.GetInstance().SaveChanges();
             new SyncData().RemoveRoom(roomId);
         }

@@ -62,7 +62,7 @@
                 IsEditable="True" />
             <Button
                 Margin="0,10,0,0"
-                Content="Печать"
+                Content="Сохранить"
                 Style="{StaticResource MaterialDesignRaisedAccentButton}"
                 ToolTip="Resource name: MaterialDesignRaisedAccentButton" />
         </StackPanel>
