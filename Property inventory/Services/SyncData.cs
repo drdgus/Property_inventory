@@ -111,6 +111,7 @@ namespace Property_inventory.Services
                         BaseInvNum = equip.BaseInvNum,
                         ManufacturerId = equip.ManufacturerId
                     });
+                    db.SaveChanges();
                 }
                 foreach (var history in allTables.History)
                 {
