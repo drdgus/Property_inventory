@@ -250,6 +250,7 @@
     <Compile Include="DAL\Repositories\RoomRepository.cs" />
     <Compile Include="Entities\Accountability.cs" />
     <Compile Include="Entities\Category.cs" />
+    <Compile Include="Entities\CheckEquip.cs" />
     <Compile Include="Entities\Equip.cs" />
     <Compile Include="Entities\History.cs" />
     <Compile Include="Entities\InvDocument.cs" />
@@ -259,8 +260,11 @@
     <Compile Include="Entities\UnappliedChange.cs" />
     <Compile Include="Models\EquipHistory.cs" />
     <Compile Include="Models\EquipInfo.cs" />
+    <Compile Include="Models\Marker.cs" />
+    <Compile Include="Models\Supply.cs" />
     <Compile Include="Services\ExcelEditor.cs" />
     <Compile Include="Services\InvEnums.cs" />
+    <Compile Include="Services\Tools\ConverterIntToString.cs" />
     <Compile Include="Services\View\GLOBAL.cs" />
     <Compile Include="ViewModels\ActVM.cs" />
     <Compile Include="ViewModels\Dialogs\AddManufacturerUC.xaml.cs">
@@ -268,6 +272,9 @@
     </Compile>
     <Compile Include="ViewModels\Dialogs\AllEquipDialog.xaml.cs">
       <DependentUpon>AllEquipDialog.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="ViewModels\Dialogs\AuthUC.xaml.cs">
+      <DependentUpon>AuthUC.xaml</DependentUpon>
     </Compile>
     <Compile Include="ViewModels\Dialogs\CreateMolUC.xaml.cs">
       <DependentUpon>CreateMolUC.xaml</DependentUpon>
@@ -295,6 +302,7 @@
     </Compile>
     <Compile Include="ViewModels\DictionaryVM.cs" />
     <Compile Include="ViewModels\HistoryVM.cs" />
+    <Compile Include="ViewModels\MapVM.cs" />
     <Compile Include="ViewModels\SettingsVM.cs" />
     <Compile Include="Views\Acts\AllEquipAct.xaml.cs">
       <DependentUpon>AllEquipAct.xaml</DependentUpon>
@@ -359,11 +367,18 @@
     <Compile Include="Views\SettingsWindow.xaml.cs">
       <DependentUpon>SettingsWindow.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Views\UserControls\Marker.xaml.cs">
+      <DependentUpon>Marker.xaml</DependentUpon>
+    </Compile>
     <Page Include="ViewModels\Dialogs\AddManufacturerUC.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="ViewModels\Dialogs\AllEquipDialog.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="ViewModels\Dialogs\AuthUC.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -468,6 +483,10 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
+    <Page Include="Views\UserControls\Marker.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Properties\AssemblyInfo.cs">
@@ -492,25 +511,40 @@
       <Generator>SettingsSingleFileGenerator</Generator>
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>
     </None>
-    <None Include="Resources\Accounting\1. Акт о поступлении оборудования.XLS" />
-    <None Include="Resources\Accounting\2. Инвентарная карта.xlsx" />
-    <None Include="Resources\Accounting\3. Акт приема-передачи МОЛу.doc" />
-    <None Include="Resources\Accounting\4.1 Акт перемещения.xlsx" />
-    <None Include="Resources\Accounting\4.2 Акт приема-передачи другому МОЛу.doc" />
-    <None Include="Resources\Accounting\5. Акт списания.xls" />
-    <None Include="Resources\Accounting\Акт приема-передачи.xlsx" />
-    <None Include="Resources\Inventory\1. Акт инвентаризационная опись.xlsx" />
-    <None Include="Resources\Inventory\2. Сличительная ведомость.xls" />
+    <None Include="Resources\Accounting\Акт о поступлении оборудования.xlsx">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="Resources\Accounting\Акт перемещения.xlsx">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="Resources\Accounting\Акт приема-передачи МОЛу.doc">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="Resources\Accounting\Акт списания.xlsx">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="Resources\Accounting\Инвентарная карта.xlsx">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="Resources\Inventory\Акт инвентаризационная опись ОС.xlsx">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="Resources\Inventory\Сличительная ведомость.xls">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <Resource Include="Views\Map\2 эт.jpg" />
+  </ItemGroup>
   <ItemGroup>
     <Resource Include="Resources\ico.ico">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Resource>
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Import Project="..\packages\MaterialDesignThemes.4.0.0\build\MaterialDesignThemes.targets" Condition="Exists('..\packages\MaterialDesignThemes.4.0.0\build\MaterialDesignThemes.targets')" />
   <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">

@@ -8,6 +8,9 @@ using System.Data.Entity;
 using System.Globalization;
 using System.Linq;
 using System.Windows.Media;
+using Property_inventory.DAL.Repositories;
+using Property_inventory.Entities;
+using Property_inventory.Services;
 
 namespace Property_inventory.ViewModels
 {
@@ -16,10 +19,10 @@ namespace Property_inventory.ViewModels
         public SeriesCollection CurrentBalanceCollection { get; set; }
         public SeriesCollection ProcurementCollection { get; set; }
         public Func<double, string> YFormatter { get; set; }
-
         public string[] Labels { get; set; }
 
         public List<ChartTypes> ChartTypes { get; set; }
+        private List<Equip> EquipList { get; set; }
         public decimal TotalSum { get; set; }
 
         public ChartVM()
@@ -47,6 +50,8 @@ namespace Property_inventory.ViewModels
             //    });
             //}
 
+            InitCharts();
+        }
 
             //var currentBalance = new ChartValues<decimal>();
             //var rnd = new Random();

@@ -42,9 +42,10 @@
         </ContextMenu>
     </Window.Resources>
     <materialDesign:DialogHost
-        CloseOnClickAway="True"
+        CloseOnClickAway="{Binding AllowCloseOnClickAway}"
         DialogTheme="Inherit"
-        Identifier="RootDialog">
+        Identifier="RootDialog"
+        Loaded="MainWindow_OnLoaded">
         <Grid>
             <materialDesign:DialogHost
                 CloseOnClickAway="True"
@@ -111,7 +112,7 @@
                     <DataGrid.Resources>
                         <ContextMenu x:Key="ContextMenuForDatagridItem">
                             <MenuItem Command="{Binding OpenEquipHistoryCommand}" Header="История" />
-                            <MenuItem Click="EditEquip" Header="Изменить" />
+                            <!--<MenuItem Click="EditEquip" Header="Изменить" />
                             <MenuItem
                                 Click="DeleteEquip"
                                 Command="{Binding DeleteEquipCommand}"
@@ -192,10 +193,6 @@
                     <MenuItem Height="20" Header="Справочники">
                         <MenuItem
                             Height="25"
-                            Command="{Binding}"
-                            Header="Списанное имущество" />
-                        <MenuItem
-                            Height="25"
                             Command="{Binding OpenAllEquipCommand}"
                             Header="Имущество на балансе" />
                         <MenuItem
@@ -227,10 +224,6 @@
                             Height="25"
                             Command="{Binding OpenSupplyWinCommand}"
                             Header="Акт о поступлении оборудования" />
-                        <MenuItem
-                            Height="25"
-                            Command="{Binding OpenSupplyMaterialsWinCommand}"
-                            Header="Акт о поступлении материально-товарных ценностей" />
                         <Separator />
                         <MenuItem
                             Height="25"
@@ -239,7 +232,7 @@
                         <MenuItem
                             Height="25"
                             Command="{Binding OpenHandoverMOLWinCommand}"
-                            Header="Акт перемещения" />
+                            Header="Накладная на внутреннее перемещение" />
                         <MenuItem
                             Height="25"
                             Command="{Binding OpenWriteOffWinCommand}"

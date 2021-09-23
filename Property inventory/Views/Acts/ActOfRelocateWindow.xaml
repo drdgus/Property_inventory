@@ -44,11 +44,6 @@
                 ItemsSource="{Binding EquipList}"
                 SelectedIndex="{Binding SelectedEquipIndex}"
                 SelectedItem="{Binding SelectedEquip}" />
-            <TextBox
-                Margin="0,10,0,0"
-                materialDesign:HintAssist.Hint="Основание"
-                materialDesign:HintAssist.HintOpacity=".26"
-                Text="{Binding Reason}" />
             <ComboBox
                 Margin="0,10"
                 materialDesign:HintAssist.Hint="Старое МОЛ"
@@ -67,10 +62,19 @@
                 ItemsSource="{Binding MOLList}"
                 SelectedIndex="0"
                 SelectedItem="{Binding SelectedNewMOL}" />
+            <ComboBox
+                Margin="0,10"
+                materialDesign:HintAssist.Hint="Новое помещение"
+                materialDesign:HintAssist.HintOpacity=".26"
+                DisplayMemberPath="Name"
+                IsEditable="True"
+                ItemsSource="{Binding Rooms}"
+                SelectedIndex="0"
+                SelectedItem="{Binding SelectedNewRoom}" />
             <Button
                 Margin="0,10,0,0"
                 Command="{Binding PrintRelocateCommand}"
-                Content="Печать"
+                Content="Сохранить"
                 Style="{StaticResource MaterialDesignRaisedAccentButton}"
                 ToolTip="Resource name: MaterialDesignRaisedAccentButton" />
         </StackPanel>

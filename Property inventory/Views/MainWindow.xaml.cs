@@ -20,9 +20,16 @@ namespace Property_inventory.Views
     {
         public MainWindow()
         {
-            InitializeComponent();
-            ThemeAssist.SetTheme(this, Properties.Settings.Default.Theme == false ? BaseTheme.Light : BaseTheme.Dark);
-            GLOBAL.Event += delegate { ThemeAssist.SetTheme(this, Properties.Settings.Default.Theme == false ? BaseTheme.Light : BaseTheme.Dark); };
+            try
+            {
+                InitializeComponent();
+                ThemeAssist.SetTheme(this, Properties.Settings.Default.Theme == false ? BaseTheme.Light : BaseTheme.Dark);
+                GLOBAL.Event += delegate { ThemeAssist.SetTheme(this, Properties.Settings.Default.Theme == false ? BaseTheme.Light : BaseTheme.Dark); };
+            }
+            catch (Exception e)
+            {
+                MessageBox.Show($"Произошла непредвиденная ошибка. {e}");
+            }
         }
 
         private void Window_Closed(object sender, EventArgs e)
@@ -139,6 +146,11 @@ namespace Property_inventory.Views
         private void OpenInvCardWin(object sender, RoutedEventArgs e)
         {
             ((dynamic)DataContext).OpenInvCardWinCommand.Execute(null);
+        }
+
+        private void MainWindow_OnLoaded(object sender, RoutedEventArgs e)
+        {
+            ((dynamic)DataContext).LoadedCommand.Execute(null);
         }
     }
 }

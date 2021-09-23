@@ -61,7 +61,7 @@ namespace Property_inventory.Properties {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("")]
+        [global::System.Configuration.DefaultSettingValueAttribute("http://drdgus.space")]
         public string ServerAddress {
             get {
                 return ((string)(this["ServerAddress"]));
@@ -121,13 +121,49 @@ namespace Property_inventory.Properties {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("")]
+        [global::System.Configuration.DefaultSettingValueAttribute("Красноярский край, Богучанский район, п. Таёжный, ул. Новая 15")]
         public string Location {
             get {
                 return ((string)(this["Location"]));
             }
             set {
                 this["Location"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("МКОУ Таежнинска школа №20")]
+        public string OrgName {
+            get {
+                return ((string)(this["OrgName"]));
+            }
+            set {
+                this["OrgName"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("89500000000")]
+        public string OrgPhone {
+            get {
+                return ((string)(this["OrgPhone"]));
+            }
+            set {
+                this["OrgPhone"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("")]
+        public string OrgRequisites {
+            get {
+                return ((string)(this["OrgRequisites"]));
+            }
+            set {
+                this["OrgRequisites"] = value;
             }
         }
     }

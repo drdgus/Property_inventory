@@ -6,9 +6,13 @@ namespace Property_inventory.Services
     {
         public enum OperationCode
         {
-            Created = 1,
-            Edited = 2,
-            Deleted = 3
+            Created,
+            Edited,
+            Deleted,
+            Supply,
+            OnBalance,
+            Relocate,
+            WriteOff
         }
 
         public enum Table
@@ -25,7 +29,16 @@ namespace Property_inventory.Services
 
         public enum DocumentType
         {
-
+            Supply,
+            Balance,
+            InvCard,
+            Relocate,
+            Handover,
+            HandoverToMOL,
+            HandoverToNewMOL,
+            WriteOff,
+            AllEquipOC,
+            AllEquipTMC,
         }
 
         public enum HistoryProperty

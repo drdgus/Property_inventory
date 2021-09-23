@@ -23,7 +23,20 @@ namespace Property_inventory.ViewModels
                 "Утрата объекта, выявленная при инвентаризации",
                 "Уничтожение в результате чрезвычайной ситуации (аварии, стихийного бедствия, катастрофы и т.п.)"
             };
+        }
 
+        public ActVM()
+        {
+            SelectedEquip = null;
+
+            Causes = new List<string>()
+            {
+                "Моральный и/или физический износ имущественного фонда",
+                "Непоправимая порча (умышленная либо случайная)",
+                "Хищение основного средства",
+                "Утрата объекта, выявленная при инвентаризации",
+                "Уничтожение в результате чрезвычайной ситуации (аварии, стихийного бедствия, катастрофы и т.п.)"
+            };
         }
 
         private int _selectedEquipIndex;
@@ -31,7 +44,9 @@ namespace Property_inventory.ViewModels
 
         public Equip SelectedEquip { get; set; }
         public MOL SelectedNewMOL { get; set; }
-        public string SelecteCause { get; set; }
+        public string SelectedCause { get; set; }
+        public Room SelectedNewRoom { get; set; }
+        public Supply Supply { get; set; } = new Supply();
         public string Reason { get; set; }
         public int SelectedEquipIndex
         {
@@ -51,7 +66,8 @@ namespace Property_inventory.ViewModels
                 OnPropertyChanged();
             }
         }
-        public List<Room> Rooms { get; set; }
+
+        public List<Room> Rooms { get; set; } = new RoomRepository().Get();
         public List<string> Causes { get; set; }
         public List<Equip> EquipList { get; set; } = new EquipRepository().GetEquip();
         public List<MOL> MOLList { get; set; } = new DictionaryRepository().GetMOLs();
@@ -63,6 +79,7 @@ namespace Property_inventory.ViewModels
                 return new RelayCommand(o =>
                 {
                     //SelectedEquip
+                    new ExcelEditor().InvCard(SelectedEquip);
                 });
             }
         }
@@ -73,10 +90,8 @@ namespace Property_inventory.ViewModels
             {
                 return new RelayCommand(o =>
                 {
-                    //SelectedEquip
-                    //SelectedEquip.MOL.ShortFullName
-                    //SelectedNewMOL
-                    //Reason
+                    new ExcelEditor().RelocateAct(SelectedEquip, SelectedNewMOL, Reason, SelectedNewRoom);
+                    new EquipRepository().Relocate(SelectedEquip, SelectedNewRoom, SelectedNewMOL);
                 });
             }
         }
@@ -87,9 +102,8 @@ namespace Property_inventory.ViewModels
             {
                 return new RelayCommand(o =>
                 {
-                    //SelectedEquip
-                    //Reason
-                    //SelectedCause
+                    new ExcelEditor().WriteOffAct(SelectedEquip, Reason, SelectedCause);
+                    new EquipRepository().Decomission(SelectedEquip);
                 });
             }
         }
@@ -100,21 +114,52 @@ namespace Property_inventory.ViewModels
             {
                 return new RelayCommand(o =>
                 {
-                    //new ExcelEditor();
+                    new ExcelEditor().AllEquipAct();
                 });
             }
         }
 
-        public ICommand PrintHandoverActCommand
+        //public ICommand PrintHandoverActCommand
+        //{
+        //    get
+        //    {
+        //        return new RelayCommand(o =>
+        //        {
+        //            new ExcelEditor().HandoverAct();
+        //        });
+        //    }
+        //}
+
+        public ICommand PrintSupplyActCommand
         {
             get
             {
                 return new RelayCommand(o =>
                 {
-                    //new ExcelEditor();
+                    Supply = new Supply
+                    {
+                        SupplierName = "ООО «Техноград»",
+                        SupplierAddressPhone = "г. Москва, ул. Северная, д. 23, тел. +7(495)234-45-67",
+                        SupplierRequisites = "ПАО «Бета-банк», р/с  406029876100000000934, к/с 98761111300000000555,  БИК  067111123, ИНН 5679876543, КПП 123456765",
+                        ManufacturerName = "Hewlett Packard, Вьетнам",
+                        TransportName = "ООО «Техноград» (поставщик)",
+                        TransportRequisites = "+7(495)234-45-67, ПАО «Бета-банк», р/с  406029876100000000934, к/с 98761111300000000555,  БИК  067111123, ИНН 5679876543, КПП 123456765",
+                        FromAddress = "Москва, ул. Северная, 23",
+                        ToAddress = "Москва, ул. Старостроительная, 67, 09:15",
+                        CheckStart = DateTime.Now.AddDays(-1),
+                        CheckEnd = DateTime.Now,
+                        EquipName = SelectedEquip.Name,
+                        EquipBaseInvNum = SelectedEquip.BaseInvNum,
+                        EquipBasePrice = SelectedEquip.BasePrice,
+                        EquipTotalPrice = SelectedEquip.BasePrice + SelectedEquip.Count
+                    };
+                    
+
+                    new ExcelEditor().SupplyAct(Supply);
                 });
             }
         }
+
 
 
         public event PropertyChangedEventHandler PropertyChanged;

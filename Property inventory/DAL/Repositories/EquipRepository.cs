@@ -30,6 +30,18 @@ namespace Property_inventory.DAL.Repositories
                 .Single(e => e.Id == equipId);
         }
 
+        public List<Equip> GetDeletedEquip()
+        {
+            return InvDbContext.GetInstance().Equips
+                .AsNoTracking()
+                .Include(i => i.Type)
+                .Include(i =>i.Type.Category)
+                .Include(i => i.Status)
+                .Include(i => i.MOL)
+                .Include(i => i.Room)
+                .Where(r => r.IsWriteOff == true).ToList();
+        }
+
         public void Update(Equip selectedEquip)
         {
             var equip = GetEquip(selectedEquip.Id);
@@ -169,13 +181,13 @@ namespace Property_inventory.DAL.Repositories
 
         public void Remove(Equip selectedEquip)
         {
-            InvDbContext.GetInstance().Equips.Single(i => i.Id == selectedEquip.Id).IsDeleted = true;
+            InvDbContext.GetInstance().Equips.Single(i => i.Id == selectedEquip.Id).IsWriteOff = true;
             new HistoryRepository().Add(new History
             {
                 ObjectId = selectedEquip.Id,
                 TableCode = InvEnums.Table.Equip,
                 Date = DateTime.Now,
-                Code = InvEnums.OperationCode.Deleted,
+                Code = InvEnums.OperationCode.WriteOff,
                 ChangedProperty = InvEnums.HistoryProperty.None,
                 OldValue = selectedEquip.Name,
                 NewValue = "Имущество удалено"
@@ -197,7 +209,7 @@ namespace Property_inventory.DAL.Repositories
                 AccountabilityId = newEquip.AccountabilityId,
                 Note = newEquip.Note,
                 Count = newEquip.Count,
-                IsDeleted = false,
+                IsWriteOff = false,
                 MOLId = newEquip.MOLId,
                 //ReleaseDate = newEquip.ReleaseDate,
                 //BasePrice = newEquip.BasePrice,
@@ -214,7 +226,7 @@ namespace Property_inventory.DAL.Repositories
                 ObjectId = addedEquip.Id,
                 TableCode = InvEnums.Table.Equip,
                 Date = DateTime.Now,
-                Code = InvEnums.OperationCode.Created,
+                Code = InvEnums.OperationCode.OnBalance,
                 ChangedProperty = InvEnums.HistoryProperty.None,
                 OldValue = "-",
                 NewValue = "На балансе"
@@ -222,6 +234,43 @@ namespace Property_inventory.DAL.Repositories
             //new SyncData().AddEquip(equip);
 
             return addedEquip;
+        }
+
+        public void Relocate(Equip equip, Room selectedNewRoom, MOL mol)
+        {
+            new HistoryRepository().Add(new History
+            {
+                ObjectId = equip.Id,
+                TableCode = InvEnums.Table.Equip,
+                Date = DateTime.Now,
+                Code = InvEnums.OperationCode.Relocate,
+                ChangedProperty = InvEnums.HistoryProperty.Room,
+                OldValue = InvDbContext.GetInstance().Rooms.Single(i => i.Id == equip.RoomId).Name,
+                NewValue = selectedNewRoom.Name
+            });
+            InvDbContext.GetInstance().Equips.Single(i => i.Id == equip.Id).RoomId = selectedNewRoom.Id;
+            InvDbContext.GetInstance().Equips.Single(i => i.Id == equip.Id).MOLId = mol.Id;
+            InvDbContext.GetInstance().SaveChanges();
+
+            new SyncData().Relocate(equip.Id, selectedNewRoom.Id, mol.Id);
+        }
+
+        public void Decomission(Equip equip)
+        {
+            new HistoryRepository().Add(new History
+            {
+                ObjectId = equip.Id,
+                TableCode = InvEnums.Table.Equip,
+                Date = DateTime.Now,
+                Code = InvEnums.OperationCode.Deleted,
+                ChangedProperty = InvEnums.HistoryProperty.None,
+                OldValue = "На балансе",
+                NewValue = "Списано"
+            });
+            InvDbContext.GetInstance().Equips.Single(i => i.Id == equip.Id).IsWriteOff = true;
+            InvDbContext.GetInstance().SaveChanges();
+
+            new SyncData().Decomission(equip.Id);
         }
     }
 }

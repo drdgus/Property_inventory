@@ -34,20 +34,28 @@
             ItemsSource="{Binding HistoryList}">
             <DataGrid.Columns>
                 <DataGridTextColumn
-                    Width=".4*"
+                    Width="auto"
+                    Binding="{Binding InvNum}"
+                    Header="Инв. номер" />
+                <DataGridTextColumn
+                    Width="auto"
                     Binding="{Binding Name}"
                     Header="Наименование" />
                 <DataGridTextColumn
-                    Width="*"
+                    Width="auto"
+                    Binding="{Binding ChangedPropertyStr}"
+                    Header="Характеристика" />
+                <DataGridTextColumn
+                    Width="auto"
                     Binding="{Binding OldValue}"
                     Header="Старое значение" />
                 <DataGridTextColumn Width=".1*" Binding="{Binding Splitter}" />
                 <DataGridTextColumn
-                    Width="*"
+                    Width="auto"
                     Binding="{Binding NewValue}"
                     Header="Новое значение" />
                 <DataGridTextColumn
-                    Width=".4*"
+                    Width="auto"
                     Binding="{Binding Date, StringFormat=dd MM yyyy}"
                     Header="Дата" />
             </DataGrid.Columns>

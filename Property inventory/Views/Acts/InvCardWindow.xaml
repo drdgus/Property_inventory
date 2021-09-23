@@ -47,7 +47,7 @@
             <Button
                 Margin="0,10,0,0"
                 Command="{Binding PrintInvCardCommand}"
-                Content="Печать"
+                Content="Сохранить"
                 Style="{StaticResource MaterialDesignRaisedAccentButton}"
                 ToolTip="Resource name: MaterialDesignRaisedAccentButton" />
         </StackPanel>

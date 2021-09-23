@@ -23,7 +23,7 @@ namespace Property_inventory.Entities
         public virtual List<History> History { get; set; }
         public string Note { get; set; }
         public int Count { get; set; }
-        [DefaultValue(false)] public bool IsDeleted { get; set; }
+        [DefaultValue(false)] public bool IsWriteOff { get; set; }
         public int MOLId { get; set; }
         /// <summary>
         /// Материально ответственное лицо.
