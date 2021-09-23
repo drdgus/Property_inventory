@@ -41,12 +41,12 @@ namespace Property_inventory.ViewModels
             Categories = new ObservableCollection<Category>(new DictionaryRepository().GetCategories());
             AllEquip = new ObservableCollection<EquipInfo>();
             CurrentRoomEquip = new ObservableCollection<Equip>();
-            Nodes = new ObservableCollection<Node>();
+            Rooms = new ObservableCollection<Node>();
             AllowCloseOnClickAway = false;
             new SyncData();
         }
         
-        private ObservableCollection<Node> _nodes;
+        private ObservableCollection<Node> _rooms;
         private Node _selectedNode;
         private string _searchText;
         private Equip _newEquip;
@@ -171,8 +171,8 @@ namespace Property_inventory.ViewModels
         //    }
         //}
 
+    
         public string Password
-        public ObservableCollection<Node> Rooms
         {
             get => _password;
             set
@@ -202,10 +202,10 @@ namespace Property_inventory.ViewModels
             }
         }
 
-        public ObservableCollection<Node> Nodes
+        public ObservableCollection<Node> Rooms
         {
-            get => _nodes;
-            set => _nodes = value;
+            get => _rooms;
+            set => _rooms = value;
         }
         public ObservableCollection<Equip> CurrentRoomEquip { get; set; }
         public ObservableCollection<Type> EquipTypes { get; set; }
@@ -281,12 +281,12 @@ namespace Property_inventory.ViewModels
 
         private async void Authentication()
         {
-            var create = new AuthUC()
-            {
-                DataContext = this
-            };
+            //var create = new AuthUC()
+            //{
+            //    DataContext = this
+            //};
 
-            await DialogHost.Show(create, "RootDialog", ClosingEventHandler);
+            //await DialogHost.Show(create, "RootDialog", ClosingEventHandler);
 
             AllowCloseOnClickAway = true;
             Init();
@@ -297,10 +297,10 @@ namespace Property_inventory.ViewModels
             //View = (ICollectionViewLiveShaping)CollectionViewSource.GetDefaultView(Nodes);
             //View.IsLiveSorting = true;
             EquipTypes = new ObservableCollection<Type>(new DictionaryRepository().GetTypes());
-            DepreciationGroups = new ObservableCollection<string>(Enum.GetNames(typeof(InvEnums.DepreciationGroups)));
+            //DepreciationGroups = new ObservableCollection<string>(Enum.GetNames(typeof(InvEnums.DepreciationGroups)));
             EquipMOLs = new ObservableCollection<MOL>(new DictionaryRepository().GetMOLs());
             EquipMOLs.Insert(0, new MOL());
-            Rooms = new RoomRepository().Get();
+            //Rooms = new RoomRepository().Get();
             EquipList = new EquipRepository().GetEquip();
             Categories = new ObservableCollection<Category>(new DictionaryRepository().GetCategories());
             LoadRooms();
@@ -317,7 +317,7 @@ namespace Property_inventory.ViewModels
                 SortIndex = 0,
             }));
 
-            Nodes.Add(new Node
+            Rooms.Add(new Node
             {
                 Name = InvDbContext.GetInstance().Orgs.Single().Name,
                 RoomId = -1,
@@ -410,7 +410,7 @@ namespace Property_inventory.ViewModels
                     
                     CurrentRoomEquip.Add(addedEquip);
                     NewEquip = null;
-                    NewManufacturer = new Manufacturer();
+                   // NewManufacturer = new Manufacturer();
                     ClearCreateEquipCommand.Execute(null);
 
                     if ((string)result == "Repeat") CreateEquipCommand.Execute(null);

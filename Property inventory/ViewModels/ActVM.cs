@@ -1,6 +1,7 @@
 ﻿using Property_inventory.DAL.Repositories;
 using Property_inventory.Entities;
 using Property_inventory.Infrastructure;
+using Property_inventory.Models;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
@@ -79,7 +80,7 @@ namespace Property_inventory.ViewModels
                 return new RelayCommand(o =>
                 {
                     //SelectedEquip
-                    new ExcelEditor().InvCard(SelectedEquip);
+                    //new ExcelEditor().InvCard(SelectedEquip);
                 });
             }
         }
@@ -90,7 +91,7 @@ namespace Property_inventory.ViewModels
             {
                 return new RelayCommand(o =>
                 {
-                    new ExcelEditor().RelocateAct(SelectedEquip, SelectedNewMOL, Reason, SelectedNewRoom);
+                    //new ExcelEditor().RelocateAct(SelectedEquip, SelectedNewMOL, Reason, SelectedNewRoom);
                     new EquipRepository().Relocate(SelectedEquip, SelectedNewRoom, SelectedNewMOL);
                 });
             }
@@ -102,7 +103,7 @@ namespace Property_inventory.ViewModels
             {
                 return new RelayCommand(o =>
                 {
-                    new ExcelEditor().WriteOffAct(SelectedEquip, Reason, SelectedCause);
+                    //new ExcelEditor().WriteOffAct(SelectedEquip, Reason, SelectedCause);
                     new EquipRepository().Decomission(SelectedEquip);
                 });
             }
@@ -114,7 +115,7 @@ namespace Property_inventory.ViewModels
             {
                 return new RelayCommand(o =>
                 {
-                    new ExcelEditor().AllEquipAct();
+                    //new ExcelEditor().AllEquipAct();
                 });
             }
         }
@@ -136,26 +137,26 @@ namespace Property_inventory.ViewModels
             {
                 return new RelayCommand(o =>
                 {
-                    Supply = new Supply
-                    {
-                        SupplierName = "ООО «Техноград»",
-                        SupplierAddressPhone = "г. Москва, ул. Северная, д. 23, тел. +7(495)234-45-67",
-                        SupplierRequisites = "ПАО «Бета-банк», р/с  406029876100000000934, к/с 98761111300000000555,  БИК  067111123, ИНН 5679876543, КПП 123456765",
-                        ManufacturerName = "Hewlett Packard, Вьетнам",
-                        TransportName = "ООО «Техноград» (поставщик)",
-                        TransportRequisites = "+7(495)234-45-67, ПАО «Бета-банк», р/с  406029876100000000934, к/с 98761111300000000555,  БИК  067111123, ИНН 5679876543, КПП 123456765",
-                        FromAddress = "Москва, ул. Северная, 23",
-                        ToAddress = "Москва, ул. Старостроительная, 67, 09:15",
-                        CheckStart = DateTime.Now.AddDays(-1),
-                        CheckEnd = DateTime.Now,
-                        EquipName = SelectedEquip.Name,
-                        EquipBaseInvNum = SelectedEquip.BaseInvNum,
-                        EquipBasePrice = SelectedEquip.BasePrice,
-                        EquipTotalPrice = SelectedEquip.BasePrice + SelectedEquip.Count
-                    };
+                    //Supply = new Supply
+                    //{
+                    //    SupplierName = "ООО «Техноград»",
+                    //    SupplierAddressPhone = "г. Москва, ул. Северная, д. 23, тел. +7(495)234-45-67",
+                    //    SupplierRequisites = "ПАО «Бета-банк», р/с  406029876100000000934, к/с 98761111300000000555,  БИК  067111123, ИНН 5679876543, КПП 123456765",
+                    //    ManufacturerName = "Hewlett Packard, Вьетнам",
+                    //    TransportName = "ООО «Техноград» (поставщик)",
+                    //    TransportRequisites = "+7(495)234-45-67, ПАО «Бета-банк», р/с  406029876100000000934, к/с 98761111300000000555,  БИК  067111123, ИНН 5679876543, КПП 123456765",
+                    //    FromAddress = "Москва, ул. Северная, 23",
+                    //    ToAddress = "Москва, ул. Старостроительная, 67, 09:15",
+                    //    CheckStart = DateTime.Now.AddDays(-1),
+                    //    CheckEnd = DateTime.Now,
+                    //    EquipName = SelectedEquip.Name,
+                    //    EquipBaseInvNum = SelectedEquip.BaseInvNum,
+                    //    EquipBasePrice = SelectedEquip.BasePrice,
+                    //    EquipTotalPrice = SelectedEquip.BasePrice + SelectedEquip.Count
+                    //};
                     
 
-                    new ExcelEditor().SupplyAct(Supply);
+                    //new ExcelEditor().SupplyAct(Supply);
                 });
             }
         }

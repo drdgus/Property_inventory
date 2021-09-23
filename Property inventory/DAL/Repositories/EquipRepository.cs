@@ -12,7 +12,7 @@ namespace Property_inventory.DAL.Repositories
         public List<Equip> GetEquipByRoom(int selectedNodeRoomId, string filter = "")
         {
             var a = InvDbContext.GetInstance().Equips
-                .Where(i => i.RoomId == selectedNodeRoomId && i.IsDeleted == false)
+                .Where(i => i.RoomId == selectedNodeRoomId && i.IsWriteOff == false)
                 .ToList();
             return a;
         }
@@ -21,7 +21,7 @@ namespace Property_inventory.DAL.Repositories
         {
             var a = InvDbContext.GetInstance().Equips
                 //Исправил добавлением Virtual для навигационных свойств.
-                .Where(r => r.IsDeleted == false).ToList();
+                .Where(r => r.IsWriteOff == false).ToList();
             return a;
         }
         public Equip GetEquip(int equipId)

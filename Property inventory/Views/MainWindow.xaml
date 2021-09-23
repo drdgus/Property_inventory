@@ -112,7 +112,7 @@
                     <DataGrid.Resources>
                         <ContextMenu x:Key="ContextMenuForDatagridItem">
                             <MenuItem Command="{Binding OpenEquipHistoryCommand}" Header="История" />
-                            <!--<MenuItem Click="EditEquip" Header="Изменить" />
+                            <MenuItem Click="EditEquip" Header="Изменить" />
                             <MenuItem
                                 Click="DeleteEquip"
                                 Command="{Binding DeleteEquipCommand}"
@@ -165,7 +165,7 @@
                             Width="Auto"
                             Binding="{Binding Count}"
                             Header="Количество" />
-                        <!--<DataGridTextColumn
+                        <DataGridTextColumn
                             Width="Auto"
                             Binding="{Binding BasePrice, StringFormat=C, ConverterCulture=ru-RU}"
                             Header="Первоначальная стоимость" />
@@ -176,7 +176,7 @@
                         <DataGridTextColumn
                             Width="120"
                             Binding="{Binding DepreciationGroup}"
-                            Header="Аморт. группа" />-->
+                            Header="Аморт. группа" />
                     </DataGrid.Columns>
                 </DataGrid>
                 <Menu
@@ -218,8 +218,8 @@
                             Height="25"
                             Command="{Binding AllEquipActCommand}"
                             Header="Сличительная ведомость" />
-                    </MenuItem>-->
-                    <!--<MenuItem Height="20" Header="Учет ОС">
+                    </MenuItem>
+                    <MenuItem Height="20" Header="Учет ОС">
                         <MenuItem
                             Height="25"
                             Command="{Binding OpenSupplyWinCommand}"

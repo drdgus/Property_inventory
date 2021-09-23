@@ -50,7 +50,7 @@ namespace Property_inventory.ViewModels
             //    });
             //}
 
-            InitCharts();
+            //InitCharts();
         }
 
             //var currentBalance = new ChartValues<decimal>();
@@ -94,6 +94,6 @@ namespace Property_inventory.ViewModels
             //    }
             //};
             //Labels = DateTimeFormatInfo.CurrentInfo.MonthNames.Take(12).ToArray();
-        }
+        //}
     }
 }
