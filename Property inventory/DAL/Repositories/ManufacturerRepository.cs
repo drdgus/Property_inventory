@@ -1,9 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using Property_inventory.Entities;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Property_inventory.Entities;
 
 namespace Property_inventory.DAL.Repositories
 {

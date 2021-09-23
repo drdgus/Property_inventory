@@ -1,15 +1,13 @@
 ﻿using MaterialDesignThemes.Wpf;
 using Property_inventory.DAL;
+using Property_inventory.DAL.Repositories;
 using Property_inventory.Entities;
 using Property_inventory.Infrastructure;
 using Property_inventory.ViewModels.Dialogs;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
-using System.Data.Entity;
-using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Windows.Input;
-using Property_inventory.DAL.Repositories;
 using Type = Property_inventory.Entities.Type;
 
 namespace Property_inventory.ViewModels
@@ -113,7 +111,7 @@ namespace Property_inventory.ViewModels
                     var result = await DialogHost.Show(view, "RootDialogDic");
                     if (result != null && (bool)result)
                     {
-                        new DictionaryRepository().RemoveType((Type) SelectedItem);
+                        new DictionaryRepository().RemoveType((Type)SelectedItem);
                         TypeList.Remove((Type)SelectedItem);
                     }
                 });
@@ -156,7 +154,7 @@ namespace Property_inventory.ViewModels
                     var result = await DialogHost.Show(view, "RootDialogDic");
                     if (result != null && (bool)result)
                     {
-                        ((Type) SelectedItem).Name = NewName;
+                        ((Type)SelectedItem).Name = NewName;
                         new DictionaryRepository().UpdateType((Type)SelectedItem);
                     }
                 });
@@ -177,7 +175,7 @@ namespace Property_inventory.ViewModels
                     var result = await DialogHost.Show(view, "RootDialogDic");
                     if (result != null && (bool)result)
                     {
-                        ((MOL) SelectedItem).FullName = NewName;
+                        ((MOL)SelectedItem).FullName = NewName;
                         new DictionaryRepository().UpdateMOL((MOL)SelectedItem);
                     }
                 });

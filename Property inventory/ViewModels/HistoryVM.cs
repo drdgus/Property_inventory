@@ -1,9 +1,8 @@
-﻿using Property_inventory.DAL;
+﻿using Property_inventory.DAL.Repositories;
 using Property_inventory.Models;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
-using Property_inventory.DAL.Repositories;
 
 namespace Property_inventory.ViewModels
 {

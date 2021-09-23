@@ -52,7 +52,7 @@ namespace Property_inventory.Services
                 response.Wait();
 
                 var allTables = JsonConvert.DeserializeObject<AllTables>(response.Result.Content.ReadAsStringAsync().Result);
-                
+
                 db.Database.BeginTransaction();
                 foreach (var VARIABLE in allTables.Accountabilities)
                 {
@@ -100,12 +100,12 @@ namespace Property_inventory.Services
                         Count = VARIABLE.Count,
                         IsDeleted = VARIABLE.IsDeleted,
                         MOLId = VARIABLE.MOLId,
-                        ReleaseDate = VARIABLE.ReleaseDate,
-                        BasePrice = VARIABLE.BasePrice,
-                        DepreciationRate = VARIABLE.DepreciationRate,
-                        DepreciationGroup = VARIABLE.DepreciationGroup,
-                        BaseInvNum = VARIABLE.BaseInvNum,
-                        ManufacturerId = VARIABLE.ManufacturerId
+                        //ReleaseDate = VARIABLE.ReleaseDate,
+                        //BasePrice = VARIABLE.BasePrice,
+                        //DepreciationRate = VARIABLE.DepreciationRate,
+                        //DepreciationGroup = VARIABLE.DepreciationGroup,
+                        //BaseInvNum = VARIABLE.BaseInvNum,
+                        //ManufacturerId = VARIABLE.ManufacturerId
                     });
                 }
                 foreach (var VARIABLE in allTables.History)
@@ -135,9 +135,9 @@ namespace Property_inventory.Services
 
                 db.SaveChanges();
             }
-            catch(Exception e)
+            catch (Exception e)
             {
-                throw new Exception($"Ошибка при получении таблиц с сервера. {e}");
+                //throw new Exception($"Ошибка при получении таблиц с сервера. {e}");
             }
 
 
@@ -151,29 +151,29 @@ namespace Property_inventory.Services
                 .Build();
 
 
-            connection.Reconnecting += delegate(Exception e)
+            connection.Reconnecting += delegate (Exception e)
             {
                 return new Task(() => Console.WriteLine($"Reconnecting... {e}"));
             };
 
-            connection.Reconnected += delegate(string s)
+            connection.Reconnected += delegate (string s)
             {
                 return new Task(() => Console.WriteLine("Reconnected"));
             };
-            connection.Closed += delegate(Exception e)
+            connection.Closed += delegate (Exception e)
             {
                 return new Task(() => Console.WriteLine($"Closed. {e}"));
             };
 
             connection.On<List<UnappliedChange>>("ReceiveChanges", (changesList) =>
             {
-                MessageBox.Show($"Изменения: {String.Join("\n",changesList)}");
+                MessageBox.Show($"Изменения: {String.Join("\n", changesList)}");
             });
 
             try
             {
                 await connection.StartAsync();
-                connection.
+
             }
             catch (Exception ex)
             {

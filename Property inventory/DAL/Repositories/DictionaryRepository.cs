@@ -1,11 +1,7 @@
-﻿using System;
+﻿using Property_inventory.Entities;
 using System.Collections.Generic;
 using System.Data.Entity;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Property_inventory.Entities;
-using Property_inventory.Services;
 using Type = Property_inventory.Entities.Type;
 
 namespace Property_inventory.DAL.Repositories
@@ -36,11 +32,11 @@ namespace Property_inventory.DAL.Repositories
         {
             var newType = InvDbContext.GetInstance().Types.Add(type);
             InvDbContext.GetInstance().SaveChanges();
-            new SyncData().AddType(new Type
-            {
-                CategoryId = type.CategoryId,
-                Name = type.Name
-            });
+            //new SyncData().AddType(new Type
+            //{
+            //    CategoryId = type.CategoryId,
+            //    Name = type.Name
+            //});
             return newType;
         }
 
@@ -49,12 +45,12 @@ namespace Property_inventory.DAL.Repositories
             var newMOL = InvDbContext.GetInstance().MOLs.Add(mol);
             InvDbContext.GetInstance().SaveChanges();
             newMOL = InvDbContext.GetInstance().MOLs.Include(i => i.Position).Single(i => i.Id == newMOL.Id);
-            new SyncData().AddMOL(new MOL
-            {
-                FullName = mol.FullName,
-                PositionId = mol.PositionId,
-                PersonnelNumber = mol.PersonnelNumber
-            });
+            //new SyncData().AddMOL(new MOL
+            //{
+            //    FullName = mol.FullName,
+            //    PositionId = mol.PositionId,
+            //    PersonnelNumber = mol.PersonnelNumber
+            //});
             return newMOL;
         }
 
@@ -63,7 +59,7 @@ namespace Property_inventory.DAL.Repositories
             InvDbContext.GetInstance().Entry(selectedItem).State = EntityState.Deleted;
             InvDbContext.GetInstance().Types.Remove(selectedItem);
             InvDbContext.GetInstance().SaveChanges();
-            new SyncData().RemoveType(selectedItem.Id);
+            //new SyncData().RemoveType(selectedItem.Id);
         }
 
         public void RemoveMOL(MOL selectedItem)
@@ -71,7 +67,7 @@ namespace Property_inventory.DAL.Repositories
             InvDbContext.GetInstance().Entry(selectedItem).State = EntityState.Deleted;
             InvDbContext.GetInstance().MOLs.Remove(selectedItem);
             InvDbContext.GetInstance().SaveChanges();
-            new SyncData().RemoveMOL(selectedItem.Id);
+            //new SyncData().RemoveMOL(selectedItem.Id);
         }
 
         public void UpdateType(Type selectedItem)
@@ -79,7 +75,7 @@ namespace Property_inventory.DAL.Repositories
             var type = InvDbContext.GetInstance().Types.Single(i => i.Id == selectedItem.Id);
             type = selectedItem;
             InvDbContext.GetInstance().SaveChanges();
-            new SyncData().UpdateType(selectedItem);
+            //new SyncData().UpdateType(selectedItem);
         }
 
         public void UpdateMOL(MOL selectedItem)
@@ -87,7 +83,7 @@ namespace Property_inventory.DAL.Repositories
             var mol = InvDbContext.GetInstance().MOLs.Single(i => i.Id == selectedItem.Id);
             mol = selectedItem;
             InvDbContext.GetInstance().SaveChanges();
-            new SyncData().UpdateMOL(selectedItem);
+            //new SyncData().UpdateMOL(selectedItem);
         }
     }
 }

@@ -1,8 +1,10 @@
 ﻿using MaterialDesignThemes.Wpf;
 using Property_inventory.DAL;
+using Property_inventory.DAL.Repositories;
 using Property_inventory.Entities;
 using Property_inventory.Infrastructure;
 using Property_inventory.Models;
+using Property_inventory.Properties;
 using Property_inventory.Services;
 using Property_inventory.ViewModels.Dialogs;
 using Property_inventory.Views;
@@ -11,13 +13,10 @@ using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
-using System.Data.Entity;
 using System.Diagnostics;
 using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Windows.Input;
-using Property_inventory.DAL.Repositories;
-using Property_inventory.Properties;
 using Type = Property_inventory.Entities.Type;
 
 namespace Property_inventory.ViewModels
@@ -31,10 +30,9 @@ namespace Property_inventory.ViewModels
             //View.IsLiveSorting = true;
             CurrentRoomEquip = new ObservableCollection<Equip>();
             EquipTypes = new ObservableCollection<Type>(new DictionaryRepository().GetTypes());
-            DepreciationGroups = new ObservableCollection<string>(Enum.GetNames(typeof(InvEnums.DepreciationGroups)));
+            //DepreciationGroups = new ObservableCollection<string>(Enum.GetNames(typeof(InvEnums.DepreciationGroups)));
             EquipMOLs = new ObservableCollection<MOL>(new DictionaryRepository().GetMOLs());
             EquipMOLs.Insert(0, new MOL());
-            Rooms = new RoomRepository().Get();
             EquipList = new EquipRepository().GetEquip();
             Categories = new ObservableCollection<Category>(new DictionaryRepository().GetCategories());
             AllEquip = new ObservableCollection<EquipInfo>();
@@ -49,8 +47,8 @@ namespace Property_inventory.ViewModels
         private string _messageDialogContent;
         private string _newName;
         private string _equipDialogOperationContent;
-        private int _selectedTypeIndex;
-        private int _selectedDeprGroupIndex;
+        //private int _selectedTypeIndex;
+        //private int _selectedDeprGroupIndex;
 
         public bool InfoDialogIsOpen
         {
@@ -115,16 +113,16 @@ namespace Property_inventory.ViewModels
                     Count = 1,
                     IsDeleted = false,
                     MOLId = 1,
-                    ReleaseDate = DateTime.Now,
-                    BasePrice = 0.0m,
-                    DepreciationGroup = InvEnums.DepreciationGroups.I,
-                    BaseInvNum = "",
-                    ManufacturerId = 0,
+                    //ReleaseDate = DateTime.Now,
+                    //BasePrice = 0.0m,
+                    //DepreciationGroup = InvEnums.DepreciationGroups.I,
+                    //BaseInvNum = "",
+                    //ManufacturerId = 0,
                 });
             }
             private set => _newEquip = value;
         }
-        public Manufacturer NewManufacturer { get; set; } = new Manufacturer();
+        //public Manufacturer NewManufacturer { get; set; } = new Manufacturer();
         public string NewName
         {
             get => _newName;
@@ -143,26 +141,26 @@ namespace Property_inventory.ViewModels
                 OnPropertyChanged();
             }
         }
-        public int SelectedTypeIndex
-        {
-            get => EquipTypes.IndexOf(EquipTypes.Single(t => t.Id == SelectedEquip.Type.Id));
-            set
-            {
-                _selectedTypeIndex = value;
-                OnPropertyChanged();
-            }
-        }
-        public int SelectedDeprGroupIndex
-        {
-            get => (int)SelectedEquip.DepreciationGroup;
-            set
-            {
-                _selectedDeprGroupIndex = value;
-                OnPropertyChanged();
-            }
-        }
+        //public int SelectedTypeIndex
+        //{
+        //    get => EquipTypes.IndexOf(EquipTypes.Single(t => t.Id == SelectedEquip.Type.Id));
+        //    set
+        //    {
+        //        _selectedTypeIndex = value;
+        //        OnPropertyChanged();
+        //    }
+        //}
+        //public int SelectedDeprGroupIndex
+        //{
+        //    get => (int)SelectedEquip.DepreciationGroup;
+        //    set
+        //    {
+        //        _selectedDeprGroupIndex = value;
+        //        OnPropertyChanged();
+        //    }
+        //}
 
-        public ObservableCollection<Node> Nodes
+        public ObservableCollection<Node> Rooms
         {
             get
             {
@@ -194,10 +192,10 @@ namespace Property_inventory.ViewModels
         }
         public ObservableCollection<Equip> CurrentRoomEquip { get; set; }
         public ObservableCollection<Type> EquipTypes { get; set; }
-        public ObservableCollection<string> DepreciationGroups { get; set; }
+        //public ObservableCollection<string> DepreciationGroups { get; set; }
         public ObservableCollection<MOL> EquipMOLs { get; set; }
         public ObservableCollection<Category> Categories { get; set; }
-        private List<Room> Rooms { get; set; }
+
         private List<Equip> EquipList { get; set; }
         public ObservableCollection<EquipInfo> AllEquip { get; set; }
         public string SearchText
@@ -206,7 +204,7 @@ namespace Property_inventory.ViewModels
             set
             {
                 _searchText = value.ToLower();
-                
+
                 var filteredEquip = EquipList.Where(i => i.InvNum.ToString($"{Settings.Default.InvSymbol}-0000000").ToLower().Contains(value) ||
                                     i.Name.ToLower().Contains(value) ||
                                     i.MOL.FullName.ToLower().Contains(value) ||
@@ -230,17 +228,17 @@ namespace Property_inventory.ViewModels
                     Count = i.Count,
                     IsDeleted = i.IsDeleted,
                     MOL = i.MOL,
-                    ReleaseDate = i.ReleaseDate,
-                    BasePrice = i.BasePrice,
-                    DepreciationRate = i.DepreciationRate,
-                    DepreciationGroup = i.DepreciationGroup,
-                    BaseInvNum = i.BaseInvNum
+                    //ReleaseDate = i.ReleaseDate,
+                    //BasePrice = i.BasePrice,
+                    //DepreciationRate = i.DepreciationRate,
+                    //DepreciationGroup = i.DepreciationGroup,
+                    //BaseInvNum = i.BaseInvNum
                 }));
 
                 CurrentRoomEquip.Clear();
                 filteredEquip.ForEach(i =>
                 {
-                    if(i.RoomId == SelectedNode.RoomId) CurrentRoomEquip.Add(i);
+                    if (i.RoomId == SelectedNode.RoomId) CurrentRoomEquip.Add(i);
                 });
 
 
@@ -280,13 +278,13 @@ namespace Property_inventory.ViewModels
                         var newRoom = new Room
                         {
                             Name = NewName,
-                            OrgId = Nodes.Single().RoomId,
+                            OrgId = Rooms.Single().RoomId,
                             IsDeleted = false
                         };
-                        
-                        newRoom .Id = new RoomRepository().Add(newRoom);
 
-                        Nodes[0].Nodes.Add(new Node
+                        newRoom.Id = new RoomRepository().Add(newRoom);
+
+                        Rooms[0].Nodes.Add(new Node
                         {
                             Name = NewName,
                             IsExpanded = false,
@@ -325,18 +323,18 @@ namespace Property_inventory.ViewModels
                     var result = await DialogHost.Show(create, "RootDialog", ClosingEventHandler);
                     if (result is null || (string)result == "False") return;
 
-                    var createManufacturer = new AddManufacturerUC()
-                    {
-                        DataContext = this
-                    };
+                    //var createManufacturer = new AddManufacturerUC()
+                    //{
+                    //    DataContext = this
+                    //};
 
-                    var resultManufacturer = await DialogHost.Show(createManufacturer, "RootDialog", ClosingEventHandler);
-                    if (resultManufacturer is null || !(bool)resultManufacturer) return;
+                    //var resultManufacturer = await DialogHost.Show(createManufacturer, "RootDialog", ClosingEventHandler);
+                    //if (resultManufacturer is null || !(bool)resultManufacturer) return;
 
                     //if (new ManufacturerRepository().Contains(NewManufacturer))
                     //    NewEquip.ManufacturerId = NewManufacturer.Id;
                     //else
-                    NewEquip.Manufacturer = NewManufacturer;
+                    //NewEquip.Manufacturer = NewManufacturer;
 
                     NewEquip.TypeId = SelectedType.Id;
 
@@ -344,7 +342,7 @@ namespace Property_inventory.ViewModels
                     CurrentRoomEquip.Add(addedEquip);
                     NewEquip = null;
                     ClearCreateEquipCommand.Execute(null);
-            
+
                     if ((string)result == "Repeat") CreateEquipCommand.Execute(null);
                 });
             }
@@ -359,7 +357,7 @@ namespace Property_inventory.ViewModels
                 });
             }
         }
-        
+
         public ICommand EditRoomCommand
         {
             get
@@ -409,7 +407,7 @@ namespace Property_inventory.ViewModels
                 });
             }
         }
-        
+
         public ICommand DeleteRoomCommand
         {
             get
@@ -427,7 +425,7 @@ namespace Property_inventory.ViewModels
                     {
                         new RoomRepository().Remove(_selectedNode.RoomId);
 
-                        Nodes[0].Nodes.Remove(SelectedNode);
+                        Rooms[0].Nodes.Remove(SelectedNode);
                     }
                 });
             }
@@ -453,7 +451,7 @@ namespace Property_inventory.ViewModels
                 });
             }
         }
-        
+
         public ICommand PrintQRCodesCommand
         {
             get
@@ -495,11 +493,11 @@ namespace Property_inventory.ViewModels
                             Count = i.Count,
                             IsDeleted = i.IsDeleted,
                             MOL = i.MOL,
-                            ReleaseDate = i.ReleaseDate,
-                            BasePrice = i.BasePrice,
-                            DepreciationRate = i.DepreciationRate,
-                            DepreciationGroup = i.DepreciationGroup,
-                            BaseInvNum = i.BaseInvNum,
+                            //ReleaseDate = i.ReleaseDate,
+                            //BasePrice = i.BasePrice,
+                            //DepreciationRate = i.DepreciationRate,
+                            //DepreciationGroup = i.DepreciationGroup,
+                            //BaseInvNum = i.BaseInvNum,
                             Free = i.RoomId == 0 ? 1 : 0,
                         }));
 
@@ -543,55 +541,55 @@ namespace Property_inventory.ViewModels
                 });
             }
         }
-        
-        public ICommand HandoverCommand
-        {
-            get
-            {
-                return new RelayCommand(o =>
-                {
-                    new ActOfHandoverWindow().ShowDialog();
-                });
-            }
-        }
-        public ICommand AllEquipActCommand
-        {
-            get
-            {
-                return new RelayCommand(o =>
-                {
-                    new AllEquipAct().ShowDialog();
-                });
-            }
-        }
-        public ICommand HandoverMOLCommand
-        {
-            get
-            {
-                return new RelayCommand(o =>
-                {
-                    new ActOfHandoverToPersonWindow().ShowDialog();
-                });
-            }
-        }
 
-        public ICommand OpenInvCardWinCommand
-        {
-            get
-            {
-                return new RelayCommand(o =>
-                {
-                    new InvCardWindow(){ DataContext = new ActVM(SelectedEquip)}.ShowDialog();
-                });
-            }
-        }
+        //public ICommand HandoverCommand
+        //{
+        //    get
+        //    {
+        //        return new RelayCommand(o =>
+        //        {
+        //            new ActOfHandoverWindow().ShowDialog();
+        //        });
+        //    }
+        //}
+        //public ICommand AllEquipActCommand
+        //{
+        //    get
+        //    {
+        //        return new RelayCommand(o =>
+        //        {
+        //            new AllEquipAct().ShowDialog();
+        //        });
+        //    }
+        //}
+        //public ICommand HandoverMOLCommand
+        //{
+        //    get
+        //    {
+        //        return new RelayCommand(o =>
+        //        {
+        //            new ActOfHandoverToPersonWindow().ShowDialog();
+        //        });
+        //    }
+        //}
+
+        //public ICommand OpenInvCardWinCommand
+        //{
+        //    get
+        //    {
+        //        return new RelayCommand(o =>
+        //        {
+        //            new InvCardWindow(){ DataContext = new ActVM(SelectedEquip)}.ShowDialog();
+        //        });
+        //    }
+        //}
         public ICommand OpenRelocateWinCommand
         {
             get
             {
                 return new RelayCommand(o =>
                 {
-                    new ActOfRelocateWindow(){ DataContext = new ActVM(SelectedEquip)}.ShowDialog();
+                    new ActOfRelocateWindow() { DataContext = new ActVM(SelectedEquip) }.ShowDialog();
                 });
             }
         }
@@ -601,7 +599,7 @@ namespace Property_inventory.ViewModels
             {
                 return new RelayCommand(o =>
                 {
-                    new WriteOffWindow(){ DataContext = new ActVM(SelectedEquip)}.ShowDialog();
+                    new WriteOffWindow() { DataContext = new ActVM(SelectedEquip) }.ShowDialog();
                 });
             }
         }

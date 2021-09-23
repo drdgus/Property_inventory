@@ -1,6 +1,5 @@
 ﻿using OfficeOpenXml;
 using Property_inventory.DAL;
-using Property_inventory.Entities;
 using Property_inventory.Properties;
 using System;
 using System.Data.Entity;
@@ -56,17 +55,17 @@ namespace Property_inventory.Services
                 cellRange[$"S{51 + i}"].Value = "regName";
                 cellRange[$"X{51 + i}"].Value = equip[i].RegistrationDate.ToString();
                 cellRange[$"AC{51 + i}"].Value = 1;
-                cellRange[$"AH{51 + i}"].Value = equip[i].ReleaseDate.ToString();
+                //cellRange[$"AH{51 + i}"].Value = equip[i].ReleaseDate.ToString();
                 cellRange[$"AN{51 + i}"].Value = equip[i].InvNum.ToString("Т-0000000");
-                cellRange[$"AU{51 + i}"].Value = equip[i].BaseInvNum;
+                //cellRange[$"AU{51 + i}"].Value = equip[i].BaseInvNum;
                 cellRange[$"AZ{51 + i}"].Value = "Passport";
                 cellRange[$"BG{51 + i}"].Value = equip[i].Count;
-                cellRange[$"BL{51 + i}"].Value = equip[i].Count * equip[i].BasePrice;
+                //cellRange[$"BL{51 + i}"].Value = equip[i].Count * equip[i].BasePrice;
             }
 
 
             cellRange["BG73"].Value = equip.Sum(i => i.Count);
-            cellRange["BL73"].Value = equip.Sum(i => i.BasePrice * i.Count);
+            //cellRange["BL73"].Value = equip.Sum(i => i.BasePrice * i.Count);
 
             cellRange["AJ121"].Value = DateTime.Now.Day;
             cellRange["AN121"].Value = DateTime.Now.ToString("MMMM", CultureInfo.CreateSpecificCulture("ru"));
@@ -107,11 +106,11 @@ namespace Property_inventory.Services
             cellRange.Single(c => c.Text.Contains("$docNum")).Value = 1;
             cellRange.Where(c => c.Text.Contains("$createDate")).ToList().ForEach(i => i.Value = DateTime.Now.ToString("MM.dd.yyyy"));
             cellRange.Single(c => c.Text.Contains("$equipName")).Value = equip.Name;
-            cellRange.Single(c => c.Text.Contains("$equipReleaseDate")).Value = equip.ReleaseDate;
+            //cellRange.Single(c => c.Text.Contains("$equipReleaseDate")).Value = equip.ReleaseDate;
             cellRange.Single(c => c.Text.Contains("$equipInvNum")).Value = equip.InvNum;
             cellRange.Single(c => c.Text.Contains("$equipCount")).Value = equip.Count;
-            cellRange.Single(c => c.Text.Contains("$equipBasePrice")).Value = equip.BasePrice;
-            cellRange.Single(c => c.Text.Contains("$equipSumPrice")).Value = equip.BasePrice + equip.Count;
+            //cellRange.Single(c => c.Text.Contains("$equipBasePrice")).Value = equip.BasePrice;
+            //cellRange.Single(c => c.Text.Contains("$equipSumPrice")).Value = equip.BasePrice + equip.Count;
             cellRange.Single(c => c.Text.Contains("$senderPosition")).Value = "";
             cellRange.Single(c => c.Text.Contains("$senderFIO")).Value = equip.MOL.ShortFullName;
             cellRange.Single(c => c.Text.Contains("$acceptPosition")).Value = "Иванов Иван Иванович";
@@ -153,13 +152,13 @@ namespace Property_inventory.Services
             cellRange.Single(c => c.Text.Contains("$createDate")).Value = DateTime.Now.ToString("MM.dd.yyyy");
             cellRange.Single(c => c.Text.Contains("$equipName")).Value = equip.Name;
             cellRange.Single(c => c.Text.Contains("$equipInvNum")).Value = equip.InvNum;
-            cellRange.Single(c => c.Text.Contains("$equipBaseInvNum")).Value = equip.BaseInvNum;
-            cellRange.Single(c => c.Text.Contains("$equipReleaseDate")).Value = equip.ReleaseDate;
+            //cellRange.Single(c => c.Text.Contains("$equipBaseInvNum")).Value = equip.BaseInvNum;
+            //cellRange.Single(c => c.Text.Contains("$equipReleaseDate")).Value = equip.ReleaseDate;
             cellRange.Single(c => c.Text.Contains("$equipRegDate")).Value = equip.RegistrationDate;
             cellRange.Single(c => c.Text.Contains("$equipLifeTime")).Value = 5;
-            cellRange.Single(c => c.Text.Contains("$equipBasePrice")).Value = equip.BasePrice;
+            //cellRange.Single(c => c.Text.Contains("$equipBasePrice")).Value = equip.BasePrice;
             cellRange.Single(c => c.Text.Contains("$equipAccruedDepreciation")).Value = 0;
-            cellRange.Single(c => c.Text.Contains("$equipCurrentPrice")).Value = equip.BasePrice;
+            //cellRange.Single(c => c.Text.Contains("$equipCurrentPrice")).Value = equip.BasePrice;
 
 
             excel.SaveAs(new FileInfo($"Акт списания №1.xlsx"));
@@ -192,22 +191,22 @@ namespace Property_inventory.Services
             cellRange.Single(c => c.Text.Contains("$orgName")).Value = "МКОУ Таежнинская школа №20";
             cellRange.Single(c => c.Text.Contains("$address")).Value = "Красноярский край, Богучанский район, п. Таёжный, ул. Новая 15";
             cellRange.Where(c => c.Text.Contains("$createDate")).ToList().ForEach(i => i.Value = DateTime.Now.ToString("MM.dd.yyyy"));
-            cellRange.Single(c => c.Text.Contains("$deprecationGroupNum")).Value = Enum.GetName(typeof(InvEnums.DepreciationGroups), equip.DepreciationGroup);
+            //cellRange.Single(c => c.Text.Contains("$deprecationGroupNum")).Value = Enum.GetName(typeof(InvEnums.DepreciationGroups), equip.DepreciationGroup);
             cellRange.Single(c => c.Text.Contains("$equipInvNum")).Value = equip.InvNum;
-            cellRange.Single(c => c.Text.Contains("$equipBaseInvNum")).Value = equip.BaseInvNum;
+            //cellRange.Single(c => c.Text.Contains("$equipBaseInvNum")).Value = equip.BaseInvNum;
             cellRange.Single(c => c.Text.Contains("$docNum")).Value = 1;
             cellRange.Single(c => c.Text.Contains("$equipName")).Value = equip.Name;
             //cellRange.Single(c => c.Text.Contains( "$releaseOrgName")).Value = "relOrgName";
-            cellRange.Single(c => c.Text.Contains("$equipReleaseDate")).Value = equip.ReleaseDate.ToString();
+            //cellRange.Single(c => c.Text.Contains("$equipReleaseDate")).Value = equip.ReleaseDate.ToString();
             cellRange.Single(c => c.Text.Contains("$equipRegDate")).Value = equip.RegistrationDate.ToString();
             cellRange.Single(c => c.Text.Contains("$equipLifeTime")).Value = 0;
             cellRange.Single(c => c.Text.Contains("$equipMaxLifteTime")).Value = 5;
             cellRange.Single(c => c.Text.Contains("$equipAccruedDepreciation")).Value = 0;
-            cellRange.Single(c => c.Text.Contains("$equipCurrentPrice")).Value = equip.BasePrice; //Выччитываем через амортизацию
-            cellRange.Single(c => c.Text.Contains("$equipBasePrice")).Value = equip.BasePrice;
+            //cellRange.Single(c => c.Text.Contains("$equipCurrentPrice")).Value = equip.BasePrice; //Выччитываем через амортизацию
+            //cellRange.Single(c => c.Text.Contains("$equipBasePrice")).Value = equip.BasePrice;
             cellRange.Single(c => c.Text.Contains("$equipCurrentMaxLifeTime")).Value = 4;
             cellRange.Single(c => c.Text.Contains("$depricationAccrueName")).Value = "Линейное";
-            cellRange.Single(c => c.Text.Contains("$equipDeprecationRate")).Value = equip.DepreciationRate;
+            //cellRange.Single(c => c.Text.Contains("$equipDeprecationRate")).Value = equip.DepreciationRate;
             cellRange.Single(c => c.Text.Contains("$conditions")).Value = "соответствует";
             cellRange.Single(c => c.Text.Contains("$working")).Value = "не требуется";
             cellRange.Single(c => c.Text.Contains("$MOLPosition")).Value = "Преподаватель";
@@ -239,23 +238,23 @@ namespace Property_inventory.Services
             cellRange.Single(c => c.Text.Contains("$OKPO")).Value = Settings.Default.OKPO;
             cellRange.Single(c => c.Text.Contains("$OKUD")).Value = Settings.Default.OKUD;
             cellRange.Single(c => c.Text.Contains("$orgName")).Value = "МКОУ Таежнинская школа №20";
-            cellRange.Single(c => c.Text.Contains("$DepreciationGroup")).Value = Enum.GetName(typeof(InvEnums.DepreciationGroups), equip.DepreciationGroup);
+            //cellRange.Single(c => c.Text.Contains("$DepreciationGroup")).Value = Enum.GetName(typeof(InvEnums.DepreciationGroups), equip.DepreciationGroup);
             cellRange.Single(c => c.Text.Contains("$passportNum")).Value = 123;//
-            cellRange.Single(c => c.Text.Contains("$equipBaseInvNum")).Value = equip.BaseInvNum;
+            //cellRange.Single(c => c.Text.Contains("$equipBaseInvNum")).Value = equip.BaseInvNum;
             cellRange.Single(c => c.Text.Contains("$equipInvNum")).Value = equip.InvNum;
             //cellRange.Single(c => c.Text.Contains("$equipRegDate")).Value = equip.RegistrationDate;
             cellRange.Single(c => c.Text.Contains("$docNum")).Value = 1;//
             cellRange.Single(c => c.Text.Contains("$createDate")).Value = DateTime.Now.ToString("MM.dd.yyyy");
             cellRange.Single(c => c.Text.Contains("$equipName")).Value = equip.Name;
             //cellRange.Single(c => c.Text.Contains("$ReleaseOrg")).Value = "Release Org";//
-            cellRange.Single(c => c.Text.Contains("$equipReleaseDate")).Value = equip.ReleaseDate;
+            //cellRange.Single(c => c.Text.Contains("$equipReleaseDate")).Value = equip.ReleaseDate;
             cellRange.Single(c => c.Text.Contains("$regDocName")).Value = "regDocName";//
             cellRange.Single(c => c.Text.Contains("$regDocNum")).Value = 1;//
             cellRange.Single(c => c.Text.Contains("$regDocDate")).Value = DateTime.Now.ToString("MM.dd.yyyy"); ;
             cellRange.Single(c => c.Text.Contains("$equipLifeTime")).Value = ((DateTime.Now - equip.RegistrationDate).TotalDays / 365) + " г.";
             cellRange.Single(c => c.Text.Contains("$equipAccruedDepreciation")).Value = 0;//
-            cellRange.Single(c => c.Text.Contains("$equipCurrentPrice")).Value = equip.BasePrice; // change
-            cellRange.Single(c => c.Text.Contains("$equipBasePrice")).Value = equip.BasePrice;
+            //cellRange.Single(c => c.Text.Contains("$equipCurrentPrice")).Value = equip.BasePrice; // change
+            //cellRange.Single(c => c.Text.Contains("$equipBasePrice")).Value = equip.BasePrice;
             cellRange.Single(c => c.Text.Contains("$equipCurrentMaxLifeTime")).Value = 5; //
 
 

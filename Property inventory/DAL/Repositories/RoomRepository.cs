@@ -1,11 +1,7 @@
-﻿using System;
+﻿using Property_inventory.Entities;
 using System.Collections.Generic;
 using System.Data.Entity;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Property_inventory.Entities;
-using Property_inventory.Services;
 
 namespace Property_inventory.DAL.Repositories
 {
@@ -22,7 +18,7 @@ namespace Property_inventory.DAL.Repositories
             var room = InvDbContext.GetInstance().Rooms.Add(newRoom);
             InvDbContext.GetInstance().SaveChanges();
             newRoom.Id = room.Id;
-            new SyncData().AddRoom(newRoom);
+            //new SyncData().AddRoom(newRoom);
             return room.Id;
         }
 
@@ -31,7 +27,7 @@ namespace Property_inventory.DAL.Repositories
             var currnetRoom = InvDbContext.GetInstance().Rooms.Single(i => i.Id == room.Id);
             currnetRoom = room;
             InvDbContext.GetInstance().SaveChanges();
-            new SyncData().UpdateRoom(room);
+            //new SyncData().UpdateRoom(room);
         }
 
         public async void Remove(int roomId)
@@ -40,7 +36,7 @@ namespace Property_inventory.DAL.Repositories
             await InvDbContext.GetInstance().Equips.Where(e => e.RoomId == roomId)
                 .ForEachAsync(i => i.IsDeleted = true);
             InvDbContext.GetInstance().SaveChanges();
-            new SyncData().RemoveRoom(roomId);
+            //new SyncData().RemoveRoom(roomId);
         }
     }
 }

@@ -66,7 +66,7 @@
                         <CheckBox x:Name="EnabledTextBox" Content="Инв. номер" />
                     </WrapPanel>
 
-                    <ComboBox
+                    <!--<ComboBox
                         Grid.Row="2"
                         Margin="0,16,0,0"
                         VerticalAlignment="Bottom"
@@ -76,7 +76,7 @@
                         FontSize="16"
                         IsEditable="True"
                         ItemsSource="{Binding Categories}"
-                        SelectedItem="{Binding SelectedEquip.Type.Category}" />
+                        SelectedItem="{Binding SelectedEquip.Type.Category}" />-->
                     <ComboBox
                         Grid.Row="2"
                         Grid.Column="1"
@@ -100,7 +100,7 @@
                         Text="{Binding SelectedEquip.Count, UpdateSourceTrigger=PropertyChanged}" />
 
 
-                    <ComboBox
+                    <!--<ComboBox
                         Grid.Row="3"
                         Grid.Column="1"
                         Margin="20,0,0,0"
@@ -111,7 +111,7 @@
                         FontSize="16"
                         IsEditable="True"
                         ItemsSource="{Binding EquipMOLs}"
-                        SelectedItem="{Binding SelectedEquip.MOL}" />
+                        SelectedItem="{Binding SelectedEquip.MOL}" />-->
                     <TextBox
                         Grid.Row="4"
                         Grid.Column="0"
@@ -121,7 +121,7 @@
                         Style="{StaticResource MaterialDesignFloatingHintTextBox}"
                         Text="{Binding SelectedEquip.Note}" />
 
-                    <GroupBox
+                    <!--<GroupBox
                         Grid.Row="5"
                         Grid.ColumnSpan="2"
                         Margin="0,16,0,-10"
@@ -178,7 +178,7 @@
                         PreviewKeyDown="Price_OnPreviewKeyDown"
                         PreviewTextInput="Price_OnPreviewTextInput"
                         Style="{StaticResource MaterialDesignFloatingHintTextBox}"
-                        Text="{Binding SelectedEquip.BasePrice, UpdateSourceTrigger=PropertyChanged}" />
+                        Text="{Binding SelectedEquip.BasePrice, UpdateSourceTrigger=PropertyChanged}" />-->
                     <Grid
                         Grid.Row="9"
                         Grid.Column="0"

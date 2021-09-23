@@ -1,12 +1,11 @@
-﻿using Property_inventory.Entities;
+﻿using Property_inventory.DAL.Repositories;
+using Property_inventory.Entities;
 using Property_inventory.Infrastructure;
-using Property_inventory.Services;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Windows.Input;
-using Property_inventory.DAL.Repositories;
 
 namespace Property_inventory.ViewModels
 {

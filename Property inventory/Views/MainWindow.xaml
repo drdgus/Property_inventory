@@ -37,7 +37,7 @@
         </ContextMenu>
         <ContextMenu x:Key="ContextMenuTreeViewItem">
             <MenuItem Click="EditRoom" Header="Изменить" />
-            <MenuItem Click="PrintQRCodes" Header="Печать QR-кодов" />
+            <!--<MenuItem Click="PrintQRCodes" Header="Печать QR-кодов" />-->
             <MenuItem Click="DeleteRoom" Header="Удалить" />
         </ContextMenu>
     </Window.Resources>
@@ -79,7 +79,7 @@
                     Text="{Binding SearchText, UpdateSourceTrigger=PropertyChanged}" />
                 <TreeView
                     Grid.Row="2"
-                    ItemsSource="{Binding Nodes, Converter={StaticResource SortingConverter}, ConverterParameter=Name}"
+                    ItemsSource="{Binding Rooms, Converter={StaticResource SortingConverter}, ConverterParameter=Name}"
                     VirtualizingStackPanel.VirtualizationMode="Recycling">
                     <e:Interaction.Behaviors>
                         <view:BindableSelectedItemBehavior SelectedItem="{Binding SelectedNode, Mode=TwoWay}" />
@@ -117,7 +117,7 @@
                                 Command="{Binding DeleteEquipCommand}"
                                 Header="Удалить" />
                             <Separator />
-                            <MenuItem Command="{Binding OpenInvCardWinCommand}" Click="OpenInvCardWin" Header="Инвентарная карточка" />
+                            <!--<MenuItem Command="{Binding OpenInvCardWinCommand}" Click="OpenInvCardWin" Header="Инвентарная карточка" />-->
                             <MenuItem Command="{Binding OpenRelocateWinCommand}" Click="OpenRelocateWin" Header="Переместить" />
                             <MenuItem Command="{Binding OpenWriteOffWinCommand}" Click="OpenWriteOffWin" Header="Списать" />
                         </ContextMenu>
@@ -153,7 +153,7 @@
                         </DataGridTextColumn>
                         <DataGridTextColumn
                             Width="Auto"
-                            Binding="{Binding Type.Category.Class}"
+                            Binding="{Binding Type.Category.Name}"
                             Header="Категория" />
 
                         <DataGridTextColumn
@@ -164,7 +164,7 @@
                             Width="Auto"
                             Binding="{Binding Count}"
                             Header="Количество" />
-                        <DataGridTextColumn
+                        <!--<DataGridTextColumn
                             Width="Auto"
                             Binding="{Binding BasePrice, StringFormat=C, ConverterCulture=ru-RU}"
                             Header="Первоначальная стоимость" />
@@ -175,7 +175,7 @@
                         <DataGridTextColumn
                             Width="120"
                             Binding="{Binding DepreciationGroup}"
-                            Header="Аморт. группа" />
+                            Header="Аморт. группа" />-->
                     </DataGrid.Columns>
                 </DataGrid>
                 <Menu
@@ -212,7 +212,7 @@
                             Command="{Binding OpenEquipHistoryCommand}"
                             Header="История" />
                     </MenuItem>
-                    <MenuItem Height="20" Header="Инвентаризация">
+                    <!--<MenuItem Height="20" Header="Инвентаризация">
                         <MenuItem
                             Height="25"
                             Command="{Binding AllEquipActCommand}"
@@ -221,8 +221,8 @@
                             Height="25"
                             Command="{Binding AllEquipActCommand}"
                             Header="Сличительная ведомость" />
-                    </MenuItem>
-                    <MenuItem Height="20" Header="Учет ОС">
+                    </MenuItem>-->
+                    <!--<MenuItem Height="20" Header="Учет ОС">
                         <MenuItem
                             Height="25"
                             Command="{Binding OpenSupplyWinCommand}"
@@ -257,7 +257,7 @@
                             Height="25"
                             Command="{Binding OpenHandoverWinCommand}"
                             Header="Акт приема-передачи" />
-                    </MenuItem>
+                    </MenuItem>-->
                     <MenuItem
                         Height="20"
                         Click="MiSettings_Click"
@@ -268,7 +268,7 @@
                         Header="О программе" />
                 </Menu>
                 <WrapPanel Grid.Row="2" VerticalAlignment="Bottom">
-                    <Button
+                    <!--<Button
                         Click="Map_Click"
                         Foreground="Black"
                         Style="{StaticResource MaterialDesignIconButton}">
@@ -279,7 +279,7 @@
                         Foreground="Black"
                         Style="{StaticResource MaterialDesignIconButton}">
                         <materialDesign:PackIcon Kind="ChartAreaspline" />
-                    </Button>
+                    </Button>-->
                     <Button Command="{Binding CreateEquipCommand}" Style="{StaticResource MaterialDesignIconForegroundButton}">
                         <materialDesign:PackIcon Kind="Plus" />
                     </Button>

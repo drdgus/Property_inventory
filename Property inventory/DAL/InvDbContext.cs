@@ -1,6 +1,7 @@
 ﻿using Property_inventory.Entities;
 using SQLite.CodeFirst;
 using System.Data.Entity;
+using System.Linq;
 using History = Property_inventory.Entities.History;
 
 namespace Property_inventory.DAL
@@ -25,7 +26,31 @@ namespace Property_inventory.DAL
         private static InvDbContext _instance;
 
         private InvDbContext() : base("DefaultConnection")
-        { }
+        {
+            if (Orgs.Count() == 0)
+            {
+                Orgs.Add(new Org { Name = "МКОУ Таежнинская школа №20" });
+
+                Statuses.Add(new Status { Name = "На балансе" });
+                Statuses.Add(new Status { Name = "Ремнот" });
+                Statuses.Add(new Status { Name = "Списано" });
+
+                Categories.AddRange(new Category[]
+                {
+                    new Category { Name = "Всё" }
+                });
+
+                Accountabilities.AddRange(new Accountability[]
+                {
+                    new Accountability { Name = "Основной баланс" },
+                    new Accountability { Name = "З/б" },
+                });
+
+                MolPositions.Add(new MOLPosition { Name = "Зам. по АХЧ" });
+
+                SaveChanges();
+            }
+        }
 
         public static InvDbContext GetInstance()
         {
