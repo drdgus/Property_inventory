@@ -9,10 +9,10 @@ namespace Property_inventory.Services
             Created,
             Edited,
             Deleted,
-            Supply,
             OnBalance,
             Relocate,
-            WriteOff
+            WriteOff,
+            Supply
         }
 
         public enum Table

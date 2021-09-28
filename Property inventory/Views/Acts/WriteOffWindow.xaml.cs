@@ -13,5 +13,11 @@ namespace Property_inventory.Views.Acts
             InitializeComponent();
             ThemeAssist.SetTheme(this, Properties.Settings.Default.Theme == false ? BaseTheme.Light : BaseTheme.Dark);
         }
+
+        private void Button_Click(object sender, RoutedEventArgs e)
+        {
+            DialogResult = true;
+            Close();
+        }
     }
 }

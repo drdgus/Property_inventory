@@ -1,30 +1,29 @@
-﻿<Window
-    x:Class="Property_inventory.Views.MainWindow"
-    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-    xmlns:converters="clr-namespace:Property_inventory.Views.Converters"
-    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-    xmlns:e="http://schemas.microsoft.com/expression/2010/interactivity"
-    xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
-    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-    xmlns:propertyInventory="clr-namespace:Property_inventory"
-    xmlns:services="clr-namespace:Property_inventory.Services"
-    xmlns:view="clr-namespace:Property_inventory.Services.View"
-    xmlns:viewModels="clr-namespace:Property_inventory.ViewModels"
-    Name="Window"
-    Title="Инвентаризация имущества"
-    Width="1280"
-    Height="700"
-    MinWidth="1280"
-    MinHeight="700"
-    Background="{DynamicResource MaterialDesignPaper}"
-    FontFamily="{DynamicResource MaterialDesignFont}"
-    TextElement.FontSize="13"
-    TextElement.FontWeight="Regular"
-    TextElement.Foreground="{DynamicResource MaterialDesignBody}"
-    TextOptions.TextFormattingMode="Ideal"
-    TextOptions.TextRenderingMode="Auto"
-    mc:Ignorable="d">
+﻿<Window x:Class="Property_inventory.Views.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:converters="clr-namespace:Property_inventory.Views.Converters"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:e="http://schemas.microsoft.com/expression/2010/interactivity"
+        xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:propertyInventory="clr-namespace:Property_inventory"
+        xmlns:services="clr-namespace:Property_inventory.Services"
+        xmlns:view="clr-namespace:Property_inventory.Services.View"
+        xmlns:viewModels="clr-namespace:Property_inventory.ViewModels"
+        Name="Window"
+        Title="Инвентаризация имущества"
+        Width="1280"
+        Height="700"
+        MinWidth="1280"
+        MinHeight="700"
+        Background="{DynamicResource MaterialDesignPaper}"
+        FontFamily="{DynamicResource MaterialDesignFont}"
+        TextElement.FontSize="13"
+        TextElement.FontWeight="Regular"
+        TextElement.Foreground="{DynamicResource MaterialDesignBody}"
+        TextOptions.TextFormattingMode="Ideal"
+        TextOptions.TextRenderingMode="Auto"
+        mc:Ignorable="d">
     <Window.DataContext>
         <viewModels:MainVM />
     </Window.DataContext>
@@ -33,32 +32,33 @@
         <converters:TooltipVisibilityConverter x:Key="TooltipVisibilityConverter" />
         <converters:InvConverter x:Key="InvConverter" />
         <ContextMenu x:Key="ContextMenuTreeView">
-            <MenuItem Command="{Binding CreateRoomCommand}" Header="Добавить помещение" />
+            <MenuItem Command="{Binding CreateRoomCommand}"
+                      Header="Добавить помещение" />
         </ContextMenu>
         <ContextMenu x:Key="ContextMenuTreeViewItem">
-            <MenuItem Click="EditRoom" Header="Изменить" />
+            <MenuItem Click="EditRoom"
+                      Header="Изменить" />
             <!--<MenuItem Click="PrintQRCodes" Header="Печать QR-кодов" />-->
-            <MenuItem Click="DeleteRoom" Header="Удалить" />
+            <MenuItem Click="DeleteRoom"
+                      Header="Удалить" />
         </ContextMenu>
     </Window.Resources>
-    <materialDesign:DialogHost
-        CloseOnClickAway="{Binding AllowCloseOnClickAway}"
-        DialogTheme="Inherit"
-        Identifier="RootDialog"
-        Loaded="MainWindow_OnLoaded">
+    <materialDesign:DialogHost CloseOnClickAway="{Binding AllowCloseOnClickAway}"
+                               DialogTheme="Inherit"
+                               Identifier="RootDialog"
+                               Loaded="MainWindow_OnLoaded">
         <Grid>
-            <materialDesign:DialogHost
-                CloseOnClickAway="True"
-                DialogTheme="Inherit"
-                IsOpen="{Binding InfoDialogIsOpen}">
+            <materialDesign:DialogHost CloseOnClickAway="True"
+                                       DialogTheme="Inherit"
+                                       IsOpen="{Binding InfoDialogIsOpen}">
                 <materialDesign:DialogHost.DialogContent>
                     <StackPanel Margin="20">
-                        <TextBlock FontSize="16" Text="{Binding MessageDialogContent}" />
-                        <Button
-                            Margin="0,20,0,0"
-                            Command="{x:Static materialDesign:DialogHost.CloseDialogCommand}"
-                            Content="ОК"
-                            FontSize="16" />
+                        <TextBlock FontSize="16"
+                                   Text="{Binding MessageDialogContent}" />
+                        <Button Margin="0,20,0,0"
+                                Command="{x:Static materialDesign:DialogHost.CloseDialogCommand}"
+                                Content="ОК"
+                                FontSize="16" />
                     </StackPanel>
                 </materialDesign:DialogHost.DialogContent>
             </materialDesign:DialogHost>
@@ -72,26 +72,29 @@
                     <ColumnDefinition Width="250" />
                     <ColumnDefinition Width="650*" />
                 </Grid.ColumnDefinitions>
-                <TextBox
-                    Grid.Row="1"
-                    Margin="10,0,0,0"
-                    materialDesign:HintAssist.Hint="Поиск"
-                    Style="{StaticResource MaterialDesignFloatingHintTextBox}"
-                    Text="{Binding SearchText, UpdateSourceTrigger=PropertyChanged}" />
-                <TreeView
-                    Grid.Row="2"
-                    ItemsSource="{Binding Rooms, Converter={StaticResource SortingConverter}, ConverterParameter=Name}"
-                    VirtualizingStackPanel.VirtualizationMode="Recycling">
+                <TextBox Grid.Row="1"
+                         Margin="10,0,0,0"
+                         materialDesign:HintAssist.Hint="Поиск"
+                         Style="{StaticResource MaterialDesignFloatingHintTextBox}"
+                         Text="{Binding SearchText, UpdateSourceTrigger=PropertyChanged}" />
+                <TreeView Grid.Row="2"
+                          ItemsSource="{Binding Rooms, Converter={StaticResource SortingConverter}, ConverterParameter=Name}"
+                          VirtualizingStackPanel.VirtualizationMode="Recycling">
                     <e:Interaction.Behaviors>
                         <view:BindableSelectedItemBehavior SelectedItem="{Binding SelectedNode, Mode=TwoWay}" />
                     </e:Interaction.Behaviors>
                     <TreeView.Resources>
-                        <Style BasedOn="{StaticResource {x:Type TreeViewItem}}" TargetType="TreeViewItem">
-                            <Setter Property="IsExpanded" Value="{Binding IsExpanded, Mode=TwoWay}" />
-                            <Setter Property="ContextMenu" Value="{StaticResource ContextMenuTreeViewItem}" />
+                        <Style BasedOn="{StaticResource {x:Type TreeViewItem}}"
+                               TargetType="TreeViewItem">
+                            <Setter Property="IsExpanded"
+                                    Value="{Binding IsExpanded, Mode=TwoWay}" />
+                            <Setter Property="ContextMenu"
+                                    Value="{StaticResource ContextMenuTreeViewItem}" />
                         </Style>
-                        <Style BasedOn="{StaticResource {x:Type TreeView}}" TargetType="TreeView">
-                            <Setter Property="ContextMenu" Value="{StaticResource ContextMenuTreeView}" />
+                        <Style BasedOn="{StaticResource {x:Type TreeView}}"
+                               TargetType="TreeView">
+                            <Setter Property="ContextMenu"
+                                    Value="{StaticResource ContextMenuTreeView}" />
                         </Style>
                     </TreeView.Resources>
                     <TreeView.ItemTemplate>
@@ -100,180 +103,181 @@
                         </HierarchicalDataTemplate>
                     </TreeView.ItemTemplate>
                 </TreeView>
-                <DataGrid
-                    Grid.Row="2"
-                    Grid.RowSpan="2"
-                    Grid.Column="1"
-                    AutoGenerateColumns="False"
-                    IsReadOnly="True"
-                    ItemsSource="{Binding CurrentRoomEquip}"
-                    SelectedItem="{Binding SelectedEquip, Mode=TwoWay}"
-                    VirtualizingStackPanel.VirtualizationMode="Recycling">
+                <DataGrid Grid.Row="2"
+                          Grid.RowSpan="2"
+                          Grid.Column="1"
+                          AutoGenerateColumns="False"
+                          IsReadOnly="True"
+                          ItemsSource="{Binding CurrentRoomEquip}"
+                          SelectedItem="{Binding SelectedEquip, Mode=TwoWay}"
+                          VirtualizingStackPanel.VirtualizationMode="Recycling">
                     <DataGrid.Resources>
                         <ContextMenu x:Key="ContextMenuForDatagridItem">
-                            <MenuItem Command="{Binding OpenEquipHistoryCommand}" Header="История" />
-                            <MenuItem Click="EditEquip" Header="Изменить" />
-                            <MenuItem
-                                Click="DeleteEquip"
-                                Command="{Binding DeleteEquipCommand}"
-                                Header="Удалить" />
+                            <MenuItem Click="EquipHistory"
+                                      Header="История" />
+                            <MenuItem Click="EditEquip"
+                                      Header="Изменить" />
+                            <!--<MenuItem
+                                 Click="DeleteEquip"
+                                 Command="{Binding DeleteEquipCommand}"
+                                 Header="Удалить" />-->
                             <Separator />
                             <!--<MenuItem Command="{Binding OpenInvCardWinCommand}" Click="OpenInvCardWin" Header="Инвентарная карточка" />-->
-                            <MenuItem Command="{Binding OpenRelocateWinCommand}" Click="OpenRelocateWin" Header="Переместить" />
-                            <MenuItem Command="{Binding OpenWriteOffWinCommand}" Click="OpenWriteOffWin" Header="Списать" />
+                            <MenuItem Command="{Binding OpenRelocateWinCommand}"
+                                      Click="OpenRelocateWin"
+                                      Header="Переместить" />
+                            <MenuItem Command="{Binding OpenWriteOffWinCommand}"
+                                      Click="OpenWriteOffWin"
+                                      Header="Списать" />
                         </ContextMenu>
                     </DataGrid.Resources>
                     <DataGrid.RowStyle>
-                        <Style BasedOn="{StaticResource {x:Type DataGridRow}}" TargetType="DataGridRow">
+                        <Style BasedOn="{StaticResource {x:Type DataGridRow}}"
+                               TargetType="DataGridRow">
                             <Setter Property="ToolTip">
                                 <Setter.Value>
-                                    <TextBlock
-                                        Width="600"
-                                        Text="{Binding Note}"
-                                        TextWrapping="Wrap"
-                                        Visibility="{Binding Note, Converter={StaticResource TooltipVisibilityConverter}}" />
+                                    <TextBlock Width="600"
+                                               Text="{Binding Note}"
+                                               TextWrapping="Wrap"
+                                               Visibility="{Binding Note, Converter={StaticResource TooltipVisibilityConverter}}" />
                                 </Setter.Value>
                             </Setter>
-                            <Setter Property="ContextMenu" Value="{StaticResource ContextMenuForDatagridItem}" />
+                            <Setter Property="ContextMenu"
+                                    Value="{StaticResource ContextMenuForDatagridItem}" />
                         </Style>
                     </DataGrid.RowStyle>
                     <DataGrid.Columns>
-                        <DataGridTextColumn
-                            Width="Auto"
-                            Binding="{Binding InvNum, Converter={StaticResource InvConverter}}"
-                            Header="Инв. Номер" />
-                        <DataGridTextColumn
-                            Width="Auto"
-                            Binding="{Binding Name}"
-                            Header="Наименование">
+                        <DataGridTextColumn Width="Auto"
+                                            Binding="{Binding InvNum, Converter={StaticResource InvConverter}}"
+                                            Header="Инв. Номер" />
+                        <DataGridTextColumn Width="Auto"
+                                            Binding="{Binding Name}"
+                                            Header="Наименование">
                             <DataGridTextColumn.ElementStyle>
                                 <Style>
-                                    <Setter Property="TextBlock.TextWrapping" Value="Wrap" />
+                                    <Setter Property="TextBlock.TextWrapping"
+                                            Value="Wrap" />
                                 </Style>
                             </DataGridTextColumn.ElementStyle>
                         </DataGridTextColumn>
-                        <DataGridTextColumn
-                            Width="Auto"
-                            Binding="{Binding Type.Category.Name}"
-                            Header="Категория" />
+                        <DataGridTextColumn Width="Auto"
+                                            Binding="{Binding InvType.Category.Name}"
+                                            Header="Категория" />
 
-                        <DataGridTextColumn
-                            Width="Auto"
-                            Binding="{Binding Type.Name}"
-                            Header="Тип" />
-                        <DataGridTextColumn
-                            Width="Auto"
-                            Binding="{Binding Count}"
-                            Header="Количество" />
-                        <DataGridTextColumn
-                            Width="Auto"
-                            Binding="{Binding BasePrice, StringFormat=C, ConverterCulture=ru-RU}"
-                            Header="Первоначальная стоимость" />
-                        <DataGridTextColumn
-                            Width="Auto"
-                            Binding="{Binding MOL.ShortFullName}"
-                            Header="МОЛ" />
-                        <DataGridTextColumn
-                            Width="120"
-                            Binding="{Binding DepreciationGroup}"
-                            Header="Аморт. группа" />
+                        <DataGridTextColumn Width="Auto"
+                                            Binding="{Binding InvType.Name}"
+                                            Header="Тип" />
+                        <DataGridTextColumn Width="Auto"
+                                            Binding="{Binding Count}"
+                                            Header="Количество" />
+                        <!--<DataGridTextColumn
+                             Width="Auto"
+                             Binding="{Binding BasePrice, StringFormat=C, ConverterCulture=ru-RU}"
+                             Header="Первоначальная стоимость" />
+                             <DataGridTextColumn
+                             Width="Auto"
+                             Binding="{Binding MOL.ShortFullName}"
+                             Header="МОЛ" />
+                             <DataGridTextColumn
+                             Width="120"
+                             Binding="{Binding DepreciationGroup}"
+                             Header="Аморт. группа" />-->
                     </DataGrid.Columns>
                 </DataGrid>
-                <Menu
-                    Grid.Row="0"
-                    Grid.ColumnSpan="3"
-                    Margin="0,10"
-                    FontSize="12">
-                    <MenuItem Height="20" Header="Файл">
-                        <MenuItem
-                            Height="25"
-                            Click="MiExit_Click"
-                            Header="Выход" />
+                <Menu Grid.Row="0"
+                      Grid.ColumnSpan="3"
+                      Margin="0,10"
+                      FontSize="12">
+                    <MenuItem Height="20"
+                              Header="Файл">
+                        <MenuItem Height="25"
+                                  Click="MiExit_Click"
+                                  Header="Выход" />
                     </MenuItem>
-                    <MenuItem Height="20" Header="Справочники">
-                        <MenuItem
-                            Height="25"
-                            Command="{Binding OpenAllEquipCommand}"
-                            Header="Имущество на балансе" />
-                        <MenuItem
-                            Height="25"
-                            Command="{Binding OpenDicTypesCommand}"
-                            Header="Типы" />
-                        <MenuItem
-                            Height="25"
-                            Command="{Binding OpenDicMOLsCommand}"
-                            Header="Материально ответственные лица" />
+                    <MenuItem Height="20"
+                              Header="Справочники">
+                        <MenuItem Height="25"
+                                  Command="{Binding OpenAllEquipCommand}"
+                                  Header="Имущество на балансе" />
+                        <MenuItem Height="25"
+                                  Command="{Binding OpenWriteoffEquipCommand}"
+                                  Header="Списанное имущество" />
+                        <MenuItem Height="25"
+                                  Command="{Binding OpenDicTypesCommand}"
+                                  Header="Типы" />
+                        <!--<MenuItem Height="25"
+                                  Command="{Binding OpenDicMOLsCommand}"
+                                  Header="Материально ответственные лица" />-->
                         <Separator />
-                        <MenuItem
-                            Height="25"
-                            Command="{Binding OpenEquipHistoryCommand}"
-                            Header="История" />
+                        <MenuItem Height="25"
+                                  Command="{Binding OpenHistoryCommand}"
+                                  Header="История" />
                     </MenuItem>
                     <!--<MenuItem Height="20" Header="Инвентаризация">
-                        <MenuItem
-                            Height="25"
-                            Command="{Binding AllEquipActCommand}"
-                            Header="Инвентаризационная опись" />
-                        <MenuItem
-                            Height="25"
-                            Command="{Binding AllEquipActCommand}"
-                            Header="Сличительная ведомость" />
-                    </MenuItem>
-                    <MenuItem Height="20" Header="Учет ОС">
-                        <MenuItem
-                            Height="25"
-                            Command="{Binding OpenSupplyWinCommand}"
-                            Header="Акт о поступлении оборудования" />
-                        <Separator />
-                        <MenuItem
-                            Height="25"
-                            Command="{Binding OpenInvCardWinCommandCommand}"
-                            Header="Инвентарная карта" />
-                        <MenuItem
-                            Height="25"
-                            Command="{Binding OpenHandoverMOLWinCommand}"
-                            Header="Накладная на внутреннее перемещение" />
-                        <MenuItem
-                            Height="25"
-                            Command="{Binding OpenWriteOffWinCommand}"
-                            Header="Акт списания" />
-                        <Separator />
-                        <MenuItem
-                            Height="25"
-                            Command="{Binding OpenHandoverMOLWinCommand}"
-                            Header="Акт приема-передачи МОЛу" />
-                        <MenuItem
-                            Height="25"
-                            Command="{Binding OpenHandoverToNewMOLCommand}"
-                            Header="Акт приема-передачи другому МОЛ" />
-                        <MenuItem
-                            Height="25"
-                            Command="{Binding OpenHandoverWinCommand}"
-                            Header="Акт приема-передачи" />
-                    </MenuItem>-->
-                    <MenuItem
-                        Height="20"
-                        Click="MiSettings_Click"
-                        Header="Настройки" />
-                    <MenuItem
-                        Height="20"
-                        Click="MiDeveloper_Click"
-                        Header="О программе" />
+                         <MenuItem
+                         Height="25"
+                         Command="{Binding AllEquipActCommand}"
+                         Header="Инвентаризационная опись" />
+                         <MenuItem
+                         Height="25"
+                         Command="{Binding AllEquipActCommand}"
+                         Header="Сличительная ведомость" />
+                         </MenuItem>
+                         <MenuItem Height="20" Header="Учет ОС">
+                         <MenuItem
+                         Height="25"
+                         Command="{Binding OpenSupplyWinCommand}"
+                         Header="Акт о поступлении оборудования" />
+                         <Separator />
+                         <MenuItem
+                         Height="25"
+                         Command="{Binding OpenInvCardWinCommandCommand}"
+                         Header="Инвентарная карта" />
+                         <MenuItem
+                         Height="25"
+                         Command="{Binding OpenHandoverMOLWinCommand}"
+                         Header="Накладная на внутреннее перемещение" />
+                         <MenuItem
+                         Height="25"
+                         Command="{Binding OpenWriteOffWinCommand}"
+                         Header="Акт списания" />
+                         <Separator />
+                         <MenuItem
+                         Height="25"
+                         Command="{Binding OpenHandoverMOLWinCommand}"
+                         Header="Акт приема-передачи МОЛу" />
+                         <MenuItem
+                         Height="25"
+                         Command="{Binding OpenHandoverToNewMOLCommand}"
+                         Header="Акт приема-передачи другому МОЛ" />
+                         <MenuItem
+                         Height="25"
+                         Command="{Binding OpenHandoverWinCommand}"
+                         Header="Акт приема-передачи" />
+                         </MenuItem>-->
+                    <MenuItem Height="20"
+                              Click="MiSettings_Click"
+                              Header="Настройки" />
+                    <MenuItem Height="20"
+                              Click="MiDeveloper_Click"
+                              Header="О программе" />
                 </Menu>
-                <WrapPanel Grid.Row="2" VerticalAlignment="Bottom">
+                <WrapPanel Grid.Row="2"
+                           VerticalAlignment="Bottom">
                     <!--<Button
-                        Click="Map_Click"
-                        Foreground="Black"
-                        Style="{StaticResource MaterialDesignIconButton}">
-                        <materialDesign:PackIcon Kind="Map" />
-                    </Button>
-                    <Button
-                        Click="BtnStat_OnClick"
-                        Foreground="Black"
-                        Style="{StaticResource MaterialDesignIconButton}">
-                        <materialDesign:PackIcon Kind="ChartAreaspline" />
-                    </Button>-->
-                    <Button Command="{Binding CreateEquipCommand}" Style="{StaticResource MaterialDesignIconForegroundButton}">
+                         Click="Map_Click"
+                         Foreground="Black"
+                         Style="{StaticResource MaterialDesignIconButton}">
+                         <materialDesign:PackIcon Kind="Map" />
+                         </Button>
+                         <Button
+                         Click="BtnStat_OnClick"
+                         Foreground="Black"
+                         Style="{StaticResource MaterialDesignIconButton}">
+                         <materialDesign:PackIcon Kind="ChartAreaspline" />
+                         </Button>-->
+                    <Button Command="{Binding CreateEquipCommand}"
+                            Style="{StaticResource MaterialDesignIconForegroundButton}">
                         <materialDesign:PackIcon Kind="Plus" />
                     </Button>
                 </WrapPanel>

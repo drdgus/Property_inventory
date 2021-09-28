@@ -2,11 +2,13 @@
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.ComponentModel.DataAnnotations.Schema;
+using System.Data.Entity.Core.Objects.DataClasses;
 using System.Runtime.CompilerServices;
 
 namespace Property_inventory.Entities
 {
-    public class Equip : INotifyPropertyChanged
+    public class Equip
     {
         public int Id { get; set; }
         public DateTime RegistrationDate { get; set; }
@@ -14,8 +16,8 @@ namespace Property_inventory.Entities
         public int InvNum { get; set; }
         public int RoomId { get; set; }
         public virtual Room Room { get; set; }
-        public int TypeId { get; set; }
-        public virtual Type Type { get; set; }
+        public int InvTypeId { get; set; }
+        public virtual InvType InvType { get; set; }
         public int StatusId { get; set; }
         public virtual Status Status { get; set; }
         public int AccountabilityId { get; set; }
@@ -51,12 +53,5 @@ namespace Property_inventory.Entities
 
         //public int ManufacturerId { get; set; }
         //public virtual Manufacturer Manufacturer { get; set; }
-
-        public event PropertyChangedEventHandler PropertyChanged;
-
-        protected virtual void OnPropertyChanged([CallerMemberName] string propertyName = null)
-        {
-            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
-        }
     }
 }

@@ -13,8 +13,9 @@ namespace Property_inventory.DAL.Repositories
             //new SyncData().AddHistory(history);
         }
 
-        public List<History> Get()
+        public List<History> Get(int id = 0)
         {
+            if (id != 0) return InvDbContext.GetInstance().History.AsNoTracking().Where(i => i.ObjectId == id).ToList();
             return InvDbContext.GetInstance().History.AsNoTracking().ToList();
         }
     }

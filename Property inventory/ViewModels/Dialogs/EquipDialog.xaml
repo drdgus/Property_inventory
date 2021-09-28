@@ -85,7 +85,7 @@
                         FontSize="16"
                         IsEditable="True"
                         ItemsSource="{Binding EquipTypes}"
-                        SelectedIndex="0"
+                        SelectedIndex="1"
                         SelectedItem="{Binding SelectedType}" />
                     <TextBox
                         Grid.Row="2"

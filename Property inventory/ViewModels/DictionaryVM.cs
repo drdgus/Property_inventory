@@ -8,7 +8,7 @@ using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
 using System.Windows.Input;
-using Type = Property_inventory.Entities.Type;
+using InvType = Property_inventory.Entities.InvType;
 
 namespace Property_inventory.ViewModels
 {
@@ -16,7 +16,7 @@ namespace Property_inventory.ViewModels
     {
         private string _messageDialogContent;
 
-        public ObservableCollection<Type> TypeList { get; set; }
+        public ObservableCollection<InvType> TypeList { get; set; }
         public ObservableCollection<MOL> MOLList { get; set; }
         public ObservableCollection<MOLPosition> Positions { get; set; }
         public ObservableCollection<Category> Categories { get; set; }
@@ -37,7 +37,7 @@ namespace Property_inventory.ViewModels
 
         public DictionaryVM()
         {
-            TypeList = new ObservableCollection<Type>(new DictionaryRepository().GetTypes());
+            TypeList = new ObservableCollection<InvType>(new DictionaryRepository().GetTypes());
             MOLList = new ObservableCollection<MOL>(new DictionaryRepository().GetMOLs());
             Positions = new ObservableCollection<MOLPosition>(new DictionaryRepository().GetMolPositions());
             Categories = new ObservableCollection<Category>(new DictionaryRepository().GetCategories());
@@ -57,7 +57,7 @@ namespace Property_inventory.ViewModels
                     var result = await DialogHost.Show(view, "RootDialogDic");
                     if (result != null && (bool)result)
                     {
-                        var newType = new DictionaryRepository().AddType(new Type
+                        var newType = new DictionaryRepository().AddType(new InvType
                         {
                             CategoryId = ((Category)SelectedItem).Id,
                             Name = TypeName,
@@ -111,8 +111,8 @@ namespace Property_inventory.ViewModels
                     var result = await DialogHost.Show(view, "RootDialogDic");
                     if (result != null && (bool)result)
                     {
-                        new DictionaryRepository().RemoveType((Type)SelectedItem);
-                        TypeList.Remove((Type)SelectedItem);
+                        new DictionaryRepository().RemoveType((InvType)SelectedItem);
+                        TypeList.Remove((InvType)SelectedItem);
                     }
                 });
             }
@@ -154,8 +154,8 @@ namespace Property_inventory.ViewModels
                     var result = await DialogHost.Show(view, "RootDialogDic");
                     if (result != null && (bool)result)
                     {
-                        ((Type)SelectedItem).Name = NewName;
-                        new DictionaryRepository().UpdateType((Type)SelectedItem);
+                        ((InvType)SelectedItem).Name = NewName;
+                        new DictionaryRepository().UpdateType((InvType)SelectedItem);
                     }
                 });
             }

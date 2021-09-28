@@ -11,7 +11,7 @@ using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Threading.Tasks;
 using System.Windows;
-using Type = Property_inventory.Entities.Type;
+using InvType = Property_inventory.Entities.InvType;
 
 namespace Property_inventory.Services
 {
@@ -67,7 +67,7 @@ namespace Property_inventory.Services
                 }
                 foreach (var type in allTables.Types)
                 {
-                    db.Types.Add(new Type
+                    db.InvTypes.Add(new InvType
                     {
                         Id = type.Id,
                         Name = type.Name,
@@ -96,7 +96,7 @@ namespace Property_inventory.Services
                         Name = equip.Name,
                         InvNum = equip.InvNum,
                         RoomId = equip.RoomId,
-                        TypeId = equip.TypeId,
+                        InvTypeId = equip.InvTypeId,
                         StatusId = equip.StatusId,
                         AccountabilityId = equip.AccountabilityId,
                         Note = equip.Note,
@@ -189,34 +189,34 @@ namespace Property_inventory.Services
 
         public async void Relocate(int equipId, int newRoomId, int molId)
         {
-            await connection.InvokeAsync("InvRelocate", equipId, newRoomId, molId);
+            //await connection.InvokeAsync("InvRelocate", equipId, newRoomId, molId);
         }
 
         #region Add
 
         public async void AddEquip(Equip newEquip)
         {
-            await connection.InvokeAsync("AddEquip", newEquip);
+            //await connection.InvokeAsync("AddEquip", newEquip);
         }
 
         public async void AddHistory(History history)
         {
-            await connection.InvokeAsync("AddHistory", history);
+            //await connection.InvokeAsync("AddHistory", history);
         }
 
-        public async void AddType(Type type)
+        public async void AddType(InvType type)
         {
-            await connection.InvokeAsync("AddType", type);
+            //await connection.InvokeAsync("AddType", type);
         }
 
         public async void AddMOL(MOL mol)
         {
-            await connection.InvokeAsync("AddMOL", mol);
+            //await connection.InvokeAsync("AddMOL", mol);
         }
 
         public async void AddRoom(Room newRoom)
         {
-            await connection.InvokeAsync("AddRoom", newRoom);
+            //await connection.InvokeAsync("AddRoom", newRoom);
         }
 
         #endregion
@@ -225,53 +225,53 @@ namespace Property_inventory.Services
 
         public async void RemoveType(int selectedItemId)
         {
-            await connection.InvokeAsync("RemoveType", selectedItemId);
+            //await connection.InvokeAsync("RemoveType", selectedItemId);
         }
 
         public async void RemoveMOL(int selectedItemId)
         {
-            await connection.InvokeAsync("RemoveMOL", selectedItemId);
+            //await connection.InvokeAsync("RemoveMOL", selectedItemId);
         }
 
         public async void RemoveEquip(int id)
         {
-            await connection.InvokeAsync("RemoveEquip", id);
+            //await connection.InvokeAsync("RemoveEquip", id);
         }
 
         public async void RemoveRoom(int roomId)
         {
-            await connection.InvokeAsync("RemoveRoom", roomId);
+            //await connection.InvokeAsync("RemoveRoom", roomId);
         }
 
         #endregion
 
         #region Update
 
-        public async void UpdateType(Type selectedItem)
+        public async void UpdateType(InvType selectedItem)
         {
-            await connection.InvokeAsync("UpdateType", selectedItem);
+            //await connection.InvokeAsync("UpdateType", selectedItem);
         }
 
         public async void UpdateMOL(MOL selectedItem)
         {
-            await connection.InvokeAsync("UpdateMOL", selectedItem);
+            //await connection.InvokeAsync("UpdateMOL", selectedItem);
         }
 
         public async void UpdateRoom(Room room)
         {
-            await connection.InvokeAsync("UpdateRoom", room);
+            //await connection.InvokeAsync("UpdateRoom", room);
         }
 
         public async void UpdateEquip(Equip equip)
         {
-            await connection.InvokeAsync("UpdateEquip", equip);
+            //await connection.InvokeAsync("UpdateEquip", equip);
         }
 
         #endregion
 
         public async void Decomission(int equipId)
         {
-            await connection.InvokeAsync("Decomission", equipId);
+            //await connection.InvokeAsync("Decomission", equipId);
         }
     }
 

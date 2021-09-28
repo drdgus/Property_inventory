@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Data.Entity;
 using System.Linq;
-using Type = Property_inventory.Entities.Type;
+using InvType = Property_inventory.Entities.InvType;
 
 namespace Property_inventory.DAL.Repositories
 {
@@ -13,9 +13,9 @@ namespace Property_inventory.DAL.Repositories
             return InvDbContext.GetInstance().Categories.AsNoTracking().ToList();
         }
 
-        public List<Type> GetTypes()
+        public List<InvType> GetTypes()
         {
-            return InvDbContext.GetInstance().Types.Include(i => i.Category).ToList();
+            return InvDbContext.GetInstance().InvTypes.Include(i => i.Category).ToList();
         }
 
         public List<MOL> GetMOLs()
@@ -28,9 +28,9 @@ namespace Property_inventory.DAL.Repositories
             return InvDbContext.GetInstance().MolPositions.AsNoTracking().ToList();
         }
 
-        public Type AddType(Type type)
+        public InvType AddType(InvType type)
         {
-            var newType = InvDbContext.GetInstance().Types.Add(type);
+            var newType = InvDbContext.GetInstance().InvTypes.Add(type);
             InvDbContext.GetInstance().SaveChanges();
             //new SyncData().AddType(new Type
             //{
@@ -54,10 +54,10 @@ namespace Property_inventory.DAL.Repositories
             return newMOL;
         }
 
-        public void RemoveType(Type selectedItem)
+        public void RemoveType(InvType selectedItem)
         {
             InvDbContext.GetInstance().Entry(selectedItem).State = EntityState.Deleted;
-            InvDbContext.GetInstance().Types.Remove(selectedItem);
+            InvDbContext.GetInstance().InvTypes.Remove(selectedItem);
             InvDbContext.GetInstance().SaveChanges();
             //new SyncData().RemoveType(selectedItem.Id);
         }
@@ -70,9 +70,9 @@ namespace Property_inventory.DAL.Repositories
             //new SyncData().RemoveMOL(selectedItem.Id);
         }
 
-        public void UpdateType(Type selectedItem)
+        public void UpdateType(InvType selectedItem)
         {
-            var type = InvDbContext.GetInstance().Types.Single(i => i.Id == selectedItem.Id);
+            var type = InvDbContext.GetInstance().InvTypes.Single(i => i.Id == selectedItem.Id);
             type = selectedItem;
             InvDbContext.GetInstance().SaveChanges();
             //new SyncData().UpdateType(selectedItem);

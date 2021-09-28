@@ -13,6 +13,7 @@ namespace Property_inventory.Models
 
         public string ChangedPropertyStr => ChangedProperty.GetStringValue();
         public string Name => Equip.Name;
+        public string Splitter => "->";
 
         public EquipHistory()
         {
