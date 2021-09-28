@@ -37,7 +37,7 @@ namespace Property_inventory.DAL
                 //Rooms.AddRange(Enumerable.Range(1, 20).Select(i => new Room { Name = $"Помещение {i}", OrgId = 1 }));
 
                 Statuses.Add(new Status { Name = "На балансе" });
-                Statuses.Add(new Status { Name = "Ремнот" });
+                Statuses.Add(new Status { Name = "Ремонт" });
                 Statuses.Add(new Status { Name = "Списано" });
 
                 Categories.AddRange(new Category[]

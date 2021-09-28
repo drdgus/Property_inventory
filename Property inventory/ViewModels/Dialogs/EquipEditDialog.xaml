@@ -8,6 +8,7 @@
     xmlns:system="clr-namespace:System;assembly=mscorlib"
     xmlns:wpf="clr-namespace:MaterialDesignThemes.Wpf;assembly=MaterialDesignThemes.Wpf"
     d:DesignHeight="800"
+    d:Background="White"
     d:DesignWidth="800"
     mc:Ignorable="d">
 
@@ -87,10 +88,11 @@
                         DisplayMemberPath="Name"
                         FontSize="16"
                         IsEditable="True"
+                        SelectedIndex="0"
                         ItemsSource="{Binding EquipTypes}"
-                        SelectedItem="{Binding SelectedEquip.Type}" />
+                        SelectedItem="{Binding SelectedType}" />
                     <TextBox
-                        Grid.Row="3"
+                        Grid.Row="2"
                         Grid.Column="0"
                         wpf:HintAssist.Hint="Количество"
                         FontSize="16"

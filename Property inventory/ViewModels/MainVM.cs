@@ -60,6 +60,7 @@ namespace Property_inventory.ViewModels
         private string _authMessage;
         private string _password;
         private bool _allowCloseOnClickAway;
+        private InvType selectedType;
 
         public bool InfoDialogIsOpen
         {
@@ -103,7 +104,15 @@ namespace Property_inventory.ViewModels
             }
         }
         public Equip SelectedEquip { get; set; }
-        public InvType SelectedType { get; set; }
+        public InvType SelectedType
+        {
+            get => selectedType; 
+            set
+            {
+                selectedType = value;
+                OnPropertyChanged();
+            }
+        }
         public Equip NewEquip
         {
             get
@@ -395,7 +404,7 @@ namespace Property_inventory.ViewModels
                             RoomId = newRoom.Id,
                             Nodes = new ObservableCollection<Node>()
                         });
-
+                        NewName = string.Empty;
                     }
                 });
             }
@@ -440,6 +449,7 @@ namespace Property_inventory.ViewModels
                     //NewEquip.Manufacturer = NewManufacturer;
 
                     NewEquip.InvTypeId = SelectedType.Id;
+                    NewEquip.RoomId = SelectedNode.RoomId;
 
                     var i = new EquipRepository().Add(NewEquip);
 
@@ -540,11 +550,15 @@ namespace Property_inventory.ViewModels
                     var result = await DialogHost.Show(create, "RootDialog", ClosingEventHandler);
                     if (result is null || !(bool)result) return;
 
-                    new EquipRepository().Update(SelectedEquip);
+                    SelectedEquip.InvTypeId = SelectedType.Id;
+
                     var a = SelectedEquip;
+                    new EquipRepository().Update(SelectedEquip);
+                    //a.InvType = InvDbContext.GetInstance().InvTypes.Single(i => i.Id == SelectedEquip.InvTypeId);
                     var index = CurrentRoomEquip.IndexOf(SelectedEquip);
                     CurrentRoomEquip.RemoveAt(index);
                     CurrentRoomEquip.Insert(index, a);
+
                 });
             }
         }
@@ -800,7 +814,7 @@ namespace Property_inventory.ViewModels
 
                         var equip = AllEquip.SingleOrDefault(i => i.Id == a.Id);
                         if (equip != null)
-                        AllEquip.Remove(equip);
+                            AllEquip.Remove(equip);
                     }
                 });
             }

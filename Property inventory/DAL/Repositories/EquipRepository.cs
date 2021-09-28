@@ -14,6 +14,7 @@ namespace Property_inventory.DAL.Repositories
         {
             var a = InvDbContext.GetInstance().Equips
                 .AsNoTracking()
+                .Include(i => i.InvType)
                 .Include(i => i.InvType.Category)
                 .Where(i => i.RoomId == selectedNodeRoomId && i.IsWriteOff == false)
                 .ToList();
@@ -29,7 +30,7 @@ namespace Property_inventory.DAL.Repositories
                 .Where(r => r.IsWriteOff == false).ToList();
             return a;
         }
-        public Equip GetEquip(int equipId)
+        private Equip GetEquip(int equipId)
         {
             return InvDbContext.GetInstance().Equips
                 .Include(i => i.InvType.Category)
@@ -63,7 +64,7 @@ namespace Property_inventory.DAL.Repositories
                     OldValue = OldEquip.InvNum.ToString(),
                     NewValue = EditedEquip.InvNum.ToString()
                 });
-            if (OldEquip.InvType.Name != EditedEquip.InvType.Name)
+            if (OldEquip.InvType.Name != InvDbContext.GetInstance().InvTypes.Single(i => i.Id == EditedEquip.InvTypeId).Name)
                 new HistoryRepository().Add(new History
                 {
                     ObjectId = OldEquip.Id,
@@ -71,8 +72,8 @@ namespace Property_inventory.DAL.Repositories
                     Date = DateTime.Now,
                     Code = (InvEnums.OperationCode)1,
                     ChangedProperty = InvEnums.HistoryProperty.Type,
-                    OldValue = OldEquip.InvType.Name.ToString(),
-                    NewValue = EditedEquip.InvType.Name.ToString()
+                    OldValue = OldEquip.InvType.Name,
+                    NewValue = InvDbContext.GetInstance().InvTypes.Single(i => i.Id == EditedEquip.InvTypeId).Name
                 });
             if (OldEquip.Status.Name != EditedEquip.Status.Name)
                 new HistoryRepository().Add(new History
@@ -82,8 +83,8 @@ namespace Property_inventory.DAL.Repositories
                     Date = DateTime.Now,
                     Code = (InvEnums.OperationCode)1,
                     ChangedProperty = InvEnums.HistoryProperty.Status,
-                    OldValue = OldEquip.Status.Name.ToString(),
-                    NewValue = EditedEquip.Status.Name.ToString()
+                    OldValue = OldEquip.Status.Name,
+                    NewValue = EditedEquip.Status.Name
                 });
             
             if (OldEquip.Name != EditedEquip.Name)
@@ -94,8 +95,8 @@ namespace Property_inventory.DAL.Repositories
                     Date = DateTime.Now,
                     Code = (InvEnums.OperationCode)1,
                     ChangedProperty = InvEnums.HistoryProperty.Name,
-                    OldValue = OldEquip.Name.ToString(),
-                    NewValue = EditedEquip.Name.ToString()
+                    OldValue = OldEquip.Name,
+                    NewValue = EditedEquip.Name
                 });
             if (OldEquip.Note != null && OldEquip.Note != EditedEquip.Note)
                 new HistoryRepository().Add(new History
@@ -105,8 +106,19 @@ namespace Property_inventory.DAL.Repositories
                     Date = DateTime.Now,
                     Code = (InvEnums.OperationCode)1,
                     ChangedProperty = InvEnums.HistoryProperty.Note,
-                    OldValue = OldEquip.Note.ToString(),
-                    NewValue = EditedEquip.Note.ToString()
+                    OldValue = OldEquip.Note,
+                    NewValue = EditedEquip.Note
+                });
+            if (OldEquip.Count != EditedEquip.Count)
+                new HistoryRepository().Add(new History
+                {
+                    ObjectId = OldEquip.Id,
+                    TableCode = InvEnums.Table.Equip,
+                    Date = DateTime.Now,
+                    Code = (InvEnums.OperationCode)1,
+                    ChangedProperty = InvEnums.HistoryProperty.Count,
+                    OldValue = OldEquip.Count.ToString(),
+                    NewValue = EditedEquip.Count.ToString()
                 });
 
             #region Extended fields

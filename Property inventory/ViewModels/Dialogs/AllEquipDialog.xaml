@@ -18,17 +18,17 @@
         <converters:ReverseBoolToVisibilityConverter x:Key="ReverseBoolToVisibilityConverter" />
     </UserControl.Resources>
     <Grid>
-        <ScrollViewer>
-            <Grid>
-                <Grid.RowDefinitions>
-                    <RowDefinition Height="Auto" />
-                    <RowDefinition />
-                </Grid.RowDefinitions>
-                <TextBox Margin="10,0"
-                         materialDesign:HintAssist.Hint="Поиск"
-                         Style="{StaticResource MaterialDesignFloatingHintTextBox}"
-                         Text="{Binding SearchText, UpdateSourceTrigger=PropertyChanged}" />
-                <DataGrid Grid.Row="1"
+        <Grid>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto" />
+                <RowDefinition />
+            </Grid.RowDefinitions>
+            <TextBox Margin="10,0"
+                     materialDesign:HintAssist.Hint="Поиск"
+                     Style="{StaticResource MaterialDesignFloatingHintTextBox}"
+                     Text="{Binding SearchText, UpdateSourceTrigger=PropertyChanged}" />
+            <ScrollViewer Grid.Row="1">
+                <DataGrid 
                           AutoGenerateColumns="False"
                           IsReadOnly="True"
                           ItemsSource="{Binding AllEquip}"
@@ -42,7 +42,9 @@
                                       Header="Изменить"
                                       Visibility="{Binding SelectedEquip.IsWriteOff, Converter={StaticResource ReverseBoolToVisibilityConverter}}" />
                             <Separator />
-                            --><!--<MenuItem Command="{Binding OpenInvCardWinCommand}" Header="Инвентарная карточка" />--><!--
+                            -->
+                            <!--<MenuItem Command="{Binding OpenInvCardWinCommand}" Header="Инвентарная карточка" />-->
+                            <!--
                             <MenuItem Command="{Binding OpenRelocateWinCommand}"
                                       Visibility="{Binding SelectedEquip.IsWriteOff, Converter={StaticResource ReverseBoolToVisibilityConverter}}"
                                       Header="Переместить" />
@@ -101,12 +103,12 @@
                             Width="120"
                             Binding="{Binding DepreciationGroup}"
                             Header="Аморт. группа" />-->
-                        <DataGridTextColumn Width="120"
+                        <DataGridTextColumn Width="auto"
                                             Binding="{Binding Room.Name}"
                                             Header="Помещение" />
                     </DataGrid.Columns>
                 </DataGrid>
-            </Grid>
-        </ScrollViewer>
+            </ScrollViewer>
+        </Grid>
     </Grid>
 </UserControl>

@@ -27,7 +27,7 @@
             Grid.Row="1"
             AutoGenerateColumns="False"
             IsReadOnly="True"
-            ItemsSource="{Binding HistoryList}">
+                  ItemsSource="{Binding HistoryListForView}">
             <DataGrid.Columns>
                 <DataGridTextColumn
                     Width="auto"
