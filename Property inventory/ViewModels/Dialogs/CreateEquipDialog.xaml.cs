@@ -7,9 +7,9 @@ namespace Property_inventory.ViewModels.Dialogs
     /// <summary>
     /// Логика взаимодействия для EquipDialog.xaml
     /// </summary>
-    public partial class EquipDialog : UserControl
+    public partial class CreateEquipDialog : UserControl
     {
-        public EquipDialog()
+        public CreateEquipDialog()
         {
             InitializeComponent();
         }

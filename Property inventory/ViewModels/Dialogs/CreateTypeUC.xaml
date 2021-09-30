@@ -34,6 +34,7 @@
                     Grid.Column="1"
                     Width="120"
                     Margin="4,0,0,0"
+                        IsEnabled="{Binding SelectedItem, Converter={StaticResource NullToIsEnableConverter}}"
                     Command="{x:Static wpf:DialogHost.CloseDialogCommand}"
                     IsCancel="True"
                     Style="{StaticResource MaterialDesignRaisedAccentButton}">

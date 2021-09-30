@@ -205,6 +205,9 @@
                         <MenuItem Height="25"
                                   Command="{Binding OpenDicTypesCommand}"
                                   Header="Типы" />
+                        <MenuItem Height="25"
+                                  Command="{Binding OpenDicCategoriesCommand}"
+                                  Header="Категории" />
                         <!--<MenuItem Height="25"
                                   Command="{Binding OpenDicMOLsCommand}"
                                   Header="Материально ответственные лица" />-->

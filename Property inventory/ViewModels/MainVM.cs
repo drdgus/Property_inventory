@@ -22,6 +22,8 @@ using Property_inventory.DAL.Repositories;
 using Property_inventory.Properties;
 using Property_inventory.Services.Tools;
 using InvType = Property_inventory.Entities.InvType;
+using System.Data.Entity.Migrations;
+using Property_inventory.Views.Dictionaries;
 
 namespace Property_inventory.ViewModels
 {
@@ -106,7 +108,7 @@ namespace Property_inventory.ViewModels
         public Equip SelectedEquip { get; set; }
         public InvType SelectedType
         {
-            get => selectedType; 
+            get => selectedType;
             set
             {
                 selectedType = value;
@@ -140,7 +142,11 @@ namespace Property_inventory.ViewModels
                     //ManufacturerId = 0,
                 });
             }
-            private set => _newEquip = value;
+            private set
+            {
+                _newEquip = value;
+                OnPropertyChanged();
+            }
         }
         //public Manufacturer NewManufacturer { get; set; } = new Manufacturer();
         public string NewName
@@ -229,10 +235,12 @@ namespace Property_inventory.ViewModels
             get => _searchText;
             set
             {
-                _searchText = value.ToLower();
+                _searchText = value;
+
+                var lowerText = _searchText.ToLower();
 
                 var filteredEquip = new List<Equip>();
-                if (string.IsNullOrWhiteSpace(_searchText))
+                if (string.IsNullOrWhiteSpace(lowerText))
                 {
                     if (SelectedNode != null)
                     {
@@ -269,10 +277,10 @@ namespace Property_inventory.ViewModels
                     return;
                 }
 
-                filteredEquip = EquipList.Where(i => i.InvNum.ToString($"{Settings.Default.InvSymbol}-0000000").ToLower().Contains(value) ||
-                                    i.Name.ToLower().Contains(value) ||
+                filteredEquip = EquipList.Where(i => i.InvNum.ToString($"{Settings.Default.InvSymbol}-0000000").ToLower().Contains(lowerText) ||
+                                    i.Name.ToLower().Contains(lowerText) ||
                                     //i.MOL.FullName.ToLower().Contains(value) ||
-                                    i.Room.Name.ToLower().Contains(value)).ToList();
+                                    i.Room.Name.ToLower().Contains(lowerText)).ToList();
 
                 AllEquip.Clear();
                 filteredEquip.ForEach(i => AllEquip.Add(new EquipInfo
@@ -387,6 +395,8 @@ namespace Property_inventory.ViewModels
                     var result = await DialogHost.Show(view, "RootDialog", ClosingEventHandler);
                     if ((bool)result)
                     {
+                        if (string.IsNullOrWhiteSpace(NewName)) return;
+
                         var newRoom = new Room
                         {
                             Name = NewName,
@@ -427,13 +437,19 @@ namespace Property_inventory.ViewModels
                         return;
                     }
 
-                    var create = new EquipDialog()
+                    var create = new CreateEquipDialog()
                     {
                         DataContext = this
                     };
 
                     var result = await DialogHost.Show(create, "RootDialog", ClosingEventHandler);
                     if (result is null || (string)result == "False") return;
+
+                    if (SelectedType.Id == 0) return;
+                    if (string.IsNullOrWhiteSpace(NewEquip.Name)) return;
+                    if (NewEquip.Count <= 0) return;
+
+                    #region Extended Features
 
                     //var createManufacturer = new AddManufacturerUC()
                     //{
@@ -447,6 +463,7 @@ namespace Property_inventory.ViewModels
                     //    NewEquip.ManufacturerId = NewManufacturer.Id;
                     //else
                     //NewEquip.Manufacturer = NewManufacturer;
+                    #endregion
 
                     NewEquip.InvTypeId = SelectedType.Id;
                     NewEquip.RoomId = SelectedNode.RoomId;
@@ -516,6 +533,8 @@ namespace Property_inventory.ViewModels
                         DataContext = this
                     };
 
+                    if (SelectedNode == null) return;
+
                     var oldName = SelectedNode.Name;
                     NewName = oldName;
 
@@ -523,16 +542,27 @@ namespace Property_inventory.ViewModels
                     if ((bool)result)
                     {
                         if (NewName == oldName) return;
+                        if (string.IsNullOrWhiteSpace(NewName)) return;
 
                         SelectedNode.Name = NewName;
-                        new RoomRepository().Update(new Room
+                        if (SelectedNode.RoomId != -1)
                         {
-                            Id = _selectedNode.RoomId,
-                            Name = _selectedNode.Name,
-                            OrgId = 1,
-                            IsDeleted = false
-                        });
+                            new RoomRepository().Update(new Room
+                            {
+                                Id = _selectedNode.RoomId,
+                                Name = _selectedNode.Name,
+                                OrgId = 1,
+                                IsDeleted = false
+                            });
+                        }
+                        else
+                        {
+                            InvDbContext.GetInstance().Orgs.AddOrUpdate(new Org { Id = 1, Name = NewName });
+                            InvDbContext.GetInstance().SaveChanges();
+                        }
                     }
+
+                    NewName = string.Empty;
                 });
             }
         }
@@ -550,6 +580,10 @@ namespace Property_inventory.ViewModels
                     var result = await DialogHost.Show(create, "RootDialog", ClosingEventHandler);
                     if (result is null || !(bool)result) return;
 
+                    if (SelectedType.Id == 0) return;
+                    if (string.IsNullOrWhiteSpace(SelectedEquip.Name)) return;
+                    if (SelectedEquip.Count <= 0) return;
+
                     SelectedEquip.InvTypeId = SelectedType.Id;
 
                     var a = SelectedEquip;
@@ -559,7 +593,7 @@ namespace Property_inventory.ViewModels
                     CurrentRoomEquip.RemoveAt(index);
                     CurrentRoomEquip.Insert(index, a);
 
-                });
+                }, p => selectedType != null);
             }
         }
 
@@ -569,6 +603,8 @@ namespace Property_inventory.ViewModels
             {
                 return new RelayCommand(async o =>
                 {
+                    if (SelectedNode == null || SelectedNode.RoomId == -1) return;
+
                     var view = new DeleteDialog
                     {
                         DataContext = this
@@ -578,7 +614,7 @@ namespace Property_inventory.ViewModels
                     var result = await DialogHost.Show(view, "RootDialog", ClosingEventHandler);
                     if ((bool)result)
                     {
-                        new RoomRepository().Remove(_selectedNode.RoomId);
+                        new RoomRepository().Remove(SelectedNode.RoomId);
 
                         Rooms[0].Nodes.Remove(SelectedNode);
                     }
@@ -730,6 +766,19 @@ namespace Property_inventory.ViewModels
                     new DictionaryTypesWindow().ShowDialog();
                     EquipTypes.Clear();
                     new DictionaryRepository().GetTypes().ForEach(i => EquipTypes.Add(i));
+                });
+            }
+        }
+        public ICommand OpenDicCategoriesCommand
+        {
+            get
+            {
+                return new RelayCommand(o =>
+                {
+                    //Dialog
+                    new DictionaryCaregoriesWindow().ShowDialog();
+                    EquipTypes.Clear();
+                    new DictionaryRepository().GetCategories().ForEach(i => Categories.Add(i));
                 });
             }
         }

@@ -29,7 +29,8 @@
                     Grid.Column="1"
                     Width="120"
                     Margin="4,0,0,0"
-                    Command="{x:Static wpf:DialogHost.CloseDialogCommand}"
+                        IsEnabled="{Binding NewName, Converter={StaticResource NullToIsEnableConverter}}"
+                        Command="{x:Static wpf:DialogHost.CloseDialogCommand}"
                     IsDefault="True"
                     Style="{StaticResource MaterialDesignRaisedAccentButton}">
                     <Button.CommandParameter>

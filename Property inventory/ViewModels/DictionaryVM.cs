@@ -6,6 +6,7 @@ using Property_inventory.Infrastructure;
 using Property_inventory.ViewModels.Dialogs;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
+using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Windows.Input;
 using InvType = Property_inventory.Entities.InvType;
@@ -16,11 +17,13 @@ namespace Property_inventory.ViewModels
     {
         private string _messageDialogContent;
 
-        public ObservableCollection<InvType> TypeList { get; set; }
+        public ObservableCollection<InvType> InvTypes { get; set; }
         public ObservableCollection<MOL> MOLList { get; set; }
         public ObservableCollection<MOLPosition> Positions { get; set; }
         public ObservableCollection<Category> Categories { get; set; }
         public object SelectedItem { get; set; }
+        public Category NewCategory { get; set; }
+        public InvType NewInvType { get; set; }
         public string NewName { get; set; }
         public string TypeName { get; set; }
         public string FullName { get; set; }
@@ -37,7 +40,7 @@ namespace Property_inventory.ViewModels
 
         public DictionaryVM()
         {
-            TypeList = new ObservableCollection<InvType>(new DictionaryRepository().GetTypes());
+            InvTypes = new ObservableCollection<InvType>(new DictionaryRepository().GetTypes());
             MOLList = new ObservableCollection<MOL>(new DictionaryRepository().GetMOLs());
             Positions = new ObservableCollection<MOLPosition>(new DictionaryRepository().GetMolPositions());
             Categories = new ObservableCollection<Category>(new DictionaryRepository().GetCategories());
@@ -57,12 +60,41 @@ namespace Property_inventory.ViewModels
                     var result = await DialogHost.Show(view, "RootDialogDic");
                     if (result != null && (bool)result)
                     {
+                        if (NewInvType.Category == null) return;
+                        if (string.IsNullOrWhiteSpace(NewInvType.Name)) return;
+
                         var newType = new DictionaryRepository().AddType(new InvType
                         {
-                            CategoryId = ((Category)SelectedItem).Id,
-                            Name = TypeName,
+                            CategoryId = NewInvType.Category.Id,
+                            Name = NewInvType.Name,
                         });
-                        TypeList.Add(newType);
+                        InvTypes.Add(newType);
+                        NewInvType = null;
+                    }
+                });
+            }
+        }
+
+        public ICommand CreateCategoryCommand
+        {
+            get
+            {
+                return new RelayCommand(async o =>
+                {
+                    var view = new CreateCategoryUC()
+                    {
+                        DataContext = this
+                    };
+
+                    var result = await DialogHost.Show(view, "RootDialogDic");
+                    if (result != null && (bool)result)
+                    {
+                        if (string.IsNullOrWhiteSpace(NewCategory.Class)) return;
+                        if (string.IsNullOrWhiteSpace(NewCategory.Name)) return;
+
+                        var newCategory = new DictionaryRepository().AddCategory(NewCategory);
+                        Categories.Add(newCategory);
+                        NewCategory= null;
                     }
                 });
             }
@@ -102,6 +134,18 @@ namespace Property_inventory.ViewModels
             {
                 return new RelayCommand(async o =>
                 {
+                    if(InvDbContext.GetInstance().Equips.Where(i => i.InvTypeId == ((InvType)SelectedItem).Id).Count() > 0)
+                    {
+                        var info = new InfoDialog
+                        {
+                            DataContext = this
+                        };
+                        MessageDialogContent = "К выбранному типу привязано имущество.";
+
+                        await DialogHost.Show(info, "RootDialogDic");
+                        return;
+                    }
+
                     var view = new DeleteDialog
                     {
                         DataContext = this
@@ -112,7 +156,40 @@ namespace Property_inventory.ViewModels
                     if (result != null && (bool)result)
                     {
                         new DictionaryRepository().RemoveType((InvType)SelectedItem);
-                        TypeList.Remove((InvType)SelectedItem);
+                        InvTypes.Remove((InvType)SelectedItem);
+                    }
+                });
+            }
+        }
+        public ICommand DeleteCategoryCommand
+        {
+            get
+            {
+                return new RelayCommand(async o =>
+                {
+                    if (InvDbContext.GetInstance().Categories.Where(i => i.Id == ((Category)SelectedItem).Id).Count() > 0)
+                    {
+                        var info = new InfoDialog
+                        {
+                            DataContext = this
+                        };
+                        MessageDialogContent = "К выбранной категории привязан тип.";
+
+                        await DialogHost.Show(info, "RootDialogDic");
+                        return;
+                    }
+
+                    var view = new DeleteDialog
+                    {
+                        DataContext = this
+                    };
+                    MessageDialogContent = "Удалить выбранную категорию?";
+
+                    var result = await DialogHost.Show(view, "RootDialogDic");
+                    if (result != null && (bool)result)
+                    {
+                        new DictionaryRepository().RemoveCategory((Category)SelectedItem);
+                        Categories.Remove((Category)SelectedItem);
                     }
                 });
             }
@@ -154,9 +231,38 @@ namespace Property_inventory.ViewModels
                     var result = await DialogHost.Show(view, "RootDialogDic");
                     if (result != null && (bool)result)
                     {
+                        if (((InvType)SelectedItem).Category == null) return;
+                        if (string.IsNullOrWhiteSpace(((InvType)SelectedItem).Name)) return;
+
                         ((InvType)SelectedItem).Name = NewName;
                         new DictionaryRepository().UpdateType((InvType)SelectedItem);
                     }
+                });
+            }
+        }
+        public ICommand EditCategoryCommand
+        {
+            get
+            {
+                return new RelayCommand(async o =>
+                {
+                    NewCategory = SelectedItem as Category;
+
+                    var view = new EditCategoryUC()
+                    {
+                        DataContext = this
+                    };
+
+                    var result = await DialogHost.Show(view, "RootDialogDic");
+                    if (result != null && (bool)result)
+                    {
+                        if (string.IsNullOrWhiteSpace(NewCategory.Class)) return;
+                        if (string.IsNullOrWhiteSpace(NewCategory.Name)) return;
+
+                        new DictionaryRepository().UpdateCategory(NewCategory);
+                    }
+
+                    NewCategory = null;
                 });
             }
         }

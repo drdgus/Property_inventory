@@ -17,5 +17,10 @@ namespace Property_inventory.ViewModels.Dialogs
         {
             ((dynamic)DataContext).EditEquipCommand.Execute(null);
         }
+
+        private void MenuItem_Click(object sender, RoutedEventArgs e)
+        {
+            ((dynamic)DataContext).OpenEquipHistoryCommand.Execute(null);
+        }
     }
 }

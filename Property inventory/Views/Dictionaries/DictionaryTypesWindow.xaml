@@ -37,7 +37,7 @@
                     Margin="0,3.6,0,0"
                     AutoGenerateColumns="False"
                     IsReadOnly="True"
-                    ItemsSource="{Binding TypeList}"
+                          ItemsSource="{Binding InvTypes}"
                     SelectedItem="{Binding SelectedItem}">
                     <DataGrid.Resources>
                         <ContextMenu x:Key="ContextMenuForDatagridItem">
@@ -59,7 +59,7 @@
                 </DataGrid>
             </materialDesign:Card>
 
-            <Button Command="{Binding CreateTypeCommand}" Content="Добавить" />
+            <Button Command="{Binding CreateTypeCommand}" Content="Добавить тип" />
         </Grid>
     </materialDesign:DialogHost>
 </Window>

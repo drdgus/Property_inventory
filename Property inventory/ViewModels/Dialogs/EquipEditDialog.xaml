@@ -52,7 +52,7 @@
                         wpf:ValidationAssist.HorizontalAlignment="Right"
                         FontSize="16"
                         Style="{StaticResource MaterialDesignFloatingHintTextBox}"
-                        Text="{Binding SelectedEquip.Name}" />
+                        Text="{Binding SelectedEquip.Name, UpdateSourceTrigger=PropertyChanged}" />
 
                     <WrapPanel
                         Grid.Row="1"
@@ -99,7 +99,7 @@
                         PreviewKeyDown="UIElement_OnPreviewKeyDown"
                         PreviewTextInput="UIElement_OnPreviewTextInput"
                         Style="{StaticResource MaterialDesignFloatingHintTextBox}"
-                        Text="{Binding SelectedEquip.Count, UpdateSourceTrigger=PropertyChanged}" />
+                             Text="{Binding SelectedEquip.Count, UpdateSourceTrigger=PropertyChanged}" />
 
 
                     <!--<ComboBox
@@ -193,6 +193,7 @@
                         <Button
                             Grid.Column="1"
                             Margin="10,0,0,0"
+                                IsEnabled="{Binding SelectedEquip, Converter={StaticResource NullToIsEnableConverter}}"
                             Command="{x:Static wpf:DialogHost.CloseDialogCommand}"
                             IsCancel="True"
                             Style="{StaticResource MaterialDesignRaisedAccentButton}">

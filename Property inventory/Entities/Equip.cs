@@ -8,11 +8,20 @@ using System.Runtime.CompilerServices;
 
 namespace Property_inventory.Entities
 {
-    public class Equip
+    public class Equip : INotifyPropertyChanged
     {
+        private string name;
+        private int count;
+
         public int Id { get; set; }
         public DateTime RegistrationDate { get; set; }
-        public string Name { get; set; }
+        public string Name
+        {
+            get => name; set
+            {
+                name = value;
+            }
+        }
         public int InvNum { get; set; }
         public int RoomId { get; set; }
         public virtual Room Room { get; set; }
@@ -24,7 +33,13 @@ namespace Property_inventory.Entities
         public virtual Accountability Accountability { get; set; }
         public virtual List<History> History { get; set; }
         public string Note { get; set; }
-        public int Count { get; set; }
+        public int Count
+        {
+            get => count; set
+            {
+                count = value;
+            }
+        }
         [DefaultValue(false)] public bool IsWriteOff { get; set; }
         public int MOLId { get; set; }
         /// <summary>
@@ -53,5 +68,11 @@ namespace Property_inventory.Entities
 
         //public int ManufacturerId { get; set; }
         //public virtual Manufacturer Manufacturer { get; set; }
+
+        public event PropertyChangedEventHandler PropertyChanged;
+        protected virtual void OnPropertyChanged([CallerMemberName] string propertyName = null)
+        {
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+        }
     }
 }

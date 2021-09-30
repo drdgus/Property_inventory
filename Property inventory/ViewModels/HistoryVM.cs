@@ -52,15 +52,18 @@ namespace Property_inventory.ViewModels
             {
                 _search = value.ToLower();
 
+                var lowerText = _search.ToLower();
+
                 HistoryListForView.Clear();
-                AllHistory.Where(i => i.InvNum.ToLower().Contains(value) ||
-                                      i.Name.ToLower().Contains(value) ||
-                                      i.InvNum.ToLower().Contains(value) ||
-                                      i.ChangedPropertyStr.ToLower().Contains(value) ||
-                                      i.OldValue.ToLower().Contains(value) ||
-                                      i.NewValue.ToLower().Contains(value) ||
-                                      i.Date.ToString().Contains(value)
-                                                           ).ToList().ForEach(i => HistoryListForView.Add(i));
+                AllHistory.Where(i => i.InvNum.ToLower().Contains(lowerText) ||
+                                      i.Name.ToLower().Contains(lowerText) ||
+                                      i.InvNum.ToLower().Contains(lowerText) ||
+                                      i.ChangedPropertyStr.ToLower().Contains(lowerText) ||
+                                      i.OldValue.ToLower().Contains(lowerText) ||
+                                      i.NewValue.ToLower().Contains(lowerText) ||
+                                      i.Date.ToString().Contains(lowerText))
+                    .ToList()
+                    .ForEach(i => HistoryListForView.Add(i));
             }
         }
 

@@ -276,6 +276,9 @@
     <Compile Include="ViewModels\Dialogs\AuthUC.xaml.cs">
       <DependentUpon>AuthUC.xaml</DependentUpon>
     </Compile>
+    <Compile Include="ViewModels\Dialogs\CreateCategoryUC.xaml.cs">
+      <DependentUpon>CreateCategoryUC.xaml</DependentUpon>
+    </Compile>
     <Compile Include="ViewModels\Dialogs\CreateMolUC.xaml.cs">
       <DependentUpon>CreateMolUC.xaml</DependentUpon>
     </Compile>
@@ -288,11 +291,14 @@
     <Compile Include="ViewModels\Dialogs\DeleteDialog.xaml.cs">
       <DependentUpon>DeleteDialog.xaml</DependentUpon>
     </Compile>
+    <Compile Include="ViewModels\Dialogs\EditCategoryUC.xaml.cs">
+      <DependentUpon>EditCategoryUC.xaml</DependentUpon>
+    </Compile>
     <Compile Include="ViewModels\Dialogs\EquipEditDialog.xaml.cs">
       <DependentUpon>EquipEditDialog.xaml</DependentUpon>
     </Compile>
-    <Compile Include="ViewModels\Dialogs\EquipDialog.xaml.cs">
-      <DependentUpon>EquipDialog.xaml</DependentUpon>
+    <Compile Include="ViewModels\Dialogs\CreateEquipDialog.xaml.cs">
+      <DependentUpon>CreateEquipDialog.xaml</DependentUpon>
     </Compile>
     <Compile Include="ViewModels\Dialogs\InfoDialog.xaml.cs">
       <DependentUpon>InfoDialog.xaml</DependentUpon>
@@ -307,6 +313,7 @@
     <Compile Include="Views\Acts\AllEquipAct.xaml.cs">
       <DependentUpon>AllEquipAct.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Views\Converters\NullToIsEnableConverter.cs" />
     <Compile Include="Views\Converters\ReverseBoolToVisibilityConverter.cs" />
     <Compile Include="Views\Converters\InvConverter.cs" />
     <Compile Include="Models\AllTables.cs" />
@@ -350,6 +357,9 @@
     <Compile Include="Views\AboutWindow.xaml.cs">
       <DependentUpon>AboutWindow.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Views\Dictionaries\DictionaryCaregoriesWindow.xaml.cs">
+      <DependentUpon>DictionaryCaregoriesWindow.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Views\Dictionaries\DictionaryMOLsWindow.xaml.cs">
       <DependentUpon>DictionaryMOLsWindow.xaml</DependentUpon>
     </Compile>
@@ -383,6 +393,10 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
+    <Page Include="ViewModels\Dialogs\CreateCategoryUC.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="ViewModels\Dialogs\CreateMolUC.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -399,11 +413,15 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
+    <Page Include="ViewModels\Dialogs\EditCategoryUC.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="ViewModels\Dialogs\EquipEditDialog.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
-    <Page Include="ViewModels\Dialogs\EquipDialog.xaml">
+    <Page Include="ViewModels\Dialogs\CreateEquipDialog.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -444,6 +462,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Views\AboutWindow.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\Dictionaries\DictionaryCaregoriesWindow.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

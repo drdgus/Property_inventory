@@ -36,7 +36,7 @@
                           VirtualizingStackPanel.VirtualizationMode="Recycling">
                     <DataGrid.Resources>
                         <ContextMenu x:Key="ContextMenuForDatagridItem">
-                            <MenuItem Command="{Binding OpenEquipHistoryCommand}"
+                            <MenuItem Command="{Binding OpenEquipHistoryCommand}" Click="MenuItem_Click"
                                       Header="История" />
                             <!--<MenuItem Click="EditEquip"
                                       Header="Изменить"

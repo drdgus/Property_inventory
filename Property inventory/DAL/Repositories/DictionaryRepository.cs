@@ -32,12 +32,14 @@ namespace Property_inventory.DAL.Repositories
         {
             var newType = InvDbContext.GetInstance().InvTypes.Add(type);
             InvDbContext.GetInstance().SaveChanges();
-            //new SyncData().AddType(new Type
-            //{
-            //    CategoryId = type.CategoryId,
-            //    Name = type.Name
-            //});
             return newType;
+        }
+
+        public Category AddCategory(Category categpry)
+        {
+            var newCategory = InvDbContext.GetInstance().Categories.Add(categpry);
+            InvDbContext.GetInstance().SaveChanges();
+            return newCategory;
         }
 
         public MOL AddMOL(MOL mol)
@@ -56,15 +58,23 @@ namespace Property_inventory.DAL.Repositories
 
         public void RemoveType(InvType selectedItem)
         {
-            InvDbContext.GetInstance().Entry(selectedItem).State = EntityState.Deleted;
+            //InvDbContext.GetInstance().Entry(selectedItem).State = EntityState.Deleted;
             InvDbContext.GetInstance().InvTypes.Remove(selectedItem);
+            InvDbContext.GetInstance().SaveChanges();
+            //new SyncData().RemoveType(selectedItem.Id);
+        }
+
+        public void RemoveCategory(Category selectedItem)
+        {
+            //InvDbContext.GetInstance().Entry(selectedItem).State = EntityState.Deleted;
+            InvDbContext.GetInstance().Categories.Remove(selectedItem);
             InvDbContext.GetInstance().SaveChanges();
             //new SyncData().RemoveType(selectedItem.Id);
         }
 
         public void RemoveMOL(MOL selectedItem)
         {
-            InvDbContext.GetInstance().Entry(selectedItem).State = EntityState.Deleted;
+            //InvDbContext.GetInstance().Entry(selectedItem).State = EntityState.Deleted;
             InvDbContext.GetInstance().MOLs.Remove(selectedItem);
             InvDbContext.GetInstance().SaveChanges();
             //new SyncData().RemoveMOL(selectedItem.Id);
@@ -74,6 +84,14 @@ namespace Property_inventory.DAL.Repositories
         {
             var type = InvDbContext.GetInstance().InvTypes.Single(i => i.Id == selectedItem.Id);
             type = selectedItem;
+            InvDbContext.GetInstance().SaveChanges();
+            //new SyncData().UpdateType(selectedItem);
+        }
+
+        public void UpdateCategory(Category selectedItem)
+        {
+            var category = InvDbContext.GetInstance().Categories.Single(i => i.Id == selectedItem.Id);
+            category = selectedItem;
             InvDbContext.GetInstance().SaveChanges();
             //new SyncData().UpdateType(selectedItem);
         }
