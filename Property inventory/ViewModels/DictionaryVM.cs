@@ -23,6 +23,7 @@ namespace Property_inventory.ViewModels
         public ObservableCollection<Category> Categories { get; set; }
         public object SelectedItem { get; set; }
         public Category SelectedCategory { get; set; }
+        public int SelectedCategoryIndex { get; set; }
         public Category NewCategory { get; set; }
         public InvType NewInvType { get; set; }
         public string NewName { get; set; }
@@ -224,6 +225,9 @@ namespace Property_inventory.ViewModels
             {
                 return new RelayCommand(async o =>
                 {
+                    NewName = ((InvType)SelectedItem).Name;
+                    SelectedCategoryIndex = Categories.IndexOf(Categories.Single(i => i.Id == ((InvType)SelectedItem).CategoryId));
+
                     var view = new EditTypeUC()
                     {
                         DataContext = this

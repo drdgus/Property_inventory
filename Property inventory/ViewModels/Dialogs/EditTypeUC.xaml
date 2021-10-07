@@ -19,7 +19,7 @@
                      FontSize="16"
                      Style="{StaticResource MaterialDesignFloatingHintTextBox}"
                      Text="{Binding NewName, UpdateSourceTrigger=PropertyChanged}" />
-            <ComboBox SelectedItem="{Binding SelectedCategory}" ItemsSource="{Binding Categories}" DisplayMemberPath="Name" SelectedIndex="0" />
+            <ComboBox SelectedItem="{Binding SelectedCategory}" ItemsSource="{Binding Categories}" DisplayMemberPath="Name" SelectedIndex="{Binding SelectedCategoryIndex}" />
             <Grid Margin=" 0 10 0 0">
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition />
