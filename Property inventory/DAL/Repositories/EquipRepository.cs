@@ -75,7 +75,7 @@ namespace Property_inventory.DAL.Repositories
                     OldValue = OldEquip.InvType.Name,
                     NewValue = InvDbContext.GetInstance().InvTypes.Single(i => i.Id == EditedEquip.InvTypeId).Name
                 });
-            if (OldEquip.StatusId != EditedEquip.Status.Id)
+            if (OldEquip.StatusId != EditedEquip.StatusId)
                 new HistoryRepository().Add(new History
                 {
                     ObjectId = OldEquip.Id,
