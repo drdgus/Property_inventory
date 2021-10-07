@@ -64,7 +64,7 @@ namespace Property_inventory.DAL.Repositories
                     OldValue = OldEquip.InvNum.ToString(),
                     NewValue = EditedEquip.InvNum.ToString()
                 });
-            if (OldEquip.InvType.Name != InvDbContext.GetInstance().InvTypes.Single(i => i.Id == EditedEquip.InvTypeId).Name)
+            if (OldEquip.InvTypeId != InvDbContext.GetInstance().InvTypes.Single(i => i.Id == EditedEquip.InvTypeId).Id)
                 new HistoryRepository().Add(new History
                 {
                     ObjectId = OldEquip.Id,
@@ -75,7 +75,7 @@ namespace Property_inventory.DAL.Repositories
                     OldValue = OldEquip.InvType.Name,
                     NewValue = InvDbContext.GetInstance().InvTypes.Single(i => i.Id == EditedEquip.InvTypeId).Name
                 });
-            if (OldEquip.Status.Name != EditedEquip.Status.Name)
+            if (OldEquip.StatusId != EditedEquip.Status.Id)
                 new HistoryRepository().Add(new History
                 {
                     ObjectId = OldEquip.Id,

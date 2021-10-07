@@ -294,6 +294,9 @@
     <Compile Include="ViewModels\Dialogs\EditCategoryUC.xaml.cs">
       <DependentUpon>EditCategoryUC.xaml</DependentUpon>
     </Compile>
+    <Compile Include="ViewModels\Dialogs\EditTypeUC.xaml.cs">
+      <DependentUpon>EditTypeUC.xaml</DependentUpon>
+    </Compile>
     <Compile Include="ViewModels\Dialogs\EquipEditDialog.xaml.cs">
       <DependentUpon>EquipEditDialog.xaml</DependentUpon>
     </Compile>
@@ -414,6 +417,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="ViewModels\Dialogs\EditCategoryUC.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="ViewModels\Dialogs\EditTypeUC.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

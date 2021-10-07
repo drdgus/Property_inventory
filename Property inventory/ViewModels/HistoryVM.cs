@@ -21,11 +21,10 @@ namespace Property_inventory.ViewModels
     {
         private string _search;
         private string _selectedOperation;
-        private string splitter = "->";
 
         public ObservableCollection<EquipHistory> HistoryListForView { get; set; }
-        public List<EquipHistory> AllHistory { get; set; }
-        public Dictionary<string, string> Operations { get; set; }
+        public List<EquipHistory> AllHistory { get; }
+        public Dictionary<string, string> Operations { get; }
 
         public Equip SelectedEquip { get; set; }
 
@@ -37,8 +36,14 @@ namespace Property_inventory.ViewModels
                 _selectedOperation = value;
                 //AllHistory.Clear();
                 //AllHistory.Where(i => i.Code.GetStringValue() == Operations.Single(pair => pair.Value == value).Key).ToList().ForEach(i => HistoryList.Add(i));
-                HistoryListForView.Clear();
                 Search = "";
+                HistoryListForView.Clear();
+                if (_selectedOperation.Contains("Все"))
+                {
+                    AllHistory.ForEach(i => HistoryListForView.Add(i));
+                    return;
+                }
+
                 AllHistory.Where(i => _selectedOperation.Contains(i.Code.ToString()))
                     .ToList()
                     .ForEach(i => HistoryListForView.Add(i));
@@ -50,18 +55,19 @@ namespace Property_inventory.ViewModels
             get => _search;
             set
             {
-                _search = value.ToLower();
+                _search = value;
 
                 var lowerText = _search.ToLower();
 
                 HistoryListForView.Clear();
-                AllHistory.Where(i => i.InvNum.ToLower().Contains(lowerText) ||
+                AllHistory.Where(i => _selectedOperation.Contains(i.Code.ToString()) && (
+                                      i.InvNum.ToLower().Contains(lowerText) ||
                                       i.Name.ToLower().Contains(lowerText) ||
                                       i.InvNum.ToLower().Contains(lowerText) ||
                                       i.ChangedPropertyStr.ToLower().Contains(lowerText) ||
                                       i.OldValue.ToLower().Contains(lowerText) ||
                                       i.NewValue.ToLower().Contains(lowerText) ||
-                                      i.Date.ToString().Contains(lowerText))
+                                      i.Date.ToString().Contains(lowerText)))
                     .ToList()
                     .ForEach(i => HistoryListForView.Add(i));
             }
@@ -73,27 +79,29 @@ namespace Property_inventory.ViewModels
             AllHistory = new List<EquipHistory>();
 
             new HistoryRepository().Get(id)
-                .Select(i => new EquipHistory
-                {
-                    ObjectId = i.ObjectId,
-                    Date = i.Date,
-                    Code = i.Code,
-                    ChangedProperty = i.ChangedProperty,
-                    OldValue = i.OldValue,
-                    NewValue = i.NewValue
-                })
-                .ToList()
-                .ForEach(i =>
-                {
-                    HistoryListForView.Add(i);
-                    AllHistory.Add(i);
-                });
+                  .Select(i => new EquipHistory
+                  {
+                      ObjectId = i.ObjectId,
+                      Date = i.Date,
+                      Code = i.Code,
+                      ChangedProperty = i.ChangedProperty,
+                      OldValue = i.OldValue,
+                      NewValue = i.NewValue
+                  })
+                  .OrderByDescending(i => i.Date)
+                  .ToList()
+                  .ForEach(i =>
+                    {
+                        HistoryListForView.Add(i);
+                        AllHistory.Add(i);
+                    });
 
             Operations = new Dictionary<string, string>()
             {
                 { "", "Все" },
-                { "Relocate", "Перемещено" },
                 { "OnBalance", "На балансе" },
+                { "Relocate", "Перемещено" },
+                { "Edited", "Изменено" },
                 { "Deleted", "Списано" }
             };
         }

@@ -60,15 +60,11 @@
                             <ColumnDefinition Width="Auto" />
                             <ColumnDefinition />
                         </Grid.ColumnDefinitions>
-                        <CheckBox x:Name="EnabledTextBox"
-                                  Grid.Column="0"
-                                  Margin="0,0,10,0" />
                         <TextBox Grid.Column="1"
                                  wpf:HintAssist.Hint="Инвентарный номер"
                                  FontSize="16"
-                                 IsEnabled="{Binding Path=IsChecked, ElementName=EnabledTextBox}"
                                  Style="{StaticResource MaterialDesignFloatingHintTextBox}"
-                                 Text="{Binding NewEquip.InvNum, Converter={StaticResource InvConverter}}" />
+                                 Text="{Binding NewEquip.InvNum}" />
                     </Grid>
                     <ComboBox Grid.Row="2"
                               Grid.Column="0"

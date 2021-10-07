@@ -23,64 +23,57 @@
             <RowDefinition />
         </Grid.RowDefinitions>
 
-        <DataGrid
-            Grid.Row="1"
-            AutoGenerateColumns="False"
-            IsReadOnly="True"
+        <DataGrid Grid.Row="1"
+                  AutoGenerateColumns="False"
+                  IsReadOnly="True"
                   ItemsSource="{Binding HistoryListForView}">
             <DataGrid.Columns>
-                <DataGridTextColumn
-                    Width="auto"
-                    Binding="{Binding InvNum}"
-                    Header="Инв. номер" />
-                <DataGridTextColumn
-                    Width="auto"
-                    Binding="{Binding Name}"
-                    Header="Наименование" />
-                <DataGridTextColumn
-                    Width="auto"
-                    Binding="{Binding ChangedPropertyStr}"
-                    Header="Характеристика" />
-                <DataGridTextColumn
-                    Width="auto"
-                    Binding="{Binding OldValue}"
-                    Foreground="#C93600"
-                    Header="Старое значение" />
-                <DataGridTextColumn Width="auto" Binding="{Binding Splitter}" />
-                <DataGridTextColumn
-                    Width="auto"
-                    Binding="{Binding NewValue}"
-                    Foreground="Green"
-                    Header="Новое значение" />
-                <DataGridTextColumn
-                    Width="auto"
-                    Binding="{Binding Date, StringFormat=dd MM yyyy}"
-                    Header="Дата" />
+                <DataGridTextColumn Width="auto"
+                                    Binding="{Binding Date, StringFormat=dd.MM.yyyy hh:mm:ss}"
+                                    Header="Дата" />
+                <DataGridTextColumn Width="auto"
+                                    Binding="{Binding InvNum}"
+                                    Header="Инв. номер" />
+                <DataGridTextColumn Width="auto"
+                                    Binding="{Binding Name}"
+                                    Header="Наименование" />
+                <DataGridTextColumn Width="auto"
+                                    Binding="{Binding ChangedPropertyStr}"
+                                    Header="Характеристика" />
+                <DataGridTextColumn Width="auto"
+                                    Binding="{Binding OldValue}"
+                                    Foreground="#C93600"
+                                    Header="Старое значение" />
+                <DataGridTextColumn Width="auto"
+                                    Binding="{Binding Splitter}" />
+                <DataGridTextColumn Width="auto"
+                                    Binding="{Binding NewValue}"
+                                    Foreground="Green"
+                                    Header="Новое значение" />
             </DataGrid.Columns>
         </DataGrid>
-        <materialDesign:Card Padding="14" materialDesign:ShadowAssist.ShadowDepth="Depth1">
+        <materialDesign:Card Padding="14"
+                             materialDesign:ShadowAssist.ShadowDepth="Depth1">
             <Grid>
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="Auto" />
                     <ColumnDefinition Width=".4*" />
                     <ColumnDefinition />
                 </Grid.ColumnDefinitions>
-                <ComboBox
-                    Grid.Column="0"
-                    Margin="4"
-                    VerticalAlignment="Bottom"
-                    materialDesign:HintAssist.Hint="Тип операции"
-                    materialDesign:HintAssist.HintOpacity=".26"
-                    DisplayMemberPath="Value"
-                    IsEditable="True"
-                    ItemsSource="{Binding Operations}"
-                    SelectedIndex="0"
-                    SelectedItem="{Binding SelectedOperation}" />
-                <TextBox
-                    Grid.Column="2"
-                    materialDesign:HintAssist.Hint="Поиск..."
-                    Style="{StaticResource MaterialDesignFloatingHintTextBox}"
-                    Text="{Binding Search, UpdateSourceTrigger=PropertyChanged}" />
+                <ComboBox Grid.Column="0"
+                          Margin="4"
+                          VerticalAlignment="Bottom"
+                          materialDesign:HintAssist.Hint="Тип операции"
+                          materialDesign:HintAssist.HintOpacity=".26"
+                          DisplayMemberPath="Value"
+                          IsEditable="True"
+                          ItemsSource="{Binding Operations}"
+                          SelectedIndex="0"
+                          SelectedItem="{Binding SelectedOperation}" />
+                <TextBox Grid.Column="2"
+                         materialDesign:HintAssist.Hint="Поиск..."
+                         Style="{StaticResource MaterialDesignFloatingHintTextBox}"
+                         Text="{Binding Search, UpdateSourceTrigger=PropertyChanged}" />
             </Grid>
         </materialDesign:Card>
     </Grid>

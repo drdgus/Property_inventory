@@ -22,7 +22,7 @@ namespace Property_inventory.Entities
                 name = value;
             }
         }
-        public int InvNum { get; set; }
+        public string InvNum { get; set; }
         public int RoomId { get; set; }
         public virtual Room Room { get; set; }
         public int InvTypeId { get; set; }

@@ -9,15 +9,17 @@ namespace Property_inventory.Views.Converters
     {
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
-            if (((int)value) == 0) return "-";
-            return ((int)value).ToString($"{Settings.Default.InvSymbol}-0000000");
+            //if (((int)value) == 0) return "-";
+            //return ((int)value).ToString($"{Settings.Default.InvSymbol}-0000000");
+            return value;
         }
 
         public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
         {
-            if (value != null)
-                return System.Convert.ToInt32(((string)value).Replace($"{Settings.Default.InvSymbol}-", ""));
-            return null;
+            //if (value != null)
+            //    return System.Convert.ToInt32(((string)value).Replace($"{Settings.Default.InvSymbol}-", ""));
+            //return null;
+            return value;
         }
     }
 }

@@ -22,6 +22,7 @@ namespace Property_inventory.ViewModels
         public ObservableCollection<MOLPosition> Positions { get; set; }
         public ObservableCollection<Category> Categories { get; set; }
         public object SelectedItem { get; set; }
+        public Category SelectedCategory { get; set; }
         public Category NewCategory { get; set; }
         public InvType NewInvType { get; set; }
         public string NewName { get; set; }
@@ -94,7 +95,7 @@ namespace Property_inventory.ViewModels
 
                         var newCategory = new DictionaryRepository().AddCategory(NewCategory);
                         Categories.Add(newCategory);
-                        NewCategory= null;
+                        NewCategory = null;
                     }
                 });
             }
@@ -134,7 +135,7 @@ namespace Property_inventory.ViewModels
             {
                 return new RelayCommand(async o =>
                 {
-                    if(InvDbContext.GetInstance().Equips.Where(i => i.InvTypeId == ((InvType)SelectedItem).Id).Count() > 0)
+                    if (InvDbContext.GetInstance().Equips.Where(i => i.InvTypeId == ((InvType)SelectedItem).Id).Count() > 0)
                     {
                         var info = new InfoDialog
                         {
@@ -223,7 +224,7 @@ namespace Property_inventory.ViewModels
             {
                 return new RelayCommand(async o =>
                 {
-                    var view = new RenameUC()
+                    var view = new EditTypeUC()
                     {
                         DataContext = this
                     };
@@ -231,10 +232,12 @@ namespace Property_inventory.ViewModels
                     var result = await DialogHost.Show(view, "RootDialogDic");
                     if (result != null && (bool)result)
                     {
-                        if (((InvType)SelectedItem).Category == null) return;
-                        if (string.IsNullOrWhiteSpace(((InvType)SelectedItem).Name)) return;
+                        if (SelectedCategory == null) return;
+                        if (string.IsNullOrWhiteSpace(NewName)) return;
 
                         ((InvType)SelectedItem).Name = NewName;
+                        ((InvType)SelectedItem).CategoryId = SelectedCategory.Id;
+
                         new DictionaryRepository().UpdateType((InvType)SelectedItem);
                     }
                 });

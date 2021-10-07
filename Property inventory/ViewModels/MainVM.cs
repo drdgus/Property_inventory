@@ -24,6 +24,7 @@ using Property_inventory.Services.Tools;
 using InvType = Property_inventory.Entities.InvType;
 using System.Data.Entity.Migrations;
 using Property_inventory.Views.Dictionaries;
+using System.Windows;
 
 namespace Property_inventory.ViewModels
 {
@@ -57,7 +58,7 @@ namespace Property_inventory.ViewModels
         private string _messageDialogContent;
         private string _newName;
         private string _equipDialogOperationContent;
-        private int _selectedTypeIndex;
+        private int _selectedTypeIndex = 0;
         private int _selectedDeprGroupIndex;
         private string _authMessage;
         private string _password;
@@ -115,17 +116,25 @@ namespace Property_inventory.ViewModels
                 OnPropertyChanged();
             }
         }
+        public int SelectedTypeIndex
+        {
+            get => _selectedTypeIndex;
+            set
+            {
+                _selectedTypeIndex = value;
+                OnPropertyChanged();
+            }
+        }
         public Equip NewEquip
         {
             get
             {
                 var allEquips = InvDbContext.GetInstance().Equips.ToList();
-                var newInvNum = allEquips.Count == 0 ? 1 : allEquips.Max(i => i.InvNum) + 1;
                 return _newEquip ?? (_newEquip = new Equip
                 {
                     RegistrationDate = DateTime.Now,
                     Name = "",
-                    InvNum = newInvNum,
+                    InvNum = "",
                     RoomId = 1,
                     InvTypeId = 1,
                     StatusId = 1,
@@ -277,7 +286,7 @@ namespace Property_inventory.ViewModels
                     return;
                 }
 
-                filteredEquip = EquipList.Where(i => i.InvNum.ToString($"{Settings.Default.InvSymbol}-0000000").ToLower().Contains(lowerText) ||
+                filteredEquip = EquipList.Where(i => i.InvNum.ToLower().Contains(lowerText) ||
                                     i.Name.ToLower().Contains(lowerText) ||
                                     //i.MOL.FullName.ToLower().Contains(value) ||
                                     i.Room.Name.ToLower().Contains(lowerText)).ToList();
@@ -437,6 +446,9 @@ namespace Property_inventory.ViewModels
                         return;
                     }
 
+                    EquipTypes = new ObservableCollection<InvType>(new DictionaryRepository().GetTypes());
+                    SelectedType = EquipTypes.First();
+
                     var create = new CreateEquipDialog()
                     {
                         DataContext = this
@@ -572,6 +584,11 @@ namespace Property_inventory.ViewModels
             {
                 return new RelayCommand(async o =>
                 {
+
+                    EquipTypes = new ObservableCollection<InvType>(new DictionaryRepository().GetTypes());
+                    SelectedType = SelectedEquip.InvType;
+                    SelectedTypeIndex = EquipTypes.IndexOf(EquipTypes.Single(i => i.Id == SelectedEquip.InvTypeId));
+
                     var create = new EquipEditDialog()
                     {
                         DataContext = this
@@ -584,16 +601,17 @@ namespace Property_inventory.ViewModels
                     if (string.IsNullOrWhiteSpace(SelectedEquip.Name)) return;
                     if (SelectedEquip.Count <= 0) return;
 
+                    SelectedEquip.InvType = null;
                     SelectedEquip.InvTypeId = SelectedType.Id;
 
                     var a = SelectedEquip;
+                    a.InvType = SelectedType;
                     new EquipRepository().Update(SelectedEquip);
                     //a.InvType = InvDbContext.GetInstance().InvTypes.Single(i => i.Id == SelectedEquip.InvTypeId);
                     var index = CurrentRoomEquip.IndexOf(SelectedEquip);
                     CurrentRoomEquip.RemoveAt(index);
                     CurrentRoomEquip.Insert(index, a);
-
-                }, p => selectedType != null);
+                });
             }
         }
 
