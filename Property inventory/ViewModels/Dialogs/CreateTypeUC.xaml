@@ -16,7 +16,7 @@
                 DisplayMemberPath="Name"
                 ItemsSource="{Binding Categories}"
                 SelectedIndex="0"
-                SelectedItem="{Binding SelectedItem}" />
+                SelectedItem="{Binding NewInvType.Category}" />
             <TextBox
                 Grid.Row="1"
                 Margin="0,0,0,20"
@@ -24,7 +24,7 @@
                 wpf:ValidationAssist.HorizontalAlignment="Right"
                 FontSize="16"
                 Style="{StaticResource MaterialDesignFloatingHintTextBox}"
-                Text="{Binding TypeName}" />
+                Text="{Binding NewInvType.Name}" />
             <Grid Margin="0 10 0 0">
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition />

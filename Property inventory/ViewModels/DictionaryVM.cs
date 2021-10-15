@@ -54,6 +54,8 @@ namespace Property_inventory.ViewModels
             {
                 return new RelayCommand(async o =>
                 {
+                    NewInvType = new InvType();
+                   
                     var view = new CreateTypeUC()
                     {
                         DataContext = this
